@@ -1,5 +1,6 @@
 package com.netflix.eureka;
 
+import javax.annotation.Nullable;
 import javax.inject.Singleton;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -27,6 +28,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @Singleton
 public class GzipEncodingEnforcingFilter implements Filter {
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
     }
@@ -80,14 +82,16 @@ public class GzipEncodingEnforcingFilter implements Filter {
 
     private static class EnumWrapper<E> implements Enumeration<E> {
 
+        @Nullable
         private final Enumeration<E> delegate;
+
         private final AtomicReference<E> extraElementRef;
 
         private EnumWrapper(E extraElement) {
             this(null, extraElement);
         }
 
-        private EnumWrapper(Enumeration<E> delegate, E extraElement) {
+        private EnumWrapper(@Nullable Enumeration<E> delegate, E extraElement) {
             this.delegate = delegate;
             this.extraElementRef = new AtomicReference<>(extraElement);
         }
