@@ -1,5 +1,7 @@
 package com.netflix.eureka.cluster.protocol;
 
+import javax.annotation.Nullable;
+import com.netflix.eureka.Initializer;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
@@ -10,12 +12,12 @@ import com.netflix.appinfo.InstanceInfo;
 public class ReplicationInstanceResponse {
 
     private final int statusCode;
+
+    @Nullable
     private final InstanceInfo responseEntity;
 
     @JsonCreator
-    public ReplicationInstanceResponse(
-            @JsonProperty("statusCode") int statusCode,
-            @JsonProperty("responseEntity") InstanceInfo responseEntity) {
+    public ReplicationInstanceResponse(@JsonProperty("statusCode") int statusCode, @JsonProperty("responseEntity") @Nullable InstanceInfo responseEntity) {
         this.statusCode = statusCode;
         this.responseEntity = responseEntity;
     }
@@ -24,6 +26,7 @@ public class ReplicationInstanceResponse {
         return statusCode;
     }
 
+    @Nullable
     public InstanceInfo getResponseEntity() {
         return responseEntity;
     }
@@ -34,14 +37,11 @@ public class ReplicationInstanceResponse {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-
         ReplicationInstanceResponse that = (ReplicationInstanceResponse) o;
-
         if (statusCode != that.statusCode)
             return false;
         if (responseEntity != null ? !responseEntity.equals(that.responseEntity) : that.responseEntity != null)
             return false;
-
         return true;
     }
 
@@ -55,6 +55,7 @@ public class ReplicationInstanceResponse {
     public static final class Builder {
 
         private int statusCode;
+
         private InstanceInfo responseEntity;
 
         public Builder setStatusCode(int statusCode) {
@@ -62,6 +63,7 @@ public class ReplicationInstanceResponse {
             return this;
         }
 
+        @Initializer
         public Builder setResponseEntity(InstanceInfo entity) {
             this.responseEntity = entity;
             return this;
