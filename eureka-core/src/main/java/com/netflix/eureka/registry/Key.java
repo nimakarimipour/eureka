@@ -2,13 +2,13 @@ package com.netflix.eureka.registry;
 
 import com.netflix.appinfo.EurekaAccept;
 import com.netflix.eureka.Version;
-
 import javax.annotation.Nullable;
 import java.util.Arrays;
 
 public class Key {
 
     public enum KeyType {
+
         JSON, XML
     }
 
@@ -16,15 +16,23 @@ public class Key {
      * An enum to define the entity that is stored in this cache for this key.
      */
     public enum EntityType {
+
         Application, VIP, SVIP
     }
 
     private final String entityName;
+
+    @Nullable
     private final String[] regions;
+
     private final KeyType requestType;
+
     private final Version requestVersion;
+
     private final String hashKey;
+
     private final EntityType entityType;
+
     private final EurekaAccept eurekaAccept;
 
     public Key(EntityType entityType, String entityName, KeyType type, Version v, EurekaAccept eurekaAccept) {
@@ -38,8 +46,7 @@ public class Key {
         this.requestType = type;
         this.requestVersion = v;
         this.eurekaAccept = eurekaAccept;
-        hashKey = this.entityType + this.entityName + (null != this.regions ? Arrays.toString(this.regions) : "")
-                + requestType.name() + requestVersion.name() + this.eurekaAccept.name();
+        hashKey = this.entityType + this.entityName + (null != this.regions ? Arrays.toString(this.regions) : "") + requestType.name() + requestVersion.name() + this.eurekaAccept.name();
     }
 
     public String getName() {
@@ -96,7 +103,7 @@ public class Key {
     public String toStringCompact() {
         StringBuilder sb = new StringBuilder();
         sb.append("{name=").append(entityName).append(", type=").append(entityType).append(", format=").append(requestType);
-        if(regions != null) {
+        if (regions != null) {
             sb.append(", regions=").append(Arrays.toString(regions));
         }
         sb.append('}');
