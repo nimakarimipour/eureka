@@ -1,5 +1,6 @@
 package com.netflix.eureka.cluster.protocol;
 
+import javax.annotation.Nullable;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
@@ -9,22 +10,25 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
  * The jersey resource class that generates a particular replication event
  */
 public class ReplicationInstance {
+
     private String appName;
+
     private String id;
+
     private Long lastDirtyTimestamp;
+
+    @Nullable
     private String overriddenStatus;
+
+    @Nullable
     private String status;
+
     private InstanceInfo instanceInfo;
+
     private Action action;
 
     @JsonCreator
-    public ReplicationInstance(@JsonProperty("appName") String appName,
-                               @JsonProperty("id") String id,
-                               @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
-                               @JsonProperty("overriddenStatus") String overriddenStatus,
-                               @JsonProperty("status") String status,
-                               @JsonProperty("instanceInfo") InstanceInfo instanceInfo,
-                               @JsonProperty("action") Action action) {
+    public ReplicationInstance(@JsonProperty("appName") String appName, @JsonProperty("id") String id, @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp, @JsonProperty("overriddenStatus") @Nullable String overriddenStatus, @JsonProperty("status") @Nullable String status, @JsonProperty("instanceInfo") InstanceInfo instanceInfo, @JsonProperty("action") Action action) {
         this.appName = appName;
         this.id = id;
         this.lastDirtyTimestamp = lastDirtyTimestamp;
@@ -46,10 +50,12 @@ public class ReplicationInstance {
         return lastDirtyTimestamp;
     }
 
+    @Nullable
     public String getOverriddenStatus() {
         return overriddenStatus;
     }
 
+    @Nullable
     public String getStatus() {
         return status;
     }
@@ -68,9 +74,7 @@ public class ReplicationInstance {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-
         ReplicationInstance that = (ReplicationInstance) o;
-
         if (appName != null ? !appName.equals(that.appName) : that.appName != null)
             return false;
         if (id != null ? !id.equals(that.id) : that.id != null)
@@ -84,7 +88,6 @@ public class ReplicationInstance {
         if (instanceInfo != null ? !instanceInfo.equals(that.instanceInfo) : that.instanceInfo != null)
             return false;
         return action == that.action;
-
     }
 
     @Override
@@ -104,12 +107,21 @@ public class ReplicationInstance {
     }
 
     public static class ReplicationInstanceBuilder {
+
         private String appName;
+
         private String id;
+
         private Long lastDirtyTimestamp;
+
+        @Nullable
         private String overriddenStatus;
+
+        @Nullable
         private String status;
+
         private InstanceInfo instanceInfo;
+
         private Action action;
 
         private ReplicationInstanceBuilder() {
@@ -134,12 +146,12 @@ public class ReplicationInstance {
             return this;
         }
 
-        public ReplicationInstanceBuilder withOverriddenStatus(String overriddenStatus) {
+        public ReplicationInstanceBuilder withOverriddenStatus(@Nullable String overriddenStatus) {
             this.overriddenStatus = overriddenStatus;
             return this;
         }
 
-        public ReplicationInstanceBuilder withStatus(String status) {
+        public ReplicationInstanceBuilder withStatus(@Nullable String status) {
             this.status = status;
             return this;
         }
@@ -159,15 +171,7 @@ public class ReplicationInstance {
         }
 
         public ReplicationInstance build() {
-            return new ReplicationInstance(
-                    appName,
-                    id,
-                    lastDirtyTimestamp,
-                    overriddenStatus,
-                    status,
-                    instanceInfo,
-                    action
-            );
+            return new ReplicationInstance(appName, id, lastDirtyTimestamp, overriddenStatus, status, instanceInfo, action);
         }
     }
 }
