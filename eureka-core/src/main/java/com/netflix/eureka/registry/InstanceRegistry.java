@@ -1,5 +1,6 @@
 package com.netflix.eureka.registry;
 
+import javax.annotation.Nullable;
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
@@ -8,7 +9,6 @@ import com.netflix.discovery.shared.Applications;
 import com.netflix.discovery.shared.LookupService;
 import com.netflix.discovery.shared.Pair;
 import com.netflix.eureka.lease.LeaseManager;
-
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +24,11 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
     @Deprecated
     void storeOverriddenStatusIfRequired(String id, InstanceStatus overriddenStatus);
 
-    void storeOverriddenStatusIfRequired(String appName, String id, InstanceStatus overriddenStatus);
+    void storeOverriddenStatusIfRequired(String appName, @Nullable String id, InstanceStatus overriddenStatus);
 
-    boolean statusUpdate(String appName, String id, InstanceStatus newStatus,
-                         String lastDirtyTimestamp, boolean isReplication);
+    boolean statusUpdate(String appName, String id, InstanceStatus newStatus, @Nullable String lastDirtyTimestamp, boolean isReplication);
 
-    boolean deleteStatusOverride(String appName, String id, InstanceStatus newStatus,
-                                 String lastDirtyTimestamp, boolean isReplication);
+    boolean deleteStatusOverride(String appName, String id, InstanceStatus newStatus, String lastDirtyTimestamp, boolean isReplication);
 
     Map<String, InstanceStatus> overriddenInstanceStatusesSnapshot();
 
@@ -47,6 +45,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
      *                            {@link com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the application
      */
+    @Nullable
     Application getApplication(String appName, boolean includeRemoteRegion);
 
     /**
@@ -93,5 +92,4 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
     boolean isLeaseExpirationEnabled();
 
     boolean isSelfPreservationModeEnabled();
-
 }
