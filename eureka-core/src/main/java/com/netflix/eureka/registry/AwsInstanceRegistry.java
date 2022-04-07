@@ -13,9 +13,9 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.netflix.eureka.registry;
 
+import javax.annotation.Nullable;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.eureka.EurekaServerConfig;
@@ -28,7 +28,6 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.registry.rule.LeaseExistsRule;
 import com.netflix.eureka.registry.rule.OverrideExistsRule;
 import com.netflix.eureka.resources.ServerCodecs;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -40,15 +39,14 @@ import javax.inject.Singleton;
 @Singleton
 public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
 
+    @Nullable
     private AwsAsgUtil awsAsgUtil;
 
+    @Nullable
     private InstanceStatusOverrideRule instanceStatusOverrideRule;
 
     @Inject
-    public AwsInstanceRegistry(EurekaServerConfig serverConfig,
-                               EurekaClientConfig clientConfig,
-                               ServerCodecs serverCodecs,
-                               EurekaClient eurekaClient) {
+    public AwsInstanceRegistry(EurekaServerConfig serverConfig, EurekaClientConfig clientConfig, ServerCodecs serverCodecs, EurekaClient eurekaClient) {
         super(serverConfig, clientConfig, serverCodecs, eurekaClient);
     }
 
@@ -58,16 +56,16 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
         this.awsAsgUtil = new AwsAsgUtil(serverConfig, clientConfig, this);
         // We first check if the instance is STARTING or DOWN, then we check explicit overrides,
         // then we see if our ASG is UP, then we check the status of a potentially existing lease.
-        this.instanceStatusOverrideRule = new FirstMatchWinsCompositeRule(new DownOrStartingRule(),
-                new OverrideExistsRule(overriddenInstanceStatusMap), new AsgEnabledRule(this.awsAsgUtil),
-                new LeaseExistsRule());
+        this.instanceStatusOverrideRule = new FirstMatchWinsCompositeRule(new DownOrStartingRule(), new OverrideExistsRule(overriddenInstanceStatusMap), new AsgEnabledRule(this.awsAsgUtil), new LeaseExistsRule());
     }
 
     @Override
+    @Nullable
     protected InstanceStatusOverrideRule getInstanceInfoOverrideRule() {
         return this.instanceStatusOverrideRule;
     }
 
+    @Nullable
     public AwsAsgUtil getAwsAsgUtil() {
         return awsAsgUtil;
     }

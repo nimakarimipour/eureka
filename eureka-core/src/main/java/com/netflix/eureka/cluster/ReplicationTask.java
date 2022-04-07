@@ -1,5 +1,6 @@
 package com.netflix.eureka.cluster;
 
+import javax.annotation.Nullable;
 import com.netflix.discovery.shared.transport.EurekaHttpResponse;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ abstract class ReplicationTask {
     private static final Logger logger = LoggerFactory.getLogger(ReplicationTask.class);
 
     protected final String peerNodeName;
+
     protected final Action action;
 
     ReplicationTask(String peerNodeName, Action action) {
@@ -31,7 +33,7 @@ abstract class ReplicationTask {
     public void handleSuccess() {
     }
 
-    public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+    public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
         logger.warn("The replication of task {} failed with response code {}", getTaskName(), statusCode);
     }
 }
