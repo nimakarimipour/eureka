@@ -1,10 +1,10 @@
 package com.netflix.eureka.registry.rule;
 
+import javax.annotation.Nullable;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.eureka.aws.AsgClient;
 import com.netflix.eureka.lease.Lease;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
  * Created by Nikos Michalakis on 7/14/16.
  */
 public class AsgEnabledRule implements InstanceStatusOverrideRule {
+
     private static final Logger logger = LoggerFactory.getLogger(AsgEnabledRule.class);
 
     private final AsgClient asgClient;
@@ -24,7 +25,7 @@ public class AsgEnabledRule implements InstanceStatusOverrideRule {
     }
 
     @Override
-    public StatusOverrideResult apply(InstanceInfo instanceInfo, Lease<InstanceInfo> existingLease, boolean isReplication) {
+    public StatusOverrideResult apply(InstanceInfo instanceInfo, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
         // If the ASGName is present- check for its status
         if (instanceInfo.getASGName() != null) {
             boolean isASGDisabled = !asgClient.isASGEnabled(instanceInfo);
