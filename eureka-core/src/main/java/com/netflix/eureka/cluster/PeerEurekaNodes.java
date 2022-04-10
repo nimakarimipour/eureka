@@ -1,5 +1,6 @@
 package com.netflix.eureka.cluster;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.URI;
@@ -13,7 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-
 import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClientConfig;
@@ -36,23 +36,24 @@ public class PeerEurekaNodes {
     private static final Logger logger = LoggerFactory.getLogger(PeerEurekaNodes.class);
 
     protected final PeerAwareInstanceRegistry registry;
+
     protected final EurekaServerConfig serverConfig;
+
     protected final EurekaClientConfig clientConfig;
+
     protected final ServerCodecs serverCodecs;
+
     private final ApplicationInfoManager applicationInfoManager;
 
     private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
+
     private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
+    @Nullable
     private ScheduledExecutorService taskExecutor;
 
     @Inject
-    public PeerEurekaNodes(
-            PeerAwareInstanceRegistry registry,
-            EurekaServerConfig serverConfig,
-            EurekaClientConfig clientConfig,
-            ServerCodecs serverCodecs,
-            ApplicationInfoManager applicationInfoManager) {
+    public PeerEurekaNodes(PeerAwareInstanceRegistry registry, EurekaServerConfig serverConfig, EurekaClientConfig clientConfig, ServerCodecs serverCodecs, ApplicationInfoManager applicationInfoManager) {
         this.registry = registry;
         this.serverConfig = serverConfig;
         this.clientConfig = clientConfig;
@@ -67,25 +68,25 @@ public class PeerEurekaNodes {
     public List<PeerEurekaNode> getPeerEurekaNodes() {
         return peerEurekaNodes;
     }
-    
+
     public int getMinNumberOfAvailablePeers() {
         return serverConfig.getHealthStatusMinNumberOfAvailablePeers();
     }
 
     public void start() {
-        taskExecutor = Executors.newSingleThreadScheduledExecutor(
-                new ThreadFactory() {
-                    @Override
-                    public Thread newThread(Runnable r) {
-                        Thread thread = new Thread(r, "Eureka-PeerNodesUpdater");
-                        thread.setDaemon(true);
-                        return thread;
-                    }
-                }
-        );
+        taskExecutor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory() {
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r, "Eureka-PeerNodesUpdater");
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
         try {
             updatePeerEurekaNodes(resolvePeerUrls());
             Runnable peersUpdateTask = new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -93,15 +94,9 @@ public class PeerEurekaNodes {
                     } catch (Throwable e) {
                         logger.error("Cannot update the replica Nodes", e);
                     }
-
                 }
             };
-            taskExecutor.scheduleWithFixedDelay(
-                    peersUpdateTask,
-                    serverConfig.getPeerEurekaNodesUpdateIntervalMs(),
-                    serverConfig.getPeerEurekaNodesUpdateIntervalMs(),
-                    TimeUnit.MILLISECONDS
-            );
+            taskExecutor.scheduleWithFixedDelay(peersUpdateTask, serverConfig.getPeerEurekaNodesUpdateIntervalMs(), serverConfig.getPeerEurekaNodesUpdateIntervalMs(), TimeUnit.MILLISECONDS);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -113,10 +108,8 @@ public class PeerEurekaNodes {
     public void shutdown() {
         taskExecutor.shutdown();
         List<PeerEurekaNode> toRemove = this.peerEurekaNodes;
-
         this.peerEurekaNodes = Collections.emptyList();
         this.peerEurekaNodeUrls = Collections.emptySet();
-
         for (PeerEurekaNode node : toRemove) {
             node.shutDown();
         }
@@ -130,9 +123,7 @@ public class PeerEurekaNodes {
     protected List<String> resolvePeerUrls() {
         InstanceInfo myInfo = applicationInfoManager.getInfo();
         String zone = InstanceInfo.getZone(clientConfig.getAvailabilityZones(clientConfig.getRegion()), myInfo);
-        List<String> replicaUrls = EndpointUtils
-                .getDiscoveryServiceUrls(clientConfig, zone, new EndpointUtils.InstanceInfoBasedUrlRandomizer(myInfo));
-
+        List<String> replicaUrls = EndpointUtils.getDiscoveryServiceUrls(clientConfig, zone, new EndpointUtils.InstanceInfoBasedUrlRandomizer(myInfo));
         int idx = 0;
         while (idx < replicaUrls.size()) {
             if (isThisMyUrl(replicaUrls.get(idx))) {
@@ -155,19 +146,16 @@ public class PeerEurekaNodes {
             logger.warn("The replica size seems to be empty. Check the route 53 DNS Registry");
             return;
         }
-
         Set<String> toShutdown = new HashSet<>(peerEurekaNodeUrls);
         toShutdown.removeAll(newPeerUrls);
         Set<String> toAdd = new HashSet<>(newPeerUrls);
         toAdd.removeAll(peerEurekaNodeUrls);
-
-        if (toShutdown.isEmpty() && toAdd.isEmpty()) { // No change
+        if (toShutdown.isEmpty() && toAdd.isEmpty()) {
+            // No change
             return;
         }
-
         // Remove peers no long available
         List<PeerEurekaNode> newNodeList = new ArrayList<>(peerEurekaNodes);
-
         if (!toShutdown.isEmpty()) {
             logger.info("Removing no longer available peer nodes {}", toShutdown);
             int i = 0;
@@ -181,7 +169,6 @@ public class PeerEurekaNodes {
                 }
             }
         }
-
         // Add new peers
         if (!toAdd.isEmpty()) {
             logger.info("Adding new peer nodes {}", toAdd);
@@ -189,7 +176,6 @@ public class PeerEurekaNodes {
                 newNodeList.add(createPeerEurekaNode(peerUrl));
             }
         }
-
         this.peerEurekaNodes = newNodeList;
         this.peerEurekaNodeUrls = new HashSet<>(newPeerUrls);
     }
@@ -238,7 +224,7 @@ public class PeerEurekaNodes {
         }
         return isInstanceURL(url, applicationInfoManager.getInfo());
     }
-    
+
     /**
      * Checks if the given service url matches the supplied instance
      *
@@ -255,6 +241,7 @@ public class PeerEurekaNodes {
         return hostName != null && hostName.equals(myInfoComparator);
     }
 
+    @Nullable
     public static String hostFromUrl(String url) {
         URI uri;
         try {
