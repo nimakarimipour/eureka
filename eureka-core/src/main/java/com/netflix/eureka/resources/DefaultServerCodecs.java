@@ -1,12 +1,12 @@
 package com.netflix.eureka.resources;
 
+import javax.annotation.Nullable;
 import com.netflix.appinfo.EurekaAccept;
 import com.netflix.discovery.converters.wrappers.CodecWrapper;
 import com.netflix.discovery.converters.wrappers.CodecWrappers;
 import com.netflix.discovery.converters.wrappers.EncoderWrapper;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.registry.Key;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -17,9 +17,11 @@ import javax.inject.Singleton;
 public class DefaultServerCodecs implements ServerCodecs {
 
     protected final CodecWrapper fullJsonCodec;
+
     protected final CodecWrapper compactJsonCodec;
 
     protected final CodecWrapper fullXmlCodec;
+
     protected final CodecWrapper compactXmlCodec;
 
     private static CodecWrapper getFullJson(EurekaServerConfig serverConfig) {
@@ -34,18 +36,10 @@ public class DefaultServerCodecs implements ServerCodecs {
 
     @Inject
     public DefaultServerCodecs(EurekaServerConfig serverConfig) {
-        this (
-                getFullJson(serverConfig),
-                CodecWrappers.getCodec(CodecWrappers.JacksonJsonMini.class),
-                getFullXml(serverConfig),
-                CodecWrappers.getCodec(CodecWrappers.JacksonXmlMini.class)
-        );
+        this(getFullJson(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonJsonMini.class), getFullXml(serverConfig), CodecWrappers.getCodec(CodecWrappers.JacksonXmlMini.class));
     }
 
-    protected DefaultServerCodecs(CodecWrapper fullJsonCodec,
-                                  CodecWrapper compactJsonCodec,
-                                  CodecWrapper fullXmlCodec,
-                                  CodecWrapper compactXmlCodec) {
+    protected DefaultServerCodecs(CodecWrapper fullJsonCodec, CodecWrapper compactJsonCodec, CodecWrapper fullXmlCodec, CodecWrapper compactXmlCodec) {
         this.fullJsonCodec = fullJsonCodec;
         this.compactJsonCodec = compactJsonCodec;
         this.fullXmlCodec = fullXmlCodec;
@@ -74,7 +68,7 @@ public class DefaultServerCodecs implements ServerCodecs {
 
     @Override
     public EncoderWrapper getEncoder(Key.KeyType keyType, boolean compact) {
-        switch (keyType) {
+        switch(keyType) {
             case JSON:
                 return compact ? compactJsonCodec : fullJsonCodec;
             case XML:
@@ -85,7 +79,7 @@ public class DefaultServerCodecs implements ServerCodecs {
 
     @Override
     public EncoderWrapper getEncoder(Key.KeyType keyType, EurekaAccept eurekaAccept) {
-        switch (eurekaAccept) {
+        switch(eurekaAccept) {
             case compact:
                 return getEncoder(keyType, true);
             case full:
@@ -99,13 +93,21 @@ public class DefaultServerCodecs implements ServerCodecs {
     }
 
     public static class Builder {
+
+        @Nullable
         protected CodecWrapper fullJsonCodec;
+
+        @Nullable
         protected CodecWrapper compactJsonCodec;
 
+        @Nullable
         protected CodecWrapper fullXmlCodec;
+
+        @Nullable
         protected CodecWrapper compactXmlCodec;
 
-        protected Builder() {}
+        protected Builder() {
+        }
 
         public Builder withFullJsonCodec(CodecWrapper fullJsonCodec) {
             this.fullJsonCodec = fullJsonCodec;
@@ -137,25 +139,16 @@ public class DefaultServerCodecs implements ServerCodecs {
             if (fullJsonCodec == null) {
                 fullJsonCodec = CodecWrappers.getCodec(CodecWrappers.LegacyJacksonJson.class);
             }
-
             if (compactJsonCodec == null) {
                 compactJsonCodec = CodecWrappers.getCodec(CodecWrappers.JacksonJsonMini.class);
             }
-
             if (fullXmlCodec == null) {
                 fullXmlCodec = CodecWrappers.getCodec(CodecWrappers.XStreamXml.class);
             }
-
             if (compactXmlCodec == null) {
                 compactXmlCodec = CodecWrappers.getCodec(CodecWrappers.JacksonXmlMini.class);
             }
-
-            return new DefaultServerCodecs(
-                    fullJsonCodec,
-                    compactJsonCodec,
-                    fullXmlCodec,
-                    compactXmlCodec
-            );
+            return new DefaultServerCodecs(fullJsonCodec, compactJsonCodec, fullXmlCodec, compactXmlCodec);
         }
     }
 }
