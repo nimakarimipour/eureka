@@ -13,7 +13,6 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.netflix.eureka.registry;
 
 import javax.annotation.Nullable;
@@ -30,7 +29,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.GZIPOutputStream;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 import com.google.common.cache.CacheBuilder;
@@ -78,23 +76,34 @@ public class ResponseCacheImpl implements ResponseCache {
     private static final Logger logger = LoggerFactory.getLogger(ResponseCacheImpl.class);
 
     public static final String ALL_APPS = "ALL_APPS";
+
     public static final String ALL_APPS_DELTA = "ALL_APPS_DELTA";
 
     // FIXME deprecated, here for backwards compatibility.
     private static final AtomicLong versionDeltaLegacy = new AtomicLong(0);
+
     private static final AtomicLong versionDeltaWithRegionsLegacy = new AtomicLong(0);
 
     private static final String EMPTY_PAYLOAD = "";
+
     private final java.util.Timer timer = new java.util.Timer("Eureka-CacheFillTimer", true);
+
     private final AtomicLong versionDelta = new AtomicLong(0);
+
     private final AtomicLong versionDeltaWithRegions = new AtomicLong(0);
 
     private final Timer serializeAllAppsTimer = Monitors.newTimer("serialize-all");
+
     private final Timer serializeDeltaAppsTimer = Monitors.newTimer("serialize-all-delta");
+
     private final Timer serializeAllAppsWithRemoteRegionTimer = Monitors.newTimer("serialize-all_remote_region");
+
     private final Timer serializeDeltaAppsWithRemoteRegionTimer = Monitors.newTimer("serialize-all-delta_remote_region");
+
     private final Timer serializeOneApptimer = Monitors.newTimer("serialize-one");
+
     private final Timer serializeViptimer = Monitors.newTimer("serialize-one-vip");
+
     private final Timer compressPayloadTimer = Monitors.newTimer("compress-payload");
 
     /**
@@ -104,20 +113,24 @@ public class ResponseCacheImpl implements ResponseCache {
      * If we do not do this, any cached user requests containing region keys will not be invalidated and will stick
      * around till expiry. Github issue: https://github.com/Netflix/eureka/issues/118
      */
-    private final Multimap<Key, Key> regionSpecificKeys =
-            Multimaps.newListMultimap(new ConcurrentHashMap<Key, Collection<Key>>(), new Supplier<List<Key>>() {
-                @Override
-                public List<Key> get() {
-                    return new CopyOnWriteArrayList<Key>();
-                }
-            });
+    private final Multimap<Key, Key> regionSpecificKeys = Multimaps.newListMultimap(new ConcurrentHashMap<Key, Collection<Key>>(), new Supplier<List<Key>>() {
+
+        @Override
+        public List<Key> get() {
+            return new CopyOnWriteArrayList<Key>();
+        }
+    });
 
     private final ConcurrentMap<Key, Value> readOnlyCacheMap = new ConcurrentHashMap<Key, Value>();
 
     private final LoadingCache<Key, Value> readWriteCacheMap;
+
     private final boolean shouldUseReadOnlyResponseCache;
+
     private final AbstractInstanceRegistry registry;
+
     private final EurekaServerConfig serverConfig;
+
     private final ServerCodecs serverCodecs;
 
     ResponseCacheImpl(EurekaServerConfig serverConfig, ServerCodecs serverCodecs, AbstractInstanceRegistry registry) {
@@ -125,40 +138,32 @@ public class ResponseCacheImpl implements ResponseCache {
         this.serverCodecs = serverCodecs;
         this.shouldUseReadOnlyResponseCache = serverConfig.shouldUseReadOnlyResponseCache();
         this.registry = registry;
-
         long responseCacheUpdateIntervalMs = serverConfig.getResponseCacheUpdateIntervalMs();
-        this.readWriteCacheMap =
-                CacheBuilder.newBuilder().initialCapacity(serverConfig.getInitialCapacityOfResponseCache())
-                        .expireAfterWrite(serverConfig.getResponseCacheAutoExpirationInSeconds(), TimeUnit.SECONDS)
-                        .removalListener(new RemovalListener<Key, Value>() {
-                            @Override
-                            public void onRemoval(RemovalNotification<Key, Value> notification) {
-                                Key removedKey = notification.getKey();
-                                if (removedKey.hasRegions()) {
-                                    Key cloneWithNoRegions = removedKey.cloneWithoutRegions();
-                                    regionSpecificKeys.remove(cloneWithNoRegions, removedKey);
-                                }
-                            }
-                        })
-                        .build(new CacheLoader<Key, Value>() {
-                            @Override
-                            public Value load(Key key) throws Exception {
-                                if (key.hasRegions()) {
-                                    Key cloneWithNoRegions = key.cloneWithoutRegions();
-                                    regionSpecificKeys.put(cloneWithNoRegions, key);
-                                }
-                                Value value = generatePayload(key);
-                                return value;
-                            }
-                        });
+        this.readWriteCacheMap = CacheBuilder.newBuilder().initialCapacity(serverConfig.getInitialCapacityOfResponseCache()).expireAfterWrite(serverConfig.getResponseCacheAutoExpirationInSeconds(), TimeUnit.SECONDS).removalListener(new RemovalListener<Key, Value>() {
 
+            @Override
+            public void onRemoval(RemovalNotification<Key, Value> notification) {
+                Key removedKey = notification.getKey();
+                if (removedKey.hasRegions()) {
+                    Key cloneWithNoRegions = removedKey.cloneWithoutRegions();
+                    regionSpecificKeys.remove(cloneWithNoRegions, removedKey);
+                }
+            }
+        }).build(new CacheLoader<Key, Value>() {
+
+            @Override
+            public Value load(Key key) throws Exception {
+                if (key.hasRegions()) {
+                    Key cloneWithNoRegions = key.cloneWithoutRegions();
+                    regionSpecificKeys.put(cloneWithNoRegions, key);
+                }
+                Value value = generatePayload(key);
+                return value;
+            }
+        });
         if (shouldUseReadOnlyResponseCache) {
-            timer.schedule(getCacheUpdateTask(),
-                    new Date(((System.currentTimeMillis() / responseCacheUpdateIntervalMs) * responseCacheUpdateIntervalMs)
-                            + responseCacheUpdateIntervalMs),
-                    responseCacheUpdateIntervalMs);
+            timer.schedule(getCacheUpdateTask(), new Date(((System.currentTimeMillis() / responseCacheUpdateIntervalMs) * responseCacheUpdateIntervalMs) + responseCacheUpdateIntervalMs), responseCacheUpdateIntervalMs);
         }
-
         try {
             Monitors.registerObject(this);
         } catch (Throwable e) {
@@ -168,13 +173,13 @@ public class ResponseCacheImpl implements ResponseCache {
 
     private TimerTask getCacheUpdateTask() {
         return new TimerTask() {
+
             @Override
             public void run() {
                 logger.debug("Updating the client cache from response cache");
                 for (Key key : readOnlyCacheMap.keySet()) {
                     if (logger.isDebugEnabled()) {
-                        logger.debug("Updating the client cache from response cache for key : {} {} {} {}",
-                                key.getEntityType(), key.getName(), key.getVersion(), key.getType());
+                        logger.debug("Updating the client cache from response cache for key : {} {} {} {}", key.getEntityType(), key.getName(), key.getVersion(), key.getType());
                     }
                     try {
                         CurrentRequestVersion.set(key.getVersion());
@@ -205,11 +210,13 @@ public class ResponseCacheImpl implements ResponseCache {
      * @param key the key for which the cached information needs to be obtained.
      * @return payload which contains information about the applications.
      */
+    @Nullable
     public String get(final Key key) {
         return get(key, shouldUseReadOnlyResponseCache);
     }
 
     @VisibleForTesting
+    @Nullable
     String get(final Key key, boolean useReadOnlyCache) {
         Value payload = getValue(key, useReadOnlyCache);
         if (payload == null || payload.getPayload().equals(EMPTY_PAYLOAD)) {
@@ -228,6 +235,7 @@ public class ResponseCacheImpl implements ResponseCache {
      * @return compressed payload which contains information about the
      *         applications.
      */
+    @Nullable
     public byte[] getGZIP(Key key) {
         Value payload = getValue(key, shouldUseReadOnlyResponseCache);
         if (payload == null) {
@@ -251,14 +259,7 @@ public class ResponseCacheImpl implements ResponseCache {
     public void invalidate(String appName, @Nullable String vipAddress, @Nullable String secureVipAddress) {
         for (Key.KeyType type : Key.KeyType.values()) {
             for (Version v : Version.values()) {
-                invalidate(
-                        new Key(Key.EntityType.Application, appName, type, v, EurekaAccept.full),
-                        new Key(Key.EntityType.Application, appName, type, v, EurekaAccept.compact),
-                        new Key(Key.EntityType.Application, ALL_APPS, type, v, EurekaAccept.full),
-                        new Key(Key.EntityType.Application, ALL_APPS, type, v, EurekaAccept.compact),
-                        new Key(Key.EntityType.Application, ALL_APPS_DELTA, type, v, EurekaAccept.full),
-                        new Key(Key.EntityType.Application, ALL_APPS_DELTA, type, v, EurekaAccept.compact)
-                );
+                invalidate(new Key(Key.EntityType.Application, appName, type, v, EurekaAccept.full), new Key(Key.EntityType.Application, appName, type, v, EurekaAccept.compact), new Key(Key.EntityType.Application, ALL_APPS, type, v, EurekaAccept.full), new Key(Key.EntityType.Application, ALL_APPS, type, v, EurekaAccept.compact), new Key(Key.EntityType.Application, ALL_APPS_DELTA, type, v, EurekaAccept.full), new Key(Key.EntityType.Application, ALL_APPS_DELTA, type, v, EurekaAccept.compact));
                 if (null != vipAddress) {
                     invalidate(new Key(Key.EntityType.VIP, vipAddress, type, v, EurekaAccept.full));
                 }
@@ -276,15 +277,12 @@ public class ResponseCacheImpl implements ResponseCache {
      */
     public void invalidate(Key... keys) {
         for (Key key : keys) {
-            logger.debug("Invalidating the response cache key : {} {} {} {}, {}",
-                    key.getEntityType(), key.getName(), key.getVersion(), key.getType(), key.getEurekaAccept());
-
+            logger.debug("Invalidating the response cache key : {} {} {} {}, {}", key.getEntityType(), key.getName(), key.getVersion(), key.getType(), key.getEurekaAccept());
             readWriteCacheMap.invalidate(key);
             Collection<Key> keysWithRegions = regionSpecificKeys.get(key);
             if (null != keysWithRegions && !keysWithRegions.isEmpty()) {
                 for (Key keysWithRegion : keysWithRegions) {
-                    logger.debug("Invalidating the response cache key : {} {} {} {} {}",
-                            key.getEntityType(), key.getName(), key.getVersion(), key.getType(), key.getEurekaAccept());
+                    logger.debug("Invalidating the response cache key : {} {} {} {} {}", key.getEntityType(), key.getName(), key.getVersion(), key.getType(), key.getEurekaAccept());
                     readWriteCacheMap.invalidate(keysWithRegion);
                 }
             }
@@ -349,6 +347,7 @@ public class ResponseCacheImpl implements ResponseCache {
      * Get the payload in both compressed and uncompressed form.
      */
     @VisibleForTesting
+    @Nullable
     Value getValue(final Key key, boolean useReadOnlyCache) {
         Value payload = null;
         try {
@@ -381,7 +380,7 @@ public class ResponseCacheImpl implements ResponseCache {
             logger.error("Failed to encode the payload for all apps", e);
             return "";
         }
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("New application cache entry {} with apps hashcode {}", key.toStringCompact(), apps.getAppsHashCode());
         }
         return result;
@@ -394,7 +393,6 @@ public class ResponseCacheImpl implements ResponseCache {
         if (app == null) {
             return EMPTY_PAYLOAD;
         }
-
         EncoderWrapper encoderWrapper = serverCodecs.getEncoder(key.getType(), key.getEurekaAccept());
         try {
             return encoderWrapper.encode(app);
@@ -411,10 +409,9 @@ public class ResponseCacheImpl implements ResponseCache {
         Stopwatch tracer = null;
         try {
             String payload;
-            switch (key.getEntityType()) {
+            switch(key.getEntityType()) {
                 case Application:
                     boolean isRemoteRegionRequested = key.hasRegions();
-
                     if (ALL_APPS.equals(key.getName())) {
                         if (isRemoteRegionRequested) {
                             tracer = serializeAllAppsWithRemoteRegionTimer.start();
@@ -428,8 +425,7 @@ public class ResponseCacheImpl implements ResponseCache {
                             tracer = serializeDeltaAppsWithRemoteRegionTimer.start();
                             versionDeltaWithRegions.incrementAndGet();
                             versionDeltaWithRegionsLegacy.incrementAndGet();
-                            payload = getPayLoad(key,
-                                    registry.getApplicationDeltasFromMultipleRegions(key.getRegions()));
+                            payload = getPayLoad(key, registry.getApplicationDeltasFromMultipleRegions(key.getRegions()));
                         } else {
                             tracer = serializeDeltaAppsTimer.start();
                             versionDelta.incrementAndGet();
@@ -460,9 +456,7 @@ public class ResponseCacheImpl implements ResponseCache {
     }
 
     private static Applications getApplicationsForVip(Key key, AbstractInstanceRegistry registry) {
-        logger.debug(
-                "Retrieving applications from registry for key : {} {} {} {}",
-                key.getEntityType(), key.getName(), key.getVersion(), key.getType());
+        logger.debug("Retrieving applications from registry for key : {} {} {} {}", key.getEntityType(), key.getName(), key.getVersion(), key.getType());
         Applications toReturn = new Applications();
         Applications applications = registry.getApplications();
         for (Application application : applications.getRegisteredApplications()) {
@@ -477,7 +471,6 @@ public class ResponseCacheImpl implements ResponseCache {
                     // should not happen, but just in case.
                     continue;
                 }
-
                 if (null != vipAddress) {
                     String[] vipAddresses = vipAddress.split(",");
                     Arrays.sort(vipAddresses);
@@ -492,19 +485,18 @@ public class ResponseCacheImpl implements ResponseCache {
             }
         }
         toReturn.setAppsHashCode(toReturn.getReconcileHashCode());
-        logger.debug(
-                "Retrieved applications from registry for key : {} {} {} {}, reconcile hashcode: {}",
-                key.getEntityType(), key.getName(), key.getVersion(), key.getType(),
-                toReturn.getReconcileHashCode());
+        logger.debug("Retrieved applications from registry for key : {} {} {} {}, reconcile hashcode: {}", key.getEntityType(), key.getName(), key.getVersion(), key.getType(), toReturn.getReconcileHashCode());
         return toReturn;
     }
 
     /**
      * The class that stores payload in both compressed and uncompressed form.
-     *
      */
     public class Value {
+
         private final String payload;
+
+        @Nullable
         private byte[] gzipped;
 
         public Value(String payload) {
@@ -537,10 +529,9 @@ public class ResponseCacheImpl implements ResponseCache {
             return payload;
         }
 
+        @Nullable
         public byte[] getGzipped() {
             return gzipped;
         }
-
     }
-
 }
