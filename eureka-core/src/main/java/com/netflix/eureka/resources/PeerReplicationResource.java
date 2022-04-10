@@ -13,16 +13,15 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.netflix.eureka.resources;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.EurekaServerContext;
 import com.netflix.eureka.EurekaServerConfig;
@@ -40,10 +39,9 @@ import org.slf4j.LoggerFactory;
  * A <em>jersey</em> resource that handles requests for replication purposes.
  *
  * @author Karthik Ranganathan
- *
  */
 @Path("/{version}/peerreplication")
-@Produces({"application/xml", "application/json"})
+@Produces({ "application/xml", "application/json" })
 public class PeerReplicationResource {
 
     private static final Logger logger = LoggerFactory.getLogger(PeerReplicationResource.class);
@@ -51,6 +49,7 @@ public class PeerReplicationResource {
     private static final String REPLICATION = "true";
 
     private final EurekaServerConfig serverConfig;
+
     private final PeerAwareInstanceRegistry registry;
 
     @Inject
@@ -85,8 +84,7 @@ public class PeerReplicationResource {
                     batchResponse.addResponse(dispatch(instanceInfo));
                 } catch (Exception e) {
                     batchResponse.addResponse(new ReplicationInstanceResponse(Status.INTERNAL_SERVER_ERROR.getStatusCode(), null));
-                    logger.error("{} request processing failed for batch item {}/{}",
-                            instanceInfo.getAction(), instanceInfo.getAppName(), instanceInfo.getId(), e);
+                    logger.error("{} request processing failed for batch item {}/{}", instanceInfo.getAction(), instanceInfo.getAppName(), instanceInfo.getId(), e);
                 }
             }
             return Response.ok(batchResponse).build();
@@ -99,13 +97,11 @@ public class PeerReplicationResource {
     private ReplicationInstanceResponse dispatch(ReplicationInstance instanceInfo) {
         ApplicationResource applicationResource = createApplicationResource(instanceInfo);
         InstanceResource resource = createInstanceResource(instanceInfo, applicationResource);
-
         String lastDirtyTimestamp = toString(instanceInfo.getLastDirtyTimestamp());
         String overriddenStatus = toString(instanceInfo.getOverriddenStatus());
         String instanceStatus = toString(instanceInfo.getStatus());
-
         Builder singleResponseBuilder = new Builder();
-        switch (instanceInfo.getAction()) {
+        switch(instanceInfo.getAction()) {
             case Register:
                 singleResponseBuilder = handleRegister(instanceInfo, applicationResource);
                 break;
@@ -125,12 +121,13 @@ public class PeerReplicationResource {
         return singleResponseBuilder.build();
     }
 
-    /* Visible for testing */ ApplicationResource createApplicationResource(ReplicationInstance instanceInfo) {
+    /* Visible for testing */
+    ApplicationResource createApplicationResource(ReplicationInstance instanceInfo) {
         return new ApplicationResource(instanceInfo.getAppName(), serverConfig, registry);
     }
 
-    /* Visible for testing */ InstanceResource createInstanceResource(ReplicationInstance instanceInfo,
-                                                                      ApplicationResource applicationResource) {
+    /* Visible for testing */
+    InstanceResource createInstanceResource(ReplicationInstance instanceInfo, ApplicationResource applicationResource) {
         return new InstanceResource(applicationResource, instanceInfo.getId(), serverConfig, registry);
     }
 
@@ -144,18 +141,16 @@ public class PeerReplicationResource {
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    private static Builder handleHeartbeat(EurekaServerConfig config, InstanceResource resource, String lastDirtyTimestamp, String overriddenStatus, String instanceStatus) {
+    private static Builder handleHeartbeat(EurekaServerConfig config, InstanceResource resource, @Nullable String lastDirtyTimestamp, @Nullable String overriddenStatus, @Nullable String instanceStatus) {
         Response response = resource.renewLease(REPLICATION, overriddenStatus, instanceStatus, lastDirtyTimestamp);
         int responseStatus = response.getStatus();
         Builder responseBuilder = new Builder().setStatusCode(responseStatus);
-
         if ("false".equals(config.getExperimental("bugfix.934"))) {
             if (responseStatus == Status.OK.getStatusCode() && response.getEntity() != null) {
                 responseBuilder.setResponseEntity((InstanceInfo) response.getEntity());
             }
         } else {
-            if ((responseStatus == Status.OK.getStatusCode() || responseStatus == Status.CONFLICT.getStatusCode())
-                    && response.getEntity() != null) {
+            if ((responseStatus == Status.OK.getStatusCode() || responseStatus == Status.CONFLICT.getStatusCode()) && response.getEntity() != null) {
                 responseBuilder.setResponseEntity((InstanceInfo) response.getEntity());
             }
         }
@@ -168,12 +163,12 @@ public class PeerReplicationResource {
     }
 
     private static Builder handleDeleteStatusOverride(ReplicationInstance instanceInfo, InstanceResource resource) {
-        Response response = resource.deleteStatusUpdate(REPLICATION, instanceInfo.getStatus(),
-                instanceInfo.getLastDirtyTimestamp().toString());
+        Response response = resource.deleteStatusUpdate(REPLICATION, instanceInfo.getStatus(), instanceInfo.getLastDirtyTimestamp().toString());
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    private static <T> String toString(T value) {
+    @Nullable
+    private static <T> String toString(@Nullable T value) {
         if (value == null) {
             return null;
         }
