@@ -13,14 +13,11 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-
 package com.netflix.eureka;
 
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nullable;
-
 import com.netflix.eureka.aws.AwsBindingStrategy;
 
 /**
@@ -35,7 +32,6 @@ import com.netflix.eureka.aws.AwsBindingStrategy;
  * </p>
  *
  * @author Karthik Ranganathan
- *
  */
 public interface EurekaServerConfig {
 
@@ -46,6 +42,7 @@ public interface EurekaServerConfig {
      *
      * @return
      */
+    @Nullable
     String getAWSAccessId();
 
     /**
@@ -55,6 +52,7 @@ public interface EurekaServerConfig {
      *
      * @return
      */
+    @Nullable
     String getAWSSecretKey();
 
     /**
@@ -492,7 +490,6 @@ public interface EurekaServerConfig {
      *
      * @return total number of allowed <em>HTTP</em> connections.
      */
-
     int getRemoteRegionTotalConnections();
 
     /**
@@ -535,6 +532,7 @@ public interface EurekaServerConfig {
      * @return - array of string representing {@link java.net.URL}s.
      * @deprecated Use {@link #getRemoteRegionUrlsWithName()}
      */
+    @Nullable
     String[] getRemoteRegionUrls();
 
     /**
@@ -662,7 +660,6 @@ public interface EurekaServerConfig {
     AwsBindingStrategy getBindingStrategy();
 
     /**
-     *
      * @return the ttl used to set up the route53 domain if new
      */
     long getRoute53DomainTTL();
