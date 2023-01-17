@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.cluster.protocol.ReplicationInstance.ReplicationInstanceBuilder.aReplicationInstance;
+import javax.annotation.Nullable;
 
 /**
  * @author Tomasz Bak
@@ -113,7 +114,7 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
      * 20 threads * 100ms delay == 200 error entries / sec worst case
      * Still we would like to see the exception samples, so we print samples at regular intervals.
      */
-    private void logNetworkErrorSample(ReplicationTask task, Throwable e) {
+    private void logNetworkErrorSample(@Nullable ReplicationTask task, Throwable e) {
         long now = System.currentTimeMillis();
         if (now - lastNetworkErrorTime > 10000) {
             lastNetworkErrorTime = now;

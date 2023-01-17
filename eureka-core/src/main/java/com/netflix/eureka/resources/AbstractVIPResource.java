@@ -27,6 +27,7 @@ import com.netflix.eureka.registry.ResponseCache;
 import com.netflix.eureka.registry.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Abstract class for the common functionality of a VIP/SVIP resource.
