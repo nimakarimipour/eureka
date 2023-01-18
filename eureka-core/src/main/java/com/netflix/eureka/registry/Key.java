@@ -20,7 +20,7 @@ public class Key {
     }
 
     private final String entityName;
-    private final String[] regions;
+    @Nullable private final String[] regions;
     private final KeyType requestType;
     private final Version requestVersion;
     private final String hashKey;

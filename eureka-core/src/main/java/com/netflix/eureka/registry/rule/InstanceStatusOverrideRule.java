@@ -3,6 +3,7 @@ package com.netflix.eureka.registry.rule;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
 import com.netflix.eureka.registry.AbstractInstanceRegistry;
+import javax.annotation.Nullable;
 
 /**
  * A single rule that if matched it returns an instance status.

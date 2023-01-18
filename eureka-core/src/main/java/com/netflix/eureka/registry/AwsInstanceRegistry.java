@@ -31,6 +31,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.annotation.Nullable;
 
 /**
  * Override some methods with aws specific use cases.
