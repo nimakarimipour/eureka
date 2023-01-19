@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry operations that needs to be done on a eureka service running in an other region.
@@ -482,7 +483,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         logger.debug("The total number of all instances in the client now is {}", totInstances);
     }
 
-    @Override
+    @NullUnmarked @Override
     public Applications getApplications() {
         return applications.get();
     }
@@ -492,12 +493,12 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return null;
     }
 
-    @Override
+    @NullUnmarked @Override
     public Application getApplication(String appName) {
         return this.applications.get().getRegisteredApplications(appName);
     }
 
-    @Override
+    @NullUnmarked @Override
     public List<InstanceInfo> getInstancesById(String id) {
         List<InstanceInfo> list = new ArrayList<>(1);
 

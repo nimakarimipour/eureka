@@ -32,6 +32,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Override some methods with aws specific use cases.
@@ -64,7 +65,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
                 new LeaseExistsRule());
     }
 
-    @Override
+    @NullUnmarked @Override
     protected InstanceStatusOverrideRule getInstanceInfoOverrideRule() {
         return this.instanceStatusOverrideRule;
     }

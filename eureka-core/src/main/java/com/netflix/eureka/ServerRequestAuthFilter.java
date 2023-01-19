@@ -16,6 +16,7 @@ import com.netflix.appinfo.AbstractEurekaIdentity;
 import com.netflix.servo.monitor.DynamicCounter;
 import com.netflix.servo.monitor.MonitorConfig;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * An auth filter for client requests. For now, it only logs supported client identification data from header info
@@ -58,7 +59,7 @@ public class ServerRequestAuthFilter implements Filter {
         // nothing to do here
     }
 
-    protected void logAuth(ServletRequest request) {
+    @NullUnmarked protected void logAuth(ServletRequest request) {
         if (serverConfig.shouldLogIdentityHeaders()) {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;

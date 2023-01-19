@@ -5,6 +5,7 @@ import com.netflix.eureka.lease.Lease;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * This rule matches if we have an existing lease for the instance that is UP or OUT_OF_SERVICE.
@@ -15,7 +16,7 @@ public class LeaseExistsRule implements InstanceStatusOverrideRule {
 
     private static final Logger logger = LoggerFactory.getLogger(LeaseExistsRule.class);
 
-    @Override
+    @NullUnmarked @Override
     public StatusOverrideResult apply(InstanceInfo instanceInfo,
                                       @Nullable Lease<InstanceInfo> existingLease,
                                       boolean isReplication) {

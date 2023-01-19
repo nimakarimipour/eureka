@@ -25,6 +25,7 @@ import com.netflix.eureka.transport.JerseyReplicationClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Helper class to manage lifecycle of a collection of {@link PeerEurekaNode}s.
@@ -111,7 +112,7 @@ public class PeerEurekaNodes {
         }
     }
 
-    public void shutdown() {
+    @NullUnmarked public void shutdown() {
         taskExecutor.shutdown();
         List<PeerEurekaNode> toRemove = this.peerEurekaNodes;
 

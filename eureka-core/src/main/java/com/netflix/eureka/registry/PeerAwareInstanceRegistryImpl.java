@@ -62,6 +62,7 @@ import javax.inject.Singleton;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer
@@ -120,7 +121,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     private final MeasuredRate numberOfReplicationsLastMin;
 
     protected final EurekaClient eurekaClient;
-    protected volatile PeerEurekaNodes peerEurekaNodes;
+    @SuppressWarnings("NullAway.Init") protected volatile PeerEurekaNodes peerEurekaNodes;
 
     private final InstanceStatusOverrideRule instanceStatusOverrideRule;
 
@@ -657,7 +658,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * replication traffic to this node.
      *
      */
-    private void replicateInstanceActionsToPeers(Action action, String appName,
+    @NullUnmarked private void replicateInstanceActionsToPeers(Action action, String appName,
                                                  String id, @Nullable InstanceInfo info, @Nullable InstanceStatus newStatus,
                                                  PeerEurekaNode node) {
         try {

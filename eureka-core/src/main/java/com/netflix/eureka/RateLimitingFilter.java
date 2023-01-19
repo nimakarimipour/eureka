@@ -108,7 +108,7 @@ public class RateLimitingFilter implements Filter {
      */
     private static final RateLimiter registryFullFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
 
-    private EurekaServerConfig serverConfig;
+    @SuppressWarnings("NullAway.Init") private EurekaServerConfig serverConfig;
 
     @Inject
     public RateLimitingFilter(EurekaServerContext server) {
