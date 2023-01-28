@@ -4,6 +4,7 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * This rule matches if the instance is DOWN or STARTING.
@@ -15,7 +16,7 @@ public class DownOrStartingRule implements InstanceStatusOverrideRule {
 
     @Override
     public StatusOverrideResult apply(InstanceInfo instanceInfo,
-                                      Lease<InstanceInfo> existingLease,
+                                      @Nullable Lease<InstanceInfo> existingLease,
                                       boolean isReplication) {
         // ReplicationInstance is DOWN or STARTING - believe that, but when the instance says UP, question that
         // The client instance sends STARTING or DOWN (because of heartbeat failures), then we accept what
