@@ -9,6 +9,7 @@ import com.netflix.eureka.registry.Key;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.annotation.Nullable;
 
 /**
  * @author David Liu
@@ -99,11 +100,11 @@ public class DefaultServerCodecs implements ServerCodecs {
     }
 
     public static class Builder {
-        protected CodecWrapper fullJsonCodec;
-        protected CodecWrapper compactJsonCodec;
+        @Nullable protected CodecWrapper fullJsonCodec;
+        @Nullable protected CodecWrapper compactJsonCodec;
 
-        protected CodecWrapper fullXmlCodec;
-        protected CodecWrapper compactXmlCodec;
+        @Nullable protected CodecWrapper fullXmlCodec;
+        @Nullable protected CodecWrapper compactXmlCodec;
 
         protected Builder() {}
 

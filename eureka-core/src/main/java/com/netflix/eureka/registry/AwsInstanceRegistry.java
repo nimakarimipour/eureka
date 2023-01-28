@@ -31,6 +31,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.annotation.Nullable;
 
 /**
  * Override some methods with aws specific use cases.
@@ -40,9 +41,9 @@ import javax.inject.Singleton;
 @Singleton
 public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
 
-    private AwsAsgUtil awsAsgUtil;
+    @Nullable private AwsAsgUtil awsAsgUtil;
 
-    private InstanceStatusOverrideRule instanceStatusOverrideRule;
+    @Nullable private InstanceStatusOverrideRule instanceStatusOverrideRule;
 
     @Inject
     public AwsInstanceRegistry(EurekaServerConfig serverConfig,
@@ -68,7 +69,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
         return this.instanceStatusOverrideRule;
     }
 
-    public AwsAsgUtil getAwsAsgUtil() {
+    @Nullable public AwsAsgUtil getAwsAsgUtil() {
         return awsAsgUtil;
     }
 }
