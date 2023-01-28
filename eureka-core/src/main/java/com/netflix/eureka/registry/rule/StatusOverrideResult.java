@@ -2,6 +2,7 @@ package com.netflix.eureka.registry.rule;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
+import javax.annotation.Nullable;
 
 /**
  * Container for a result computed by an {@link InstanceStatusOverrideRule}.
@@ -20,9 +21,9 @@ public class StatusOverrideResult {
     private final boolean matches;
 
     // The status computed by the rule.
-    private final InstanceInfo.InstanceStatus status;
+    @Nullable private final InstanceInfo.InstanceStatus status;
 
-    private StatusOverrideResult(boolean matches, InstanceInfo.InstanceStatus status) {
+    private StatusOverrideResult(boolean matches, @Nullable InstanceInfo.InstanceStatus status) {
         this.matches = matches;
         this.status = status;
     }
@@ -31,7 +32,7 @@ public class StatusOverrideResult {
         return matches;
     }
 
-    public InstanceInfo.InstanceStatus status() {
+    @Nullable public InstanceInfo.InstanceStatus status() {
         return status;
     }
 }

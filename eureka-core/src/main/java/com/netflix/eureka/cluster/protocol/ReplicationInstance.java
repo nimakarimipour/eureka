@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
+import javax.annotation.Nullable;
 
 /**
  * The jersey resource class that generates a particular replication event
@@ -12,8 +13,8 @@ public class ReplicationInstance {
     private String appName;
     private String id;
     private Long lastDirtyTimestamp;
-    private String overriddenStatus;
-    private String status;
+    @Nullable private String overriddenStatus;
+    @Nullable private String status;
     private InstanceInfo instanceInfo;
     private Action action;
 
@@ -21,8 +22,8 @@ public class ReplicationInstance {
     public ReplicationInstance(@JsonProperty("appName") String appName,
                                @JsonProperty("id") String id,
                                @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
-                               @JsonProperty("overriddenStatus") String overriddenStatus,
-                               @JsonProperty("status") String status,
+                               @Nullable @JsonProperty("overriddenStatus") String overriddenStatus,
+                               @Nullable @JsonProperty("status") String status,
                                @JsonProperty("instanceInfo") InstanceInfo instanceInfo,
                                @JsonProperty("action") Action action) {
         this.appName = appName;
@@ -46,11 +47,11 @@ public class ReplicationInstance {
         return lastDirtyTimestamp;
     }
 
-    public String getOverriddenStatus() {
+    @Nullable public String getOverriddenStatus() {
         return overriddenStatus;
     }
 
-    public String getStatus() {
+    @Nullable public String getStatus() {
         return status;
     }
 
@@ -107,8 +108,8 @@ public class ReplicationInstance {
         private String appName;
         private String id;
         private Long lastDirtyTimestamp;
-        private String overriddenStatus;
-        private String status;
+        @Nullable private String overriddenStatus;
+        @Nullable private String status;
         private InstanceInfo instanceInfo;
         private Action action;
 
@@ -134,12 +135,12 @@ public class ReplicationInstance {
             return this;
         }
 
-        public ReplicationInstanceBuilder withOverriddenStatus(String overriddenStatus) {
+        public ReplicationInstanceBuilder withOverriddenStatus(@Nullable String overriddenStatus) {
             this.overriddenStatus = overriddenStatus;
             return this;
         }
 
-        public ReplicationInstanceBuilder withStatus(String status) {
+        public ReplicationInstanceBuilder withStatus(@Nullable String status) {
             this.status = status;
             return this;
         }
