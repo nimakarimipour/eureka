@@ -4,6 +4,7 @@ import com.netflix.discovery.shared.transport.EurekaHttpResponse;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Base class for all replication tasks.
@@ -31,7 +32,7 @@ abstract class ReplicationTask {
     public void handleSuccess() {
     }
 
-    public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+    public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
         logger.warn("The replication of task {} failed with response code {}", getTaskName(), statusCode);
     }
 }

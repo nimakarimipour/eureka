@@ -41,6 +41,7 @@ import com.netflix.eureka.registry.Key;
 import com.netflix.eureka.util.EurekaMonitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A <em>jersey</em> resource that handles request related to a particular
@@ -56,9 +57,9 @@ public class ApplicationResource {
     private final String appName;
     private final EurekaServerConfig serverConfig;
     private final PeerAwareInstanceRegistry registry;
-    private final ResponseCache responseCache;
+    @Nullable private final ResponseCache responseCache;
 
-    ApplicationResource(String appName,
+    ApplicationResource(@Nullable String appName,
                         EurekaServerConfig serverConfig,
                         PeerAwareInstanceRegistry registry) {
         this.appName = appName.toUpperCase();
@@ -142,7 +143,7 @@ public class ApplicationResource {
      */
     @POST
     @Consumes({"application/json", "application/xml"})
-    public Response addInstance(InstanceInfo info,
+    public Response addInstance(@Nullable InstanceInfo info,
                                 @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication) {
         logger.debug("Registering instance {} (replication={})", info.getId(), isReplication);
         // validate that the instanceinfo contains all the necessary required fields

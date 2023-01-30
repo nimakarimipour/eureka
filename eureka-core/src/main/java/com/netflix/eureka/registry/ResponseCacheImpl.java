@@ -205,11 +205,11 @@ public class ResponseCacheImpl implements ResponseCache {
      * @param key the key for which the cached information needs to be obtained.
      * @return payload which contains information about the applications.
      */
-    public String get(final Key key) {
+    @Nullable public String get(final Key key) {
         return get(key, shouldUseReadOnlyResponseCache);
     }
 
-    @VisibleForTesting
+    @Nullable @VisibleForTesting
     String get(final Key key, boolean useReadOnlyCache) {
         Value payload = getValue(key, useReadOnlyCache);
         if (payload == null || payload.getPayload().equals(EMPTY_PAYLOAD)) {
@@ -228,7 +228,7 @@ public class ResponseCacheImpl implements ResponseCache {
      * @return compressed payload which contains information about the
      *         applications.
      */
-    public byte[] getGZIP(Key key) {
+    @Nullable public byte[] getGZIP(Key key) {
         Value payload = getValue(key, shouldUseReadOnlyResponseCache);
         if (payload == null) {
             return null;
@@ -348,7 +348,7 @@ public class ResponseCacheImpl implements ResponseCache {
     /**
      * Get the payload in both compressed and uncompressed form.
      */
-    @VisibleForTesting
+    @Nullable @VisibleForTesting
     Value getValue(final Key key, boolean useReadOnlyCache) {
         Value payload = null;
         try {
@@ -390,7 +390,7 @@ public class ResponseCacheImpl implements ResponseCache {
     /**
      * Generate pay load with both JSON and XML formats for a given application.
      */
-    private String getPayLoad(Key key, Application app) {
+    private String getPayLoad(Key key, @Nullable Application app) {
         if (app == null) {
             return EMPTY_PAYLOAD;
         }
@@ -505,7 +505,7 @@ public class ResponseCacheImpl implements ResponseCache {
      */
     public class Value {
         private final String payload;
-        private byte[] gzipped;
+        @Nullable private byte[] gzipped;
 
         public Value(String payload) {
             this.payload = payload;
@@ -537,7 +537,7 @@ public class ResponseCacheImpl implements ResponseCache {
             return payload;
         }
 
-        public byte[] getGzipped() {
+        @Nullable public byte[] getGzipped() {
             return gzipped;
         }
 

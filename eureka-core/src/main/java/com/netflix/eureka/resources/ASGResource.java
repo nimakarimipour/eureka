@@ -33,6 +33,7 @@ import com.netflix.eureka.registry.AwsInstanceRegistry;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A <em>jersey</em> resource for handling updates to {@link ASGStatus}.
@@ -75,7 +76,7 @@ public class ASGResource {
     }
 
     protected final PeerAwareInstanceRegistry registry;
-    protected final AwsAsgUtil awsAsgUtil;
+    @Nullable protected final AwsAsgUtil awsAsgUtil;
 
     @Inject
     ASGResource(EurekaServerContext eurekaServer) {

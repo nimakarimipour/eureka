@@ -108,7 +108,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     protected final EurekaServerConfig serverConfig;
     protected final EurekaClientConfig clientConfig;
     protected final ServerCodecs serverCodecs;
-    protected volatile ResponseCache responseCache;
+    @Nullable protected volatile ResponseCache responseCache;
 
     /**
      * Create a new, empty instance registry.
@@ -154,7 +154,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
                 (Object) allKnownRemoteRegions);
     }
 
-    @Override
+    @Nullable @Override
     public ResponseCache getResponseCache() {
         return responseCache;
     }
@@ -285,7 +285,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return true if the instance was removed from the {@link AbstractInstanceRegistry} successfully, false otherwise.
      */
     @Override
-    public boolean cancel(String appName, String id, boolean isReplication) {
+    public boolean cancel(String appName, @Nullable String id, boolean isReplication) {
         return internalCancel(appName, id, isReplication);
     }
 
@@ -294,7 +294,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * cancel request is replicated to the peers. This is however not desired for expires which would be counted
      * in the remote peers as valid cancellations, so self preservation mode would not kick-in.
      */
-    protected boolean internalCancel(String appName, String id, boolean isReplication) {
+    protected boolean internalCancel(String appName, @Nullable String id, boolean isReplication) {
         read.lock();
         try {
             CANCEL.increment(isReplication);
@@ -348,7 +348,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *
      * @see com.netflix.eureka.lease.LeaseManager#renew(java.lang.String, java.lang.String, boolean)
      */
-    public boolean renew(String appName, String id, boolean isReplication) {
+    public boolean renew(String appName, @Nullable String id, boolean isReplication) {
         RENEW.increment(isReplication);
         Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
         Lease<InstanceInfo> leaseToRenew = null;
@@ -429,7 +429,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @param overriddenStatus overridden status if any.
      */
     @Override
-    public void storeOverriddenStatusIfRequired(String appName, String id, InstanceStatus overriddenStatus) {
+    public void storeOverriddenStatusIfRequired(String appName, @Nullable String id, InstanceStatus overriddenStatus) {
         InstanceStatus instanceStatus = overriddenInstanceStatusMap.get(id);
         if ((instanceStatus == null) || (!overriddenStatus.equals(instanceStatus))) {
             // We might not have the overridden status if the server got
@@ -459,8 +459,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return true if the status was successfully updated, false otherwise.
      */
     @Override
-    public boolean statusUpdate(String appName, String id,
-                                InstanceStatus newStatus, String lastDirtyTimestamp,
+    public boolean statusUpdate(String appName, @Nullable String id,
+                                InstanceStatus newStatus, @Nullable String lastDirtyTimestamp,
                                 boolean isReplication) {
         read.lock();
         try {
@@ -524,7 +524,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return true if the status was successfully updated, false otherwise.
      */
     @Override
-    public boolean deleteStatusOverride(String appName, String id,
+    public boolean deleteStatusOverride(String appName, @Nullable String id,
                                         InstanceStatus newStatus,
                                         String lastDirtyTimestamp,
                                         boolean isReplication) {
@@ -643,7 +643,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *
      * @see com.netflix.discovery.shared.LookupService#getApplication(java.lang.String)
      */
-    @Override
+    @Nullable @Override
     public Application getApplication(String appName) {
         boolean disableTransparentFallback = serverConfig.disableTransparentFallbackToOtherRegion();
         return this.getApplication(appName, !disableTransparentFallback);
@@ -658,7 +658,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                            {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the application
      */
-    @Override
+    @Nullable @Override
     public Application getApplication(String appName, boolean includeRemoteRegion) {
         Application app = null;
 
@@ -732,7 +732,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return The applications with instances from the passed remote regions as well as local region. The instances
      * from remote regions can be only for certain whitelisted apps as explained above.
      */
-    public Applications getApplicationsFromMultipleRegions(String[] remoteRegions) {
+    public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
 
         boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -938,7 +938,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * from remote regions can be further be restricted as explained above. <code>null</code> if the application does
      * not exist locally or in remote regions.
      */
-    public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegions) {
+    public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
         if (null == remoteRegions) {
             remoteRegions = allKnownRemoteRegions; // null means all remote regions.
         }
@@ -1011,8 +1011,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @param id the unique identifier of the instance.
      * @return the information about the instance.
      */
-    @Override
-    public InstanceInfo getInstanceByAppAndId(String appName, String id) {
+    @Nullable @Override
+    public InstanceInfo getInstanceByAppAndId(String appName, @Nullable String id) {
         return this.getInstanceByAppAndId(appName, id, true);
     }
 
@@ -1026,8 +1026,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                             {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the information about the instance.
      */
-    @Override
-    public InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions) {
+    @Nullable @Override
+    public InstanceInfo getInstanceByAppAndId(String appName, @Nullable String id, boolean includeRemoteRegions) {
         Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
         Lease<InstanceInfo> lease = null;
         if (leaseMap != null) {
@@ -1327,10 +1327,10 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     /**
      * @return The rule that will process the instance status override.
      */
-    protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
+    @Nullable protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-    protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
-                                                                    Lease<InstanceInfo> existingLease,
+    @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
+                                                                    @Nullable Lease<InstanceInfo> existingLease,
                                                                     boolean isReplication) {
         InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
         logger.debug("Processing override status using rule: {}", rule);

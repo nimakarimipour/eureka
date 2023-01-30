@@ -40,6 +40,7 @@ import com.netflix.eureka.util.EurekaMonitors;
 import com.netflix.discovery.util.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Rate limiting filter, with configurable threshold above which non-privileged clients
@@ -107,7 +108,7 @@ public class RateLimitingFilter implements Filter {
      */
     private static final RateLimiter registryFullFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
 
-    private EurekaServerConfig serverConfig;
+    @Nullable private EurekaServerConfig serverConfig;
 
     @Inject
     public RateLimitingFilter(EurekaServerContext server) {

@@ -17,6 +17,7 @@
 package com.netflix.eureka.lease;
 
 import com.netflix.eureka.registry.AbstractInstanceRegistry;
+import javax.annotation.Nullable;
 
 /**
  * This class is responsible for creating/renewing and evicting a <em>lease</em>
@@ -58,7 +59,7 @@ public interface LeaseManager<T> {
      *            - whether this is a replicated entry from another eureka node.
      * @return true, if the operation was successful, false otherwise.
      */
-    boolean cancel(String appName, String id, boolean isReplication);
+    boolean cancel(String appName, @Nullable String id, boolean isReplication);
 
     /**
      * Renew the {@link Lease} associated w/ the passed in <code>appName</code>
@@ -70,7 +71,7 @@ public interface LeaseManager<T> {
      *            - whether this is a replicated entry from another ds node
      * @return whether the operation of successful
      */
-    boolean renew(String appName, String id, boolean isReplication);
+    boolean renew(String appName, @Nullable String id, boolean isReplication);
 
     /**
      * Evict {@link T}s with expired {@link Lease}(s).
