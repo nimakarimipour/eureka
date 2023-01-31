@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * The jersey resource class that generates a particular replication event
@@ -105,15 +106,15 @@ public class ReplicationInstance {
     }
 
     public static class ReplicationInstanceBuilder {
-        private String appName;
-        private String id;
-        private Long lastDirtyTimestamp;
+        @SuppressWarnings("NullAway.Init") private String appName;
+        @SuppressWarnings("NullAway.Init") private String id;
+        @SuppressWarnings("NullAway.Init") private Long lastDirtyTimestamp;
         @Nullable private String overriddenStatus;
         @Nullable private String status;
-        private InstanceInfo instanceInfo;
-        private Action action;
+        @SuppressWarnings("NullAway.Init") private InstanceInfo instanceInfo;
+        @SuppressWarnings("NullAway.Init") private Action action;
 
-        private ReplicationInstanceBuilder() {
+        @NullUnmarked private ReplicationInstanceBuilder() {
         }
 
         public static ReplicationInstanceBuilder aReplicationInstance() {

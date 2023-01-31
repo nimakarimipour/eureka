@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.util.EurekaMonitors.*;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry requests from eureka clients.
@@ -108,7 +109,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     protected final EurekaServerConfig serverConfig;
     protected final EurekaClientConfig clientConfig;
     protected final ServerCodecs serverCodecs;
-    protected volatile ResponseCache responseCache;
+    @SuppressWarnings("NullAway.Init") protected volatile ResponseCache responseCache;
 
     /**
      * Create a new, empty instance registry.
@@ -348,7 +349,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *
      * @see com.netflix.eureka.lease.LeaseManager#renew(java.lang.String, java.lang.String, boolean)
      */
-    public boolean renew(String appName, String id, boolean isReplication) {
+    @NullUnmarked public boolean renew(String appName, String id, boolean isReplication) {
         RENEW.increment(isReplication);
         Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
         Lease<InstanceInfo> leaseToRenew = null;
@@ -732,7 +733,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return The applications with instances from the passed remote regions as well as local region. The instances
      * from remote regions can be only for certain whitelisted apps as explained above.
      */
-    public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
+    @NullUnmarked public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
 
         boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -868,7 +869,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * flawed behavior of transparently falling back to a remote region if no instances for an app is available locally.
      * The new behavior is to explicitly specify if you need a remote region.
      */
-    @Deprecated
+    @NullUnmarked @Deprecated
     public Applications getApplicationDeltas() {
         GET_ALL_CACHE_MISS_DELTA.increment();
         Applications apps = new Applications();
@@ -1026,7 +1027,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                             {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the information about the instance.
      */
-    @Override
+    @NullUnmarked @Override
     public InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions) {
         Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
         Lease<InstanceInfo> lease = null;
