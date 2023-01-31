@@ -34,6 +34,7 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A <em>jersey</em> resource for handling updates to {@link ASGStatus}.
@@ -88,7 +89,7 @@ public class ASGResource {
         }
     }
 
-    public ASGResource() {
+    @NullUnmarked public ASGResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 

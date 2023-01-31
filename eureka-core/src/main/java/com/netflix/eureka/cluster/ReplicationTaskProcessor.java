@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.cluster.protocol.ReplicationInstance.ReplicationInstanceBuilder.aReplicationInstance;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * @author Tomasz Bak
@@ -191,7 +192,7 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
      *            The exception for which the information needs to be found.
      * @return true, if it may be a socket read time out exception.
      */
-    private static boolean maybeReadTimeOut(Throwable e) {
+    @NullUnmarked private static boolean maybeReadTimeOut(Throwable e) {
         do {
             if (IOException.class.isInstance(e)) {
             	String message = e.getMessage().toLowerCase();

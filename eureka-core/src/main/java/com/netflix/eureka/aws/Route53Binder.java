@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Route53 binder implementation. Will look for a free domain in the list of service url to bind itself to via Route53.
@@ -107,7 +108,7 @@ public class Route53Binder implements AwsBinder {
         }
     }
 
-    private void doBind() throws InterruptedException {
+    @NullUnmarked private void doBind() throws InterruptedException {
         List<ResourceRecordSetWithHostedZone> freeDomains = new ArrayList<>();
         List<String> domains = getDeclaredDomains();
         for(String domain : domains) {
@@ -141,7 +142,7 @@ public class Route53Binder implements AwsBinder {
 
     }
 
-    private boolean createResourceRecordSet(ResourceRecordSetWithHostedZone rrs) throws InterruptedException {
+    @NullUnmarked private boolean createResourceRecordSet(ResourceRecordSetWithHostedZone rrs) throws InterruptedException {
         rrs.getResourceRecordSet().setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
         Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
         if (executeChangeWithRetry(change, rrs.getHostedZone())) {
@@ -251,7 +252,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private void unbindFromDomain(String domain) throws InterruptedException {
+    @NullUnmarked private void unbindFromDomain(String domain) throws InterruptedException {
         ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone = getResourceRecordSetWithHostedZone(domain);
         if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
             resourceRecordSetWithHostedZone.getResourceRecordSet().getResourceRecords().get(0).setValue(NULL_DOMAIN);

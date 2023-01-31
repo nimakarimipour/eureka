@@ -13,6 +13,7 @@ import com.netflix.discovery.provider.Serializer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * An utility class for exposing status information of an instance.
@@ -103,7 +104,7 @@ public class StatusInfo {
         return instanceInfo;
     }
 
-    public boolean isHealthy() {
+    @NullUnmarked public boolean isHealthy() {
         return isHeathly.booleanValue();
     }
 

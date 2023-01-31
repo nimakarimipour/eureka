@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.util.EurekaMonitors.*;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry requests from eureka clients.
@@ -348,7 +349,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *
      * @see com.netflix.eureka.lease.LeaseManager#renew(java.lang.String, java.lang.String, boolean)
      */
-    public boolean renew(String appName, @Nullable String id, boolean isReplication) {
+    @NullUnmarked public boolean renew(String appName, @Nullable String id, boolean isReplication) {
         RENEW.increment(isReplication);
         Map<String, Lease<InstanceInfo>> gMap = registry.get(appName);
         Lease<InstanceInfo> leaseToRenew = null;
@@ -428,7 +429,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @param id the unique identifier of the instance.
      * @param overriddenStatus overridden status if any.
      */
-    @Override
+    @NullUnmarked @Override
     public void storeOverriddenStatusIfRequired(String appName, @Nullable String id, InstanceStatus overriddenStatus) {
         InstanceStatus instanceStatus = overriddenInstanceStatusMap.get(id);
         if ((instanceStatus == null) || (!overriddenStatus.equals(instanceStatus))) {
@@ -732,7 +733,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return The applications with instances from the passed remote regions as well as local region. The instances
      * from remote regions can be only for certain whitelisted apps as explained above.
      */
-    public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
+    @NullUnmarked public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
 
         boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -815,7 +816,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * of transparently falling back to a remote region if no instances for an app is available locally. The new
      * behavior is to explicitly specify if you need a remote region.
      */
-    @Deprecated
+    @NullUnmarked @Deprecated
     public Applications getApplications(boolean includeRemoteRegion) {
         GET_ALL_CACHE_MISS.increment();
         Applications apps = new Applications();
@@ -868,7 +869,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * flawed behavior of transparently falling back to a remote region if no instances for an app is available locally.
      * The new behavior is to explicitly specify if you need a remote region.
      */
-    @Deprecated
+    @NullUnmarked @Deprecated
     public Applications getApplicationDeltas() {
         GET_ALL_CACHE_MISS_DELTA.increment();
         Applications apps = new Applications();
@@ -938,7 +939,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * from remote regions can be further be restricted as explained above. <code>null</code> if the application does
      * not exist locally or in remote regions.
      */
-    public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
+    @NullUnmarked public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
         if (null == remoteRegions) {
             remoteRegions = allKnownRemoteRegions; // null means all remote regions.
         }
@@ -1070,7 +1071,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                             {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return list of InstanceInfo objects.
      */
-    @Deprecated
+    @NullUnmarked @Deprecated
     public List<InstanceInfo> getInstancesById(String id, boolean includeRemoteRegions) {
         List<InstanceInfo> list = new ArrayList<>();
 
@@ -1180,7 +1181,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         return list;
     }
 
-    private void invalidateCache(String appName, @Nullable String vipAddress, @Nullable String secureVipAddress) {
+    @NullUnmarked private void invalidateCache(String appName, @Nullable String vipAddress, @Nullable String secureVipAddress) {
         // invalidate cache
         responseCache.invalidate(appName, vipAddress, secureVipAddress);
     }
@@ -1223,7 +1224,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     /**
      * Perform all cleanup and shutdown operations.
      */
-    @Override
+    @NullUnmarked @Override
     public void shutdown() {
         deltaRetentionTimer.cancel();
         evictionTimer.cancel();
@@ -1329,7 +1330,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      */
     @Nullable protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-    @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
+    @NullUnmarked @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
                                                                     @Nullable Lease<InstanceInfo> existingLease,
                                                                     boolean isReplication) {
         InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();

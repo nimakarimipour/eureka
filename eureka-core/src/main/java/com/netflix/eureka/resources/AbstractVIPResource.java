@@ -28,6 +28,7 @@ import com.netflix.eureka.registry.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Abstract class for the common functionality of a VIP/SVIP resource.
@@ -46,11 +47,11 @@ abstract class AbstractVIPResource {
         this.responseCache = registry.getResponseCache();
     }
 
-    AbstractVIPResource() {
+    @NullUnmarked AbstractVIPResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 
-    protected Response getVipResponse(String version, String entityName, String acceptHeader,
+    @NullUnmarked protected Response getVipResponse(String version, String entityName, String acceptHeader,
                                       EurekaAccept eurekaAccept, Key.EntityType entityType) {
         if (!registry.shouldAllowAccess(false)) {
             return Response.status(Response.Status.FORBIDDEN).build();

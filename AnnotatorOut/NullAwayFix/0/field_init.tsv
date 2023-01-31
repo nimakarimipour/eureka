@@ -1,0 +1,5 @@
+kind	class	method	param	index	uri	field
+METHOD	com.netflix.eureka.cluster.PeerEurekaNodes	shutdown()	null	null	/Users/nima/Developer/NullAwayFixer/Projects/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/PeerEurekaNodes.java	peerEurekaNodes
+METHOD	com.netflix.eureka.cluster.PeerEurekaNodes	shutdown()	null	null	/Users/nima/Developer/NullAwayFixer/Projects/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/PeerEurekaNodes.java	peerEurekaNodeUrls
+METHOD	com.netflix.eureka.lease.Lease	serviceUp()	null	null	/Users/nima/Developer/NullAwayFixer/Projects/eureka/eureka-core/src/main/java/com/netflix/eureka/lease/Lease.java	serviceUpTimestamp
+METHOD	com.netflix.eureka.util.batcher.TrafficShaper	transmissionDelay()	null	null	/Users/nima/Developer/NullAwayFixer/Projects/eureka/eureka-core/src/main/java/com/netflix/eureka/util/batcher/TrafficShaper.java	lastCongestionError

@@ -36,6 +36,7 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A <em>jersey</em> resource that handles requests for replication purposes.
@@ -60,7 +61,7 @@ public class PeerReplicationResource {
         this.registry = server.getRegistry();
     }
 
-    public PeerReplicationResource() {
+    @NullUnmarked public PeerReplicationResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 
@@ -97,7 +98,7 @@ public class PeerReplicationResource {
         }
     }
 
-    private ReplicationInstanceResponse dispatch(ReplicationInstance instanceInfo) {
+    @NullUnmarked private ReplicationInstanceResponse dispatch(ReplicationInstance instanceInfo) {
         ApplicationResource applicationResource = createApplicationResource(instanceInfo);
         InstanceResource resource = createInstanceResource(instanceInfo, applicationResource);
 
@@ -168,7 +169,7 @@ public class PeerReplicationResource {
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    private static Builder handleDeleteStatusOverride(ReplicationInstance instanceInfo, InstanceResource resource) {
+    @NullUnmarked private static Builder handleDeleteStatusOverride(ReplicationInstance instanceInfo, InstanceResource resource) {
         Response response = resource.deleteStatusUpdate(REPLICATION, instanceInfo.getStatus(),
                 instanceInfo.getLastDirtyTimestamp().toString());
         return new Builder().setStatusCode(response.getStatus());

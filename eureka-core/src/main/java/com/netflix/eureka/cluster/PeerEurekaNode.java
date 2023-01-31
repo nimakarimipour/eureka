@@ -32,6 +32,7 @@ import com.netflix.eureka.util.batcher.TaskDispatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * The <code>PeerEurekaNode</code> represents a peer node to which information
@@ -357,7 +358,7 @@ public class PeerEurekaNode {
      * Synchronize {@link InstanceInfo} information if the timestamp between
      * this node and the peer eureka nodes vary.
      */
-    private void syncInstancesIfTimestampDiffers(String appName, @Nullable String id, @Nullable InstanceInfo info, InstanceInfo infoFromPeer) {
+    @NullUnmarked private void syncInstancesIfTimestampDiffers(String appName, @Nullable String id, @Nullable InstanceInfo info, InstanceInfo infoFromPeer) {
         try {
             if (infoFromPeer != null) {
                 logger.warn("Peer wants us to take the instance information from it, since the timestamp differs,"
@@ -388,11 +389,11 @@ public class PeerEurekaNode {
         return requestType + '#' + appName + '/' + id;
     }
 
-    private static String taskId(String requestType, @Nullable InstanceInfo info) {
+    @NullUnmarked private static String taskId(String requestType, @Nullable InstanceInfo info) {
         return taskId(requestType, info.getAppName(), info.getId());
     }
 
-    private static int getLeaseRenewalOf(@Nullable InstanceInfo info) {
+    @NullUnmarked private static int getLeaseRenewalOf(@Nullable InstanceInfo info) {
         return (info.getLeaseInfo() == null ? Lease.DEFAULT_DURATION_IN_SECS : info.getLeaseInfo().getRenewalIntervalInSecs()) * 1000;
     }
 }

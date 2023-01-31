@@ -29,6 +29,7 @@ import com.netflix.eureka.util.StatusInfo;
 import com.netflix.eureka.util.StatusUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * An utility class for exposing information about peer nodes.
@@ -48,7 +49,7 @@ public class StatusResource {
         this.statusUtil = new StatusUtil(server);
     }
 
-    public StatusResource() {
+    @NullUnmarked public StatusResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 

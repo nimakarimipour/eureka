@@ -28,6 +28,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A <em>jersey</em> resource for retrieving all instances with a given VIP address.
@@ -44,7 +45,7 @@ public class VIPResource extends AbstractVIPResource {
         super(server);
     }
 
-    public VIPResource() {
+    @NullUnmarked public VIPResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 

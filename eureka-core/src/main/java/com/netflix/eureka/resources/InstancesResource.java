@@ -32,6 +32,7 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A <em>jersey</em> resource that gets information about a particular instance.
@@ -52,7 +53,7 @@ public class InstancesResource {
         this.registry = server.getRegistry();
     }
 
-    public InstancesResource() {
+    @NullUnmarked public InstancesResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 

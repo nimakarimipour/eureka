@@ -41,6 +41,7 @@ import com.netflix.discovery.util.RateLimiter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Rate limiting filter, with configurable threshold above which non-privileged clients
@@ -128,7 +129,7 @@ public class RateLimitingFilter implements Filter {
         }
     }
 
-    @Override
+    @NullUnmarked @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         Target target = getTarget(request);
         if (target == Target.Other) {
@@ -186,7 +187,7 @@ public class RateLimitingFilter implements Filter {
         return false;
     }
 
-    private boolean isPrivileged(HttpServletRequest request) {
+    @NullUnmarked private boolean isPrivileged(HttpServletRequest request) {
         if (serverConfig.isRateLimiterThrottleStandardClients()) {
             return false;
         }
@@ -195,7 +196,7 @@ public class RateLimitingFilter implements Filter {
         return privilegedClients.contains(clientName) || DEFAULT_PRIVILEGED_CLIENTS.contains(clientName);
     }
 
-    private boolean isOverloaded(Target target) {
+    @NullUnmarked private boolean isOverloaded(Target target) {
         int maxInWindow = serverConfig.getRateLimiterBurstSize();
         int fetchWindowSize = serverConfig.getRateLimiterRegistryFetchAverageRate();
         boolean overloaded = !registryFetchRateLimiter.acquire(maxInWindow, fetchWindowSize);
@@ -207,7 +208,7 @@ public class RateLimitingFilter implements Filter {
         return overloaded;
     }
 
-    private void incrementStats(Target target) {
+    @NullUnmarked private void incrementStats(Target target) {
         if (serverConfig.isRateLimiterEnabled()) {
             EurekaMonitors.RATE_LIMITED.increment();
             if (target == Target.FullFetch) {

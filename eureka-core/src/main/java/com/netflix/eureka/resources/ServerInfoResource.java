@@ -12,6 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import java.util.Map;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * @author David Liu
@@ -26,7 +27,7 @@ public class ServerInfoResource {
         this.registry = server.getRegistry();
     }
 
-    public ServerInfoResource() {
+    @NullUnmarked public ServerInfoResource() {
         this(EurekaServerContextHolder.getInstance().getServerContext());
     }
 

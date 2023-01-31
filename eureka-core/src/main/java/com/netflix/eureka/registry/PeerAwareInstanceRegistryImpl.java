@@ -62,6 +62,7 @@ import javax.inject.Singleton;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer
@@ -166,7 +167,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     /**
      * Perform all cleanup and shutdown operations.
      */
-    @Override
+    @NullUnmarked @Override
     public void shutdown() {
         try {
             DefaultMonitorRegistry.getInstance().unregister(Monitors.newObjectMonitor(this));
@@ -276,7 +277,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * won't open up the traffic.
      * </p>
      */
-    private void primeAwsReplicas(ApplicationInfoManager applicationInfoManager) {
+    @NullUnmarked private void primeAwsReplicas(ApplicationInfoManager applicationInfoManager) {
         boolean areAllPeerNodesPrimed = false;
         while (!areAllPeerNodesPrimed) {
             String peerHostName = null;
@@ -370,7 +371,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      *
      * @return the list of replica nodes.
      */
-    @Deprecated
+    @NullUnmarked @Deprecated
     public List<PeerEurekaNode> getReplicaNodes() {
         return Collections.unmodifiableList(peerEurekaNodes.getPeerEurekaNodes());
     }
@@ -466,7 +467,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * @param newStatus the {@link ASGStatus} information that needs to be replicated.
      * @param isReplication true if this is a replication event from other nodes, false otherwise.
      */
-    @Override
+    @NullUnmarked @Override
     public void statusUpdate(final String asgName, final ASGStatus newStatus, final boolean isReplication) {
         // If this is replicated from an other node, do not try to replicate again.
         if (isReplication) {
@@ -627,7 +628,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * traffic to this node.
      *
      */
-    private void replicateToPeers(Action action, String appName, @Nullable String id,
+    @NullUnmarked private void replicateToPeers(Action action, String appName, @Nullable String id,
                                   @Nullable InstanceInfo info /* optional */,
                                   @Nullable InstanceStatus newStatus /* optional */, boolean isReplication) {
         Stopwatch tracer = action.getTimer().start();

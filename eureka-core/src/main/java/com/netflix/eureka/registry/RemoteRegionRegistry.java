@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry operations that needs to be done on a eureka service running in an other region.
@@ -228,7 +229,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * Fetch the registry information from the remote region.
      * @return true, if the fetch was successful, false otherwise.
      */
-    private boolean fetchRegistry() {
+    @NullUnmarked private boolean fetchRegistry() {
         boolean success;
         Stopwatch tracer = fetchRegistryTimer.start();
 
@@ -261,7 +262,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return success;
     }
 
-    private boolean fetchAndStoreDelta() throws Throwable {
+    @NullUnmarked private boolean fetchAndStoreDelta() throws Throwable {
         long currGeneration = fetchRegistryGeneration.get();
         Applications delta = fetchRemoteRegistry(true);
 
@@ -311,7 +312,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      *            the delta information received from eureka server in the last
      *            poll cycle.
      */
-    private void updateDelta(Applications delta) {
+    @NullUnmarked private void updateDelta(Applications delta) {
         int deltaCount = 0;
         for (Application app : delta.getRegisteredApplications()) {
             for (InstanceInfo instance : app.getInstances()) {
@@ -400,7 +401,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * @param delta - true, if the fetch needs to get deltas, false otherwise
      * @return - response which has information about the data.
      */
-    @Nullable private Applications fetchRemoteRegistry(boolean delta) {
+    @NullUnmarked @Nullable private Applications fetchRemoteRegistry(boolean delta) {
         logger.info("Getting instance registry info from the eureka server : {} , delta : {}", this.remoteRegionURL, delta);
 
         if (shouldUseExperimentalTransport()) {
@@ -446,7 +447,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * @return - response
      * @throws Throwable
      */
-    private boolean reconcileAndLogDifference(Applications delta, String reconcileHashCode) throws Throwable {
+    @NullUnmarked private boolean reconcileAndLogDifference(Applications delta, String reconcileHashCode) throws Throwable {
         logger.warn("The Reconcile hashcodes do not match, client : {}, server : {}. Getting the full registry",
                 reconcileHashCode, delta.getAppsHashCode());
 
@@ -474,7 +475,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     /**
      * Logs the total number of non-filtered instances stored locally.
      */
-    private void logTotalInstances() {
+    @NullUnmarked private void logTotalInstances() {
         int totInstances = 0;
         for (Application application : getApplications().getRegisteredApplications()) {
             totInstances += application.getInstancesAsIsFromEureka().size();
@@ -492,12 +493,12 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return null;
     }
 
-    @Override
+    @NullUnmarked @Override
     public Application getApplication(String appName) {
         return this.applications.get().getRegisteredApplications(appName);
     }
 
-    @Override
+    @NullUnmarked @Override
     public List<InstanceInfo> getInstancesById(String id) {
         List<InstanceInfo> list = new ArrayList<>(1);
 

@@ -4,6 +4,7 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
 import javax.annotation.Nullable;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Base {@link ReplicationTask} class for instance related replication requests.
@@ -33,7 +34,7 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
         this.replicateInstanceInfo = false;
     }
 
-    protected InstanceReplicationTask(String peerNodeName,
+    @NullUnmarked protected InstanceReplicationTask(String peerNodeName,
                                       Action action,
                                       @Nullable InstanceInfo instanceInfo,
                                       @Nullable InstanceStatus overriddenStatus,
