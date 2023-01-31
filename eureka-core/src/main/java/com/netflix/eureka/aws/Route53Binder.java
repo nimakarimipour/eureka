@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.Nullable;
 
 /**
  * Route53 binder implementation. Will look for a free domain in the list of service url to bind itself to via Route53.
@@ -222,7 +223,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
+    @Nullable private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
         ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
         request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         request.setHostedZoneId(hostedZone.getId());
@@ -238,7 +239,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private HostedZone getHostedZone(String domain) {
+    @Nullable private HostedZone getHostedZone(String domain) {
         ListHostedZonesRequest listHostedZoneRequest = new ListHostedZonesRequest();
         listHostedZoneRequest.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         ListHostedZonesResult listHostedZonesResult = amazonRoute53Client.listHostedZones(listHostedZoneRequest);
@@ -309,9 +310,9 @@ public class Route53Binder implements AwsBinder {
 
     private class ResourceRecordSetWithHostedZone {
         private final HostedZone hostedZone;
-        private final ResourceRecordSet resourceRecordSet;
+        @Nullable private final ResourceRecordSet resourceRecordSet;
 
-        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, ResourceRecordSet resourceRecordSet) {
+        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, @Nullable ResourceRecordSet resourceRecordSet) {
             this.hostedZone = hostedZone;
             this.resourceRecordSet = resourceRecordSet;
         }
