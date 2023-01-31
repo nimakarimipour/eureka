@@ -33,7 +33,7 @@ public class EurekaServerContextHolder {
         return this.serverContext;
     }
 
-    private static EurekaServerContextHolder holder;
+    @SuppressWarnings("NullAway.Init") private static EurekaServerContextHolder holder;
 
     public static synchronized void initialize(EurekaServerContext serverContext) {
         holder = new EurekaServerContextHolder(serverContext);

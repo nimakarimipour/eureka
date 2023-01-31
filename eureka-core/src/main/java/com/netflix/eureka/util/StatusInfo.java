@@ -91,9 +91,9 @@ public class StatusInfo {
     }
 
     private Map<String, String> generalStats = new HashMap<String, String>();
-    private Map<String, String> applicationStats;
-    private InstanceInfo instanceInfo;
-    private Boolean isHeathly;
+    @SuppressWarnings("NullAway.Init") private Map<String, String> applicationStats;
+    @SuppressWarnings("NullAway.Init") private InstanceInfo instanceInfo;
+    @SuppressWarnings("NullAway.Init") private Boolean isHeathly;
 
     private StatusInfo() {
     }

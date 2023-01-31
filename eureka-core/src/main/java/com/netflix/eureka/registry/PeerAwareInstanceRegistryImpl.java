@@ -61,6 +61,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer
@@ -119,7 +120,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     private final MeasuredRate numberOfReplicationsLastMin;
 
     protected final EurekaClient eurekaClient;
-    protected volatile PeerEurekaNodes peerEurekaNodes;
+    @SuppressWarnings("NullAway.Init") protected volatile PeerEurekaNodes peerEurekaNodes;
 
     private final InstanceStatusOverrideRule instanceStatusOverrideRule;
 
@@ -275,7 +276,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * won't open up the traffic.
      * </p>
      */
-    private void primeAwsReplicas(ApplicationInfoManager applicationInfoManager) {
+    @NullUnmarked private void primeAwsReplicas(ApplicationInfoManager applicationInfoManager) {
         boolean areAllPeerNodesPrimed = false;
         while (!areAllPeerNodesPrimed) {
             String peerHostName = null;
@@ -380,7 +381,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * @see com.netflix.eureka.registry.InstanceRegistry#cancel(java.lang.String,
      * java.lang.String, long, boolean)
      */
-    @Override
+    @NullUnmarked @Override
     public boolean cancel(final String appName, final String id,
                           final boolean isReplication) {
         if (super.cancel(appName, id, isReplication)) {
@@ -402,7 +403,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      *            true if this is a replication event from other replica nodes,
      *            false otherwise.
      */
-    @Override
+    @NullUnmarked @Override
     public void register(final InstanceInfo info, final boolean isReplication) {
         int leaseDuration = Lease.DEFAULT_DURATION_IN_SECS;
         if (info.getLeaseInfo() != null && info.getLeaseInfo().getDurationInSecs() > 0) {
@@ -418,7 +419,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * @see com.netflix.eureka.registry.InstanceRegistry#renew(java.lang.String,
      * java.lang.String, long, boolean)
      */
-    public boolean renew(final String appName, final String id, final boolean isReplication) {
+    @NullUnmarked public boolean renew(final String appName, final String id, final boolean isReplication) {
         if (super.renew(appName, id, isReplication)) {
             replicateToPeers(Action.Heartbeat, appName, id, null, null, isReplication);
             return true;
@@ -433,7 +434,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * java.lang.String, com.netflix.appinfo.InstanceInfo.InstanceStatus,
      * java.lang.String, boolean)
      */
-    @Override
+    @NullUnmarked @Override
     public boolean statusUpdate(final String appName, final String id,
                                 final InstanceStatus newStatus, String lastDirtyTimestamp,
                                 final boolean isReplication) {
@@ -444,7 +445,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
         return false;
     }
 
-    @Override
+    @NullUnmarked @Override
     public boolean deleteStatusOverride(String appName, String id,
                                         InstanceStatus newStatus,
                                         String lastDirtyTimestamp,
@@ -517,7 +518,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
         return isSelfPreservationModeEnabled() ? 1 : 0;
     }
 
-    @Override
+    @NullUnmarked @Override
     public InstanceInfo getNextServerFromEureka(String virtualHostname, boolean secure) {
         // TODO Auto-generated method stub
         return null;
@@ -656,7 +657,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      * replication traffic to this node.
      *
      */
-    private void replicateInstanceActionsToPeers(Action action, String appName,
+    @NullUnmarked private void replicateInstanceActionsToPeers(Action action, String appName,
                                                  String id, InstanceInfo info, InstanceStatus newStatus,
                                                  PeerEurekaNode node) {
         try {

@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry operations that needs to be done on a eureka service running in an other region.
@@ -97,7 +98,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     private long deltaSuccesses = 0;
     private long deltaMismatches = 0;
 
-    @Inject
+    @NullUnmarked @Inject
     public RemoteRegionRegistry(EurekaServerConfig serverConfig,
                                 EurekaClientConfig clientConfig,
                                 ServerCodecs serverCodecs,
@@ -399,7 +400,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * @param delta - true, if the fetch needs to get deltas, false otherwise
      * @return - response which has information about the data.
      */
-    private Applications fetchRemoteRegistry(boolean delta) {
+    @NullUnmarked private Applications fetchRemoteRegistry(boolean delta) {
         logger.info("Getting instance registry info from the eureka server : {} , delta : {}", this.remoteRegionURL, delta);
 
         if (shouldUseExperimentalTransport()) {
@@ -481,22 +482,22 @@ public class RemoteRegionRegistry implements LookupService<String> {
         logger.debug("The total number of all instances in the client now is {}", totInstances);
     }
 
-    @Override
+    @NullUnmarked @Override
     public Applications getApplications() {
         return applications.get();
     }
 
-    @Override
+    @NullUnmarked @Override
     public InstanceInfo getNextServerFromEureka(String arg0, boolean arg1) {
         return null;
     }
 
-    @Override
+    @NullUnmarked @Override
     public Application getApplication(String appName) {
         return this.applications.get().getRegisteredApplications(appName);
     }
 
-    @Override
+    @NullUnmarked @Override
     public List<InstanceInfo> getInstancesById(String id) {
         List<InstanceInfo> list = new ArrayList<>(1);
 
@@ -510,7 +511,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return Collections.emptyList();
     }
 
-    public Applications getApplicationDeltas() {
+    @NullUnmarked public Applications getApplicationDeltas() {
         return this.applicationsDelta.get();
     }
 

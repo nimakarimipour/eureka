@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Route53 binder implementation. Will look for a free domain in the list of service url to bind itself to via Route53.
@@ -214,7 +215,7 @@ public class Route53Binder implements AwsBinder {
             amazonRoute53Client.changeResourceRecordSets(changeResourceRecordSetsRequest);
     }
 
-    private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
+    @NullUnmarked private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
         HostedZone hostedZone = getHostedZone(domain);
         if (hostedZone != null) {
             return new ResourceRecordSetWithHostedZone(hostedZone, getResourceRecordSet(domain, hostedZone));
@@ -222,7 +223,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
+    @NullUnmarked private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
         ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
         request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         request.setHostedZoneId(hostedZone.getId());
@@ -238,7 +239,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private HostedZone getHostedZone(String domain) {
+    @NullUnmarked private HostedZone getHostedZone(String domain) {
         ListHostedZonesRequest listHostedZoneRequest = new ListHostedZonesRequest();
         listHostedZoneRequest.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         ListHostedZonesResult listHostedZonesResult = amazonRoute53Client.listHostedZones(listHostedZoneRequest);

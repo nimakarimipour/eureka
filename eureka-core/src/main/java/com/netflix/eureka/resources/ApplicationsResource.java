@@ -43,6 +43,7 @@ import com.netflix.eureka.registry.Key.KeyType;
 import com.netflix.eureka.registry.ResponseCacheImpl;
 import com.netflix.eureka.registry.Key;
 import com.netflix.eureka.util.EurekaMonitors;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A <em>jersey</em> resource that handles request related to all
@@ -113,7 +114,7 @@ public class ApplicationsResource {
      * @return a response containing information about all {@link com.netflix.discovery.shared.Applications}
      *         from the {@link AbstractInstanceRegistry}.
      */
-    @GET
+    @NullUnmarked @GET
     public Response getContainers(@PathParam("version") String version,
                                   @HeaderParam(HEADER_ACCEPT) String acceptHeader,
                                   @HeaderParam(HEADER_ACCEPT_ENCODING) String acceptEncoding,
@@ -192,7 +193,7 @@ public class ApplicationsResource {
      * @return response containing the delta information of the
      *         {@link AbstractInstanceRegistry}.
      */
-    @Path("delta")
+    @NullUnmarked @Path("delta")
     @GET
     public Response getContainerDifferential(
             @PathParam("version") String version,

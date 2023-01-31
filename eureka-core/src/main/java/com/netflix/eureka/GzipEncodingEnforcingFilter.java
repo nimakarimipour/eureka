@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Originally Eureka supported non-compressed responses only. For large registries it was extremely
@@ -83,7 +84,7 @@ public class GzipEncodingEnforcingFilter implements Filter {
         private final Enumeration<E> delegate;
         private final AtomicReference<E> extraElementRef;
 
-        private EnumWrapper(E extraElement) {
+        @NullUnmarked private EnumWrapper(E extraElement) {
             this(null, extraElement);
         }
 

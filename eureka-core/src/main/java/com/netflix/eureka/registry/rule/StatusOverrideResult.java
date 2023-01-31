@@ -2,6 +2,7 @@ package com.netflix.eureka.registry.rule;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Container for a result computed by an {@link InstanceStatusOverrideRule}.
@@ -22,7 +23,7 @@ public class StatusOverrideResult {
     // The status computed by the rule.
     private final InstanceInfo.InstanceStatus status;
 
-    private StatusOverrideResult(boolean matches, InstanceInfo.InstanceStatus status) {
+    @NullUnmarked private StatusOverrideResult(boolean matches, InstanceInfo.InstanceStatus status) {
         this.matches = matches;
         this.status = status;
     }

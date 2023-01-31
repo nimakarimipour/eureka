@@ -72,6 +72,7 @@ import com.netflix.servo.monitor.Stopwatch;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * A utility class for querying and updating information about amazon
@@ -242,7 +243,7 @@ public class AwsAsgUtil implements AsgClient {
      *            - The name of the ASG.
      * @return - The auto scaling group information.
      */
-    private AutoScalingGroup retrieveAutoScalingGroup(String asgName) {
+    @NullUnmarked private AutoScalingGroup retrieveAutoScalingGroup(String asgName) {
         if (Strings.isNullOrEmpty(asgName)) {
             logger.warn("null asgName specified, not attempting to retrieve AutoScalingGroup from AWS");
             return null;
@@ -278,7 +279,7 @@ public class AwsAsgUtil implements AsgClient {
         return assumeRoleResult.getCredentials();
     }
 
-    private AutoScalingGroup retrieveAutoScalingGroupCrossAccount(String asgAccount, String asgName) {
+    @NullUnmarked private AutoScalingGroup retrieveAutoScalingGroupCrossAccount(String asgAccount, String asgName) {
         logger.debug("Getting cross account ASG for asgName: {}, asgAccount: {}", asgName, asgAccount);
 
         Credentials credentials = stsCredentials.get(asgAccount);
@@ -445,7 +446,7 @@ public class AwsAsgUtil implements AsgClient {
      * @param asgName The name of the ASG
      * @return the account id
      */
-    private String getASGAccount(String asgName) {
+    @NullUnmarked private String getASGAccount(String asgName) {
         Applications apps = registry.getApplicationsFromLocalRegionOnly();
 
         for (Application app : apps.getRegisteredApplications()) {

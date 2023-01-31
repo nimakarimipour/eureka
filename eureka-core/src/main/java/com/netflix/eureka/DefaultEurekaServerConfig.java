@@ -37,6 +37,7 @@ import com.netflix.eureka.aws.AwsBindingStrategy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  *
@@ -126,7 +127,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
      *
      * @see com.netflix.eureka.EurekaServerConfig#getAWSAccessId()
      */
-    @Override
+    @NullUnmarked @Override
     public String getAWSAccessId() {
         String aWSAccessId = configInstance.getStringProperty(
                 namespace + "awsAccessId", null).get();
@@ -144,7 +145,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
      *
      * @see com.netflix.eureka.EurekaServerConfig#getAWSAccessId()
      */
-    @Override
+    @NullUnmarked @Override
     public String getAWSSecretKey() {
         String aWSSecretKey = configInstance.getStringProperty(
                 namespace + "awsSecretKey", null).get();
@@ -541,7 +542,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
         return toReturn;
     }
 
-    @Override
+    @NullUnmarked @Override
     public String[] getRemoteRegionUrls() {
         String remoteRegionUrlString = configInstance.getStringProperty(
                 namespace + "remoteRegionUrls", null).get();

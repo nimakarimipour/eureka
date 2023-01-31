@@ -56,6 +56,7 @@ import com.netflix.servo.monitor.Stopwatch;
 import com.netflix.servo.monitor.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * The class that is responsible for caching registry information that will be
@@ -209,7 +210,7 @@ public class ResponseCacheImpl implements ResponseCache {
         return get(key, shouldUseReadOnlyResponseCache);
     }
 
-    @VisibleForTesting
+    @NullUnmarked @VisibleForTesting
     String get(final Key key, boolean useReadOnlyCache) {
         Value payload = getValue(key, useReadOnlyCache);
         if (payload == null || payload.getPayload().equals(EMPTY_PAYLOAD)) {
@@ -228,7 +229,7 @@ public class ResponseCacheImpl implements ResponseCache {
      * @return compressed payload which contains information about the
      *         applications.
      */
-    public byte[] getGZIP(Key key) {
+    @NullUnmarked public byte[] getGZIP(Key key) {
         Value payload = getValue(key, shouldUseReadOnlyResponseCache);
         if (payload == null) {
             return null;
@@ -348,7 +349,7 @@ public class ResponseCacheImpl implements ResponseCache {
     /**
      * Get the payload in both compressed and uncompressed form.
      */
-    @VisibleForTesting
+    @NullUnmarked @VisibleForTesting
     Value getValue(final Key key, boolean useReadOnlyCache) {
         Value payload = null;
         try {
@@ -505,9 +506,9 @@ public class ResponseCacheImpl implements ResponseCache {
      */
     public class Value {
         private final String payload;
-        private byte[] gzipped;
+        @SuppressWarnings("NullAway.Init") private byte[] gzipped;
 
-        public Value(String payload) {
+        @NullUnmarked public Value(String payload) {
             this.payload = payload;
             if (!EMPTY_PAYLOAD.equals(payload)) {
                 Stopwatch tracer = compressPayloadTimer.start();

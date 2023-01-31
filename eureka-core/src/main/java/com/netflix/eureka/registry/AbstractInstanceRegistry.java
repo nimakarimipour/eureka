@@ -60,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.util.EurekaMonitors.*;
+import com.netflix.eureka.NullUnmarked;
 
 /**
  * Handles all registry requests from eureka clients.
@@ -108,7 +109,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     protected final EurekaServerConfig serverConfig;
     protected final EurekaClientConfig clientConfig;
     protected final ServerCodecs serverCodecs;
-    protected volatile ResponseCache responseCache;
+    @SuppressWarnings("NullAway.Init") protected volatile ResponseCache responseCache;
 
     /**
      * Create a new, empty instance registry.
@@ -190,7 +191,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *
      * @see com.netflix.eureka.lease.LeaseManager#register(java.lang.Object, int, boolean)
      */
-    public void register(InstanceInfo registrant, int leaseDuration, boolean isReplication) {
+    @NullUnmarked public void register(InstanceInfo registrant, int leaseDuration, boolean isReplication) {
         read.lock();
         try {
             Map<String, Lease<InstanceInfo>> gMap = registry.get(registrant.getAppName());
@@ -658,7 +659,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                            {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the application
      */
-    @Override
+    @NullUnmarked @Override
     public Application getApplication(String appName, boolean includeRemoteRegion) {
         Application app = null;
 
@@ -1026,7 +1027,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      *                             {@link EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the information about the instance.
      */
-    @Override
+    @NullUnmarked @Override
     public InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions) {
         Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
         Lease<InstanceInfo> lease = null;

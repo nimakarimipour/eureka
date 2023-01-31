@@ -40,9 +40,9 @@ import javax.inject.Singleton;
 @Singleton
 public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
 
-    private AwsAsgUtil awsAsgUtil;
+    @SuppressWarnings("NullAway.Init") private AwsAsgUtil awsAsgUtil;
 
-    private InstanceStatusOverrideRule instanceStatusOverrideRule;
+    @SuppressWarnings("NullAway.Init") private InstanceStatusOverrideRule instanceStatusOverrideRule;
 
     @Inject
     public AwsInstanceRegistry(EurekaServerConfig serverConfig,
