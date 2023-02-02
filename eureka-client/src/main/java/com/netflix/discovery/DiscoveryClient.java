@@ -43,7 +43,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Nullable;
-import javax.annotation.PreDestroy;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.net.ssl.HostnameVerifier;
@@ -319,7 +318,7 @@ public class DiscoveryClient implements EurekaClient {
                     Provider<BackupRegistry> backupRegistryProvider) {
         this(applicationInfoManager, config, args, backupRegistryProvider, ResolverUtils::randomize);
     }
-    
+
     @Inject
     DiscoveryClient(ApplicationInfoManager applicationInfoManager, EurekaClientConfig config, AbstractDiscoveryClientOptionalArgs args,
                     Provider<BackupRegistry> backupRegistryProvider, EndpointRandomizer endpointRandomizer) {
@@ -333,7 +332,7 @@ public class DiscoveryClient implements EurekaClient {
             this.healthCheckHandlerProvider = null;
             this.preRegistrationHandler = null;
         }
-        
+
         this.applicationInfoManager = applicationInfoManager;
         InstanceInfo myInfo = applicationInfoManager.getInfo();
 
@@ -496,7 +495,7 @@ public class DiscoveryClient implements EurekaClient {
     private void scheduleServerEndpointTask(EurekaTransport eurekaTransport,
                                             AbstractDiscoveryClientOptionalArgs args) {
 
-            
+
         Collection<?> additionalFilters = args == null
                 ? Collections.emptyList()
                 : args.additionalFilters;
@@ -504,18 +503,18 @@ public class DiscoveryClient implements EurekaClient {
         EurekaJerseyClient providedJerseyClient = args == null
                 ? null
                 : args.eurekaJerseyClient;
-        
+
         TransportClientFactories argsTransportClientFactories = null;
         if (args != null && args.getTransportClientFactories() != null) {
             argsTransportClientFactories = args.getTransportClientFactories();
         }
-        
+
         // Ignore the raw types warnings since the client filter interface changed between jersey 1/2
         @SuppressWarnings("rawtypes")
         TransportClientFactories transportClientFactories = argsTransportClientFactories == null
                 ? new Jersey1TransportClientFactories()
                 : argsTransportClientFactories;
-                
+
         Optional<SSLContext> sslContext = args == null
                 ? Optional.empty()
                 : args.getSSLContext();
@@ -928,7 +927,6 @@ public class DiscoveryClient implements EurekaClient {
      * Shuts down Eureka Client. Also sends a deregistration request to the
      * eureka server.
      */
-    @PreDestroy
     @Override
     public synchronized void shutdown() {
         if (isShutdown.compareAndSet(false, true)) {

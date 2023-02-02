@@ -22,8 +22,7 @@ import com.netflix.servo.monitor.Monitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
+
 import javax.inject.Inject;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +35,7 @@ import java.util.TimerTask;
  * Amazon ENI binder for instances.
  *
  * Candidate ENI's discovery is done using the same mechanism as Elastic ip binder, via dns records or service urls.
- * 
+ *
  * The dns records and the service urls should use the ENI private dns or private ip
  *
  * Dns record examples
@@ -51,7 +50,7 @@ import java.util.TimerTask;
  * ENI Binding strategy should be configured via property like:
  *
  * eureka.awsBindingStrategy=ENI
- * 
+ *
  * If there are no available ENI's for the availability zone, it will not attach any already attached ENI
  */
 public class ElasticNetworkInterfaceBinder implements AwsBinder {
@@ -81,7 +80,6 @@ public class ElasticNetworkInterfaceBinder implements AwsBinder {
         }
     }
 
-    @PostConstruct
     public void start()  {
         int retries = serverConfig.getEIPBindRebindRetries();
         for (int i = 0; i < retries; i++) {
@@ -104,7 +102,6 @@ public class ElasticNetworkInterfaceBinder implements AwsBinder {
         timer.schedule(new IPBindingTask(), serverConfig.getEIPBindingRetryIntervalMsWhenUnbound());
     }
 
-    @PreDestroy
     public void shutdown() {
         timer.cancel();
         for (int i = 0; i < serverConfig.getEIPBindRebindRetries(); i++) {

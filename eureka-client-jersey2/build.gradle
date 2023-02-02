@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-apply plugin: 'nebula.test-jar'
 
 configurations.all {
     // jersey1

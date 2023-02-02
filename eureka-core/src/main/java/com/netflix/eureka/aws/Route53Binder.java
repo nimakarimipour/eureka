@@ -13,8 +13,6 @@ import com.netflix.eureka.EurekaServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.MalformedURLException;
@@ -84,7 +82,6 @@ public class Route53Binder implements AwsBinder {
     }
 
     @Override
-    @PostConstruct
     public void start() {
         try {
             doBind();
@@ -263,7 +260,6 @@ public class Route53Binder implements AwsBinder {
     }
 
     @Override
-    @PreDestroy
     public void shutdown() {
         timer.cancel();
 

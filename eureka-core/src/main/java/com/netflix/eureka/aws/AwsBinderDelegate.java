@@ -5,8 +5,6 @@ import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -37,7 +35,6 @@ public class AwsBinderDelegate implements AwsBinder {
     }
 
     @Override
-    @PostConstruct
     public void start() {
         try {
             delegate.start();
@@ -47,7 +44,6 @@ public class AwsBinderDelegate implements AwsBinder {
     }
 
     @Override
-    @PreDestroy
     public void shutdown()  {
         try {
             delegate.shutdown();

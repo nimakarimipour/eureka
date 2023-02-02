@@ -1,7 +1,5 @@
 package com.netflix.discovery;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Singleton;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -46,7 +44,6 @@ public class EurekaUpStatusResolver {
         counter.incrementAndGet();
     }
 
-    @PostConstruct
     public void init() {
         try {
             // Must set the initial status
@@ -59,7 +56,6 @@ public class EurekaUpStatusResolver {
         }
     }
 
-    @PreDestroy
     public void shutdown() {
         eventBus.unregisterSubscriber(this);
     }

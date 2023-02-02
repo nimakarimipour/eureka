@@ -1,4 +1,3 @@
-apply plugin: 'nebula.test-jar'
 
 def archaius2Version = '2.1.7'
 
