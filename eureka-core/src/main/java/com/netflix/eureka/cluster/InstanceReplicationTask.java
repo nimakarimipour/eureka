@@ -3,7 +3,7 @@ package com.netflix.eureka.cluster;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * Base {@link ReplicationTask} class for instance related replication requests.
@@ -24,7 +24,7 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
 
     private final boolean replicateInstanceInfo;
 
-    @NullUnmarked protected InstanceReplicationTask(String peerNodeName, Action action, String appName, String id) {
+     protected InstanceReplicationTask(String peerNodeName, Action action, String appName, String id) {
         super(peerNodeName, action);
         this.appName = appName;
         this.id = id;

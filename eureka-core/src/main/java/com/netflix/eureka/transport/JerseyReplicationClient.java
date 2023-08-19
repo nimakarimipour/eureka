@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.discovery.shared.transport.EurekaHttpResponse.anEurekaHttpResponse;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * @author Tomasz Bak
@@ -138,7 +138,7 @@ public class JerseyReplicationClient extends AbstractJerseyEurekaHttpClient impl
         jerseyClient.destroyResources();
     }
 
-    @NullUnmarked public static JerseyReplicationClient createReplicationClient(EurekaServerConfig config, ServerCodecs serverCodecs, String serviceUrl) {
+     public static JerseyReplicationClient createReplicationClient(EurekaServerConfig config, ServerCodecs serverCodecs, String serviceUrl) {
         String name = JerseyReplicationClient.class.getSimpleName() + ": " + serviceUrl + "apps/: ";
 
         EurekaJerseyClient jerseyClient;

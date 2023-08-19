@@ -24,7 +24,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.transport.JerseyReplicationClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * Helper class to manage lifecycle of a collection of {@link PeerEurekaNode}s.
@@ -45,7 +45,7 @@ public class PeerEurekaNodes {
     private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
     private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
-    @SuppressWarnings("NullAway.Init") private ScheduledExecutorService taskExecutor;
+     private ScheduledExecutorService taskExecutor;
 
     @Inject
     public PeerEurekaNodes(
@@ -256,7 +256,7 @@ public class PeerEurekaNodes {
         return hostName != null && hostName.equals(myInfoComparator);
     }
 
-    @NullUnmarked public static String hostFromUrl(String url) {
+     public static String hostFromUrl(String url) {
         URI uri;
         try {
             uri = new URI(url);

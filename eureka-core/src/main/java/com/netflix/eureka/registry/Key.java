@@ -5,7 +5,7 @@ import com.netflix.eureka.Version;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import com.netflix.eureka.NullUnmarked;
+
 
 public class Key {
 
@@ -32,7 +32,7 @@ public class Key {
         this(entityType, entityName, type, v, eurekaAccept, null);
     }
 
-    @NullUnmarked public Key(EntityType entityType, String entityName, KeyType type, Version v, EurekaAccept eurekaAccept, @Nullable String[] regions) {
+     public Key(EntityType entityType, String entityName, KeyType type, Version v, EurekaAccept eurekaAccept, @Nullable String[] regions) {
         this.regions = regions;
         this.entityType = entityType;
         this.entityName = entityName;

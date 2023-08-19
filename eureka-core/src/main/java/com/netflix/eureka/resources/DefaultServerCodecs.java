@@ -9,7 +9,7 @@ import com.netflix.eureka.registry.Key;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * @author David Liu
@@ -100,13 +100,13 @@ public class DefaultServerCodecs implements ServerCodecs {
     }
 
     public static class Builder {
-        @SuppressWarnings("NullAway.Init") protected CodecWrapper fullJsonCodec;
-        @SuppressWarnings("NullAway.Init") protected CodecWrapper compactJsonCodec;
+         protected CodecWrapper fullJsonCodec;
+         protected CodecWrapper compactJsonCodec;
 
-        @SuppressWarnings("NullAway.Init") protected CodecWrapper fullXmlCodec;
-        @SuppressWarnings("NullAway.Init") protected CodecWrapper compactXmlCodec;
+         protected CodecWrapper fullXmlCodec;
+         protected CodecWrapper compactXmlCodec;
 
-        @NullUnmarked protected Builder() {}
+         protected Builder() {}
 
         public Builder withFullJsonCodec(CodecWrapper fullJsonCodec) {
             this.fullJsonCodec = fullJsonCodec;

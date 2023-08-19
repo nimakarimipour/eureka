@@ -55,7 +55,7 @@ public class ReplicationInstanceResponse {
     public static final class Builder {
 
         private int statusCode;
-        @SuppressWarnings("NullAway.Init") private InstanceInfo responseEntity;
+         private InstanceInfo responseEntity;
 
         public Builder setStatusCode(int statusCode) {
             this.statusCode = statusCode;

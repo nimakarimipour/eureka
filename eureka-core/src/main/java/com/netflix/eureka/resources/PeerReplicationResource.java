@@ -35,7 +35,7 @@ import com.netflix.eureka.cluster.protocol.ReplicationListResponse;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * A <em>jersey</em> resource that handles requests for replication purposes.
@@ -76,7 +76,7 @@ public class PeerReplicationResource {
      *            The List of replication events from peer eureka nodes
      * @return A batched response containing the information about the responses of individual events
      */
-    @NullUnmarked @Path("batch")
+     @Path("batch")
     @POST
     public Response batchReplication(ReplicationList replicationList) {
         try {
@@ -174,7 +174,7 @@ public class PeerReplicationResource {
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    @NullUnmarked private static <T> String toString(T value) {
+     private static <T> String toString(T value) {
         if (value == null) {
             return null;
         }

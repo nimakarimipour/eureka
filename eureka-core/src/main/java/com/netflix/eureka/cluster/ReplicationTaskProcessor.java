@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.cluster.protocol.ReplicationInstance.ReplicationInstanceBuilder.aReplicationInstance;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * @author Tomasz Bak
@@ -74,7 +74,7 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
         return ProcessingResult.Success;
     }
 
-    @NullUnmarked @Override
+     @Override
     public ProcessingResult process(List<ReplicationTask> tasks) {
         ReplicationList list = createReplicationListOf(tasks);
         try {
@@ -191,7 +191,7 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
      *            The exception for which the information needs to be found.
      * @return true, if it may be a socket read time out exception.
      */
-    @NullUnmarked private static boolean maybeReadTimeOut(Throwable e) {
+     private static boolean maybeReadTimeOut(Throwable e) {
         do {
             if (IOException.class.isInstance(e)) {
             	String message = e.getMessage().toLowerCase();
@@ -206,7 +206,7 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
     }
     
     
-    @NullUnmarked private static ReplicationInstance createReplicationInstanceOf(InstanceReplicationTask task) {
+     private static ReplicationInstance createReplicationInstanceOf(InstanceReplicationTask task) {
         ReplicationInstanceBuilder instanceBuilder = aReplicationInstance();
         instanceBuilder.withAppName(task.getAppName());
         instanceBuilder.withId(task.getId());

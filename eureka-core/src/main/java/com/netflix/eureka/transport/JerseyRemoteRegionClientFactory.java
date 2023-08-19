@@ -35,7 +35,7 @@ import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * @author Tomasz Bak
@@ -48,7 +48,7 @@ public class JerseyRemoteRegionClientFactory implements TransportClientFactory {
     private final ServerCodecs serverCodecs;
     private final String region;
 
-    @SuppressWarnings("NullAway.Init") private volatile EurekaJerseyClient jerseyClient;
+     private volatile EurekaJerseyClient jerseyClient;
     private final Object lock = new Object();
 
     @Inject
@@ -72,7 +72,7 @@ public class JerseyRemoteRegionClientFactory implements TransportClientFactory {
         }
     }
 
-    @NullUnmarked private EurekaJerseyClient getOrCreateJerseyClient(String region, EurekaEndpoint endpoint) {
+     private EurekaJerseyClient getOrCreateJerseyClient(String region, EurekaEndpoint endpoint) {
         if (jerseyClient != null) {
             return jerseyClient;
         }

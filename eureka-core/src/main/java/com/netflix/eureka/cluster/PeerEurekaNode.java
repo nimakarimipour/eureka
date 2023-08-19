@@ -31,7 +31,7 @@ import com.netflix.eureka.util.batcher.TaskDispatcher;
 import com.netflix.eureka.util.batcher.TaskDispatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.netflix.eureka.NullUnmarked;
+
 
 /**
  * The <code>PeerEurekaNode</code> represents a peer node to which information
@@ -132,7 +132,7 @@ public class PeerEurekaNode {
      *            that is send to this instance.
      * @throws Exception
      */
-    @NullUnmarked public void register(final InstanceInfo info) throws Exception {
+     public void register(final InstanceInfo info) throws Exception {
         long expiryTime = System.currentTimeMillis() + getLeaseRenewalOf(info);
         batchingDispatcher.process(
                 taskId("register", info),
@@ -267,7 +267,7 @@ public class PeerEurekaNode {
      * @param info
      *            the instance information of the instance.
      */
-    @NullUnmarked public void statusUpdate(final String appName, final String id,
+     public void statusUpdate(final String appName, final String id,
                              final InstanceStatus newStatus, final InstanceInfo info) {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
@@ -292,7 +292,7 @@ public class PeerEurekaNode {
      * @param info
      *            the instance information of the instance.
      */
-    @NullUnmarked public void deleteStatusOverride(final String appName, final String id, final InstanceInfo info) {
+     public void deleteStatusOverride(final String appName, final String id, final InstanceInfo info) {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
                 taskId("deleteStatusOverride", appName, id),
