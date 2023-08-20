@@ -3,6 +3,7 @@ package com.netflix.eureka.cluster;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
+import javax.annotation.Nullable;
 
 
 /**
@@ -19,8 +20,8 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
     private final String appName;
     private final String id;
 
-    private final InstanceInfo instanceInfo;
-    private final InstanceStatus overriddenStatus;
+    @Nullable private final InstanceInfo instanceInfo;
+    @Nullable private final InstanceStatus overriddenStatus;
 
     private final boolean replicateInstanceInfo;
 
@@ -36,7 +37,7 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
     protected InstanceReplicationTask(String peerNodeName,
                                       Action action,
                                       InstanceInfo instanceInfo,
-                                      InstanceStatus overriddenStatus,
+                                      @Nullable InstanceStatus overriddenStatus,
                                       boolean replicateInstanceInfo) {
         super(peerNodeName, action);
         this.appName = instanceInfo.getAppName();
@@ -58,11 +59,11 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
         return id;
     }
 
-    public InstanceInfo getInstanceInfo() {
+    @Nullable public InstanceInfo getInstanceInfo() {
         return instanceInfo;
     }
 
-    public InstanceStatus getOverriddenStatus() {
+    @Nullable public InstanceStatus getOverriddenStatus() {
         return overriddenStatus;
     }
 

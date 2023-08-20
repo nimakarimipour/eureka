@@ -26,7 +26,7 @@ public interface ResponseCache {
      * @param key the key for which the cached information needs to be obtained.
      * @return payload which contains information about the applications.
      */
-     String get(Key key);
+     @Nullable String get(Key key);
 
     /**
      * Get the compressed information about the applications.
@@ -34,7 +34,7 @@ public interface ResponseCache {
      * @param key the key for which the compressed cached information needs to be obtained.
      * @return compressed payload which contains information about the applications.
      */
-    byte[] getGZIP(Key key);
+    @Nullable byte[] getGZIP(Key key);
 
     /**
      * Performs a shutdown of this cache by stopping internal threads and unregistering

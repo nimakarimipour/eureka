@@ -1330,8 +1330,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      */
     protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-    protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
-                                                                    Lease<InstanceInfo> existingLease,
+    @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(InstanceInfo r,
+                                                                    @Nullable Lease<InstanceInfo> existingLease,
                                                                     boolean isReplication) {
         InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
         logger.debug("Processing override status using rule: {}", rule);

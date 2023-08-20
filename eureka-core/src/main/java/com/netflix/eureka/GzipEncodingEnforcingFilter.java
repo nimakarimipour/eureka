@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicReference;
+import javax.annotation.Nullable;
 
 
 /**
@@ -81,14 +82,14 @@ public class GzipEncodingEnforcingFilter implements Filter {
 
     private static class EnumWrapper<E> implements Enumeration<E> {
 
-        private final Enumeration<E> delegate;
+        @Nullable private final Enumeration<E> delegate;
         private final AtomicReference<E> extraElementRef;
 
          private EnumWrapper(E extraElement) {
             this(null, extraElement);
         }
 
-        private EnumWrapper(Enumeration<E> delegate, E extraElement) {
+        private EnumWrapper(@Nullable Enumeration<E> delegate, E extraElement) {
             this.delegate = delegate;
             this.extraElementRef = new AtomicReference<>(extraElement);
         }

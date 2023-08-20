@@ -127,7 +127,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
      *
      * @see com.netflix.eureka.EurekaServerConfig#getAWSAccessId()
      */
-     @Override
+     @Nullable @Override
     public String getAWSAccessId() {
         String aWSAccessId = configInstance.getStringProperty(
                 namespace + "awsAccessId", null).get();
@@ -145,7 +145,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
      *
      * @see com.netflix.eureka.EurekaServerConfig#getAWSAccessId()
      */
-     @Override
+     @Nullable @Override
     public String getAWSSecretKey() {
         String aWSSecretKey = configInstance.getStringProperty(
                 namespace + "awsSecretKey", null).get();
@@ -542,7 +542,7 @@ public class DefaultEurekaServerConfig implements EurekaServerConfig {
         return toReturn;
     }
 
-     @Override
+     @Nullable @Override
     public String[] getRemoteRegionUrls() {
         String remoteRegionUrlString = configInstance.getStringProperty(
                 namespace + "remoteRegionUrls", null).get();

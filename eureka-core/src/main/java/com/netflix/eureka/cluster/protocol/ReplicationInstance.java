@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
+import javax.annotation.Nullable;
 
 
 /**
@@ -108,8 +109,8 @@ public class ReplicationInstance {
          private String appName;
          private String id;
          private Long lastDirtyTimestamp;
-         private String overriddenStatus;
-         private String status;
+         @Nullable private String overriddenStatus;
+         @Nullable private String status;
          private InstanceInfo instanceInfo;
          private Action action;
 
@@ -135,12 +136,12 @@ public class ReplicationInstance {
             return this;
         }
 
-        public ReplicationInstanceBuilder withOverriddenStatus(String overriddenStatus) {
+        public ReplicationInstanceBuilder withOverriddenStatus(@Nullable String overriddenStatus) {
             this.overriddenStatus = overriddenStatus;
             return this;
         }
 
-        public ReplicationInstanceBuilder withStatus(String status) {
+        public ReplicationInstanceBuilder withStatus(@Nullable String status) {
             this.status = status;
             return this;
         }

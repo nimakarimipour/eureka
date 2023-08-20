@@ -48,6 +48,7 @@ import com.netflix.eureka.util.EurekaMonitors;
 import com.thoughtworks.xstream.XStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 
 /**
@@ -81,10 +82,10 @@ public class EurekaBootStrap implements ServletContextListener {
 
     private static final String EUREKA_DATACENTER = "eureka.datacenter";
 
-     protected volatile EurekaServerContext serverContext;
-     protected volatile AwsBinder awsBinder;
+     @Nullable protected volatile EurekaServerContext serverContext;
+     @Nullable protected volatile AwsBinder awsBinder;
     
-    private EurekaClient eurekaClient;
+    @Nullable private EurekaClient eurekaClient;
 
     /**
      * Construct a default instance of Eureka boostrap
@@ -98,7 +99,7 @@ public class EurekaBootStrap implements ServletContextListener {
      * 
      * @param eurekaClient the eureka client to bootstrap
      */
-    public EurekaBootStrap(EurekaClient eurekaClient) {
+    public EurekaBootStrap(@Nullable EurekaClient eurekaClient) {
         this.eurekaClient = eurekaClient;
     }
 

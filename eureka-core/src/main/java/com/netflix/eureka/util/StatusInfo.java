@@ -12,6 +12,7 @@ import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.provider.Serializer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.annotation.Nullable;
 
 /**
  * An utility class for exposing status information of an instance.
