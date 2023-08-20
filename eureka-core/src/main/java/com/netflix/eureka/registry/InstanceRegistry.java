@@ -11,6 +11,7 @@ import com.netflix.eureka.lease.LeaseManager;
 
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * @author Tomasz Bak
@@ -24,12 +25,12 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
     @Deprecated
     void storeOverriddenStatusIfRequired(String id, InstanceStatus overriddenStatus);
 
-    void storeOverriddenStatusIfRequired(String appName, String id, InstanceStatus overriddenStatus);
+    void storeOverriddenStatusIfRequired(String appName, @Nullable String id, InstanceStatus overriddenStatus);
 
-    boolean statusUpdate(String appName, String id, InstanceStatus newStatus,
-                         String lastDirtyTimestamp, boolean isReplication);
+    boolean statusUpdate(String appName, @Nullable String id, InstanceStatus newStatus,
+                         @Nullable String lastDirtyTimestamp, boolean isReplication);
 
-    boolean deleteStatusOverride(String appName, String id, InstanceStatus newStatus,
+    boolean deleteStatusOverride(String appName, @Nullable String id, InstanceStatus newStatus,
                                  String lastDirtyTimestamp, boolean isReplication);
 
     Map<String, InstanceStatus> overriddenInstanceStatusesSnapshot();
@@ -47,7 +48,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
      *                            {@link com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the application
      */
-    Application getApplication(String appName, boolean includeRemoteRegion);
+    @Nullable Application getApplication(String appName, boolean includeRemoteRegion);
 
     /**
      * Gets the {@link InstanceInfo} information.
@@ -56,7 +57,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
      * @param id the unique identifier of the instance.
      * @return the information about the instance.
      */
-    InstanceInfo getInstanceByAppAndId(String appName, String id);
+    @Nullable InstanceInfo getInstanceByAppAndId(String appName, @Nullable String id);
 
     /**
      * Gets the {@link InstanceInfo} information.
@@ -68,13 +69,13 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
      *                             {@link com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the information about the instance.
      */
-    InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions);
+    @Nullable InstanceInfo getInstanceByAppAndId(String appName, @Nullable String id, boolean includeRemoteRegions);
 
     void clearRegistry();
 
     void initializedResponseCache();
 
-    ResponseCache getResponseCache();
+    @Nullable ResponseCache getResponseCache();
 
     long getNumOfRenewsInLastMin();
 

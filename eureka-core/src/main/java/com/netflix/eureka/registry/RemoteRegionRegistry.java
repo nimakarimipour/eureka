@@ -62,6 +62,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
+import javax.annotation.Nullable;
 
 
 /**
@@ -93,7 +94,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     private final AtomicReference<Applications> applicationsDelta = new AtomicReference<>(new Applications());
     private final EurekaServerConfig serverConfig;
     private volatile boolean readyForServingData;
-    private final EurekaHttpClient eurekaHttpClient;
+    @Nullable private final EurekaHttpClient eurekaHttpClient;
     private long timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
     private long deltaSuccesses = 0;
     private long deltaMismatches = 0;
@@ -363,7 +364,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * @param response
      *            the HttpResponse object.
      */
-    private void closeResponse(ClientResponse response) {
+    private void closeResponse(@Nullable ClientResponse response) {
         if (response != null) {
             try {
                 response.close();
@@ -400,7 +401,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
      * @param delta - true, if the fetch needs to get deltas, false otherwise
      * @return - response which has information about the data.
      */
-     private Applications fetchRemoteRegistry(boolean delta) {
+     @Nullable private Applications fetchRemoteRegistry(boolean delta) {
         logger.info("Getting instance registry info from the eureka server : {} , delta : {}", this.remoteRegionURL, delta);
 
         if (shouldUseExperimentalTransport()) {
@@ -482,12 +483,12 @@ public class RemoteRegionRegistry implements LookupService<String> {
         logger.debug("The total number of all instances in the client now is {}", totInstances);
     }
 
-     @Override
+     @Nullable @Override
     public Applications getApplications() {
         return applications.get();
     }
 
-     @Override
+     @Nullable @Override
     public InstanceInfo getNextServerFromEureka(String arg0, boolean arg1) {
         return null;
     }
@@ -511,7 +512,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return Collections.emptyList();
     }
 
-     public Applications getApplicationDeltas() {
+     @Nullable public Applications getApplicationDeltas() {
         return this.applicationsDelta.get();
     }
 

@@ -27,6 +27,7 @@ import com.netflix.eureka.registry.ResponseCache;
 import com.netflix.eureka.registry.Key;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Abstract class for the common functionality of a VIP/SVIP resource.
@@ -38,7 +39,7 @@ abstract class AbstractVIPResource {
     private static final Logger logger = LoggerFactory.getLogger(AbstractVIPResource.class);
 
     private final PeerAwareInstanceRegistry registry;
-    private final ResponseCache responseCache;
+    @Nullable private final ResponseCache responseCache;
 
     AbstractVIPResource(EurekaServerContext server) {
         this.registry = server.getRegistry();

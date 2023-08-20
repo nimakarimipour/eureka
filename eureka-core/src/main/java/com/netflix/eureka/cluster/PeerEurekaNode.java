@@ -31,6 +31,7 @@ import com.netflix.eureka.util.batcher.TaskDispatcher;
 import com.netflix.eureka.util.batcher.TaskDispatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 
 /**
@@ -132,7 +133,7 @@ public class PeerEurekaNode {
      *            that is send to this instance.
      * @throws Exception
      */
-     public void register(final InstanceInfo info) throws Exception {
+     public void register(@Nullable final InstanceInfo info) throws Exception {
         long expiryTime = System.currentTimeMillis() + getLeaseRenewalOf(info);
         batchingDispatcher.process(
                 taskId("register", info),
@@ -155,7 +156,7 @@ public class PeerEurekaNode {
      *            the unique identifier of the instance.
      * @throws Exception
      */
-    public void cancel(final String appName, final String id) throws Exception {
+    public void cancel(final String appName, @Nullable final String id) throws Exception {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
                 taskId("cancel", appName, id),
@@ -166,7 +167,7 @@ public class PeerEurekaNode {
                     }
 
                     @Override
-                    public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+                    public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
                         super.handleFailure(statusCode, responseEntity);
                         if (statusCode == 404) {
                             logger.warn("{}: missing entry.", getTaskName());
@@ -192,8 +193,8 @@ public class PeerEurekaNode {
      *            the overridden status information if any of the instance.
      * @throws Throwable
      */
-    public void heartbeat(final String appName, final String id,
-                          final InstanceInfo info, final InstanceStatus overriddenStatus,
+    public void heartbeat(final String appName, @Nullable final String id,
+                          @Nullable final InstanceInfo info, @Nullable final InstanceStatus overriddenStatus,
                           boolean primeConnection) throws Throwable {
         if (primeConnection) {
             // We do not care about the result for priming request.
@@ -207,7 +208,7 @@ public class PeerEurekaNode {
             }
 
             @Override
-            public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+            public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
                 super.handleFailure(statusCode, responseEntity);
                 if (statusCode == 404) {
                     logger.warn("{}: missing entry.", getTaskName());
@@ -267,8 +268,8 @@ public class PeerEurekaNode {
      * @param info
      *            the instance information of the instance.
      */
-     public void statusUpdate(final String appName, final String id,
-                             final InstanceStatus newStatus, final InstanceInfo info) {
+     public void statusUpdate(final String appName, @Nullable final String id,
+                             @Nullable final InstanceStatus newStatus, @Nullable final InstanceInfo info) {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
                 taskId("statusUpdate", appName, id),
@@ -292,7 +293,7 @@ public class PeerEurekaNode {
      * @param info
      *            the instance information of the instance.
      */
-     public void deleteStatusOverride(final String appName, final String id, final InstanceInfo info) {
+     public void deleteStatusOverride(final String appName, @Nullable final String id, @Nullable final InstanceInfo info) {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
                 taskId("deleteStatusOverride", appName, id),
@@ -357,7 +358,7 @@ public class PeerEurekaNode {
      * Synchronize {@link InstanceInfo} information if the timestamp between
      * this node and the peer eureka nodes vary.
      */
-    private void syncInstancesIfTimestampDiffers(String appName, String id, InstanceInfo info, InstanceInfo infoFromPeer) {
+    private void syncInstancesIfTimestampDiffers(String appName, @Nullable String id, @Nullable InstanceInfo info, InstanceInfo infoFromPeer) {
         try {
             if (infoFromPeer != null) {
                 logger.warn("Peer wants us to take the instance information from it, since the timestamp differs,"
@@ -384,15 +385,15 @@ public class PeerEurekaNode {
         return "target_" + batcherName;
     }
 
-    private static String taskId(String requestType, String appName, String id) {
+    private static String taskId(String requestType, String appName, @Nullable String id) {
         return requestType + '#' + appName + '/' + id;
     }
 
-    private static String taskId(String requestType, InstanceInfo info) {
+    private static String taskId(String requestType, @Nullable InstanceInfo info) {
         return taskId(requestType, info.getAppName(), info.getId());
     }
 
-    private static int getLeaseRenewalOf(InstanceInfo info) {
+    private static int getLeaseRenewalOf(@Nullable InstanceInfo info) {
         return (info.getLeaseInfo() == null ? Lease.DEFAULT_DURATION_IN_SECS : info.getLeaseInfo().getRenewalIntervalInSecs()) * 1000;
     }
 }

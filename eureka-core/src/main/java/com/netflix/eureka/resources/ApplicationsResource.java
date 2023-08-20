@@ -64,7 +64,7 @@ public class ApplicationsResource {
 
     private final EurekaServerConfig serverConfig;
     private final PeerAwareInstanceRegistry registry;
-    private final ResponseCache responseCache;
+    @Nullable private final ResponseCache responseCache;
 
     @Inject
     ApplicationsResource(EurekaServerContext eurekaServer) {

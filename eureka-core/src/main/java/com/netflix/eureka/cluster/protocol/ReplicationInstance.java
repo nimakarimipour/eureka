@@ -4,28 +4,29 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
+import javax.annotation.Nullable;
 
 
 /**
  * The jersey resource class that generates a particular replication event
  */
 public class ReplicationInstance {
-    private String appName;
-    private String id;
-    private Long lastDirtyTimestamp;
-    private String overriddenStatus;
-    private String status;
-    private InstanceInfo instanceInfo;
-    private Action action;
+    @Nullable private String appName;
+    @Nullable private String id;
+    @Nullable private Long lastDirtyTimestamp;
+    @Nullable private String overriddenStatus;
+    @Nullable private String status;
+    @Nullable private InstanceInfo instanceInfo;
+    @Nullable private Action action;
 
     @JsonCreator
-    public ReplicationInstance(@JsonProperty("appName") String appName,
-                               @JsonProperty("id") String id,
-                               @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
-                               @JsonProperty("overriddenStatus") String overriddenStatus,
-                               @JsonProperty("status") String status,
-                               @JsonProperty("instanceInfo") InstanceInfo instanceInfo,
-                               @JsonProperty("action") Action action) {
+    public ReplicationInstance(@Nullable @JsonProperty("appName") String appName,
+                               @Nullable @JsonProperty("id") String id,
+                               @Nullable @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
+                               @Nullable @JsonProperty("overriddenStatus") String overriddenStatus,
+                               @Nullable @JsonProperty("status") String status,
+                               @Nullable @JsonProperty("instanceInfo") InstanceInfo instanceInfo,
+                               @Nullable @JsonProperty("action") Action action) {
         this.appName = appName;
         this.id = id;
         this.lastDirtyTimestamp = lastDirtyTimestamp;
@@ -35,31 +36,31 @@ public class ReplicationInstance {
         this.action = action;
     }
 
-    public String getAppName() {
+    @Nullable public String getAppName() {
         return appName;
     }
 
-    public String getId() {
+    @Nullable public String getId() {
         return id;
     }
 
-    public Long getLastDirtyTimestamp() {
+    @Nullable public Long getLastDirtyTimestamp() {
         return lastDirtyTimestamp;
     }
 
-    public String getOverriddenStatus() {
+    @Nullable public String getOverriddenStatus() {
         return overriddenStatus;
     }
 
-    public String getStatus() {
+    @Nullable public String getStatus() {
         return status;
     }
 
-    public InstanceInfo getInstanceInfo() {
+    @Nullable public InstanceInfo getInstanceInfo() {
         return instanceInfo;
     }
 
-    public Action getAction() {
+    @Nullable public Action getAction() {
         return action;
     }
 
@@ -105,13 +106,13 @@ public class ReplicationInstance {
     }
 
     public static class ReplicationInstanceBuilder {
-         private String appName;
-         private String id;
-         private Long lastDirtyTimestamp;
-         private String overriddenStatus;
-         private String status;
-         private InstanceInfo instanceInfo;
-         private Action action;
+         @Nullable private String appName;
+         @Nullable private String id;
+         @Nullable private Long lastDirtyTimestamp;
+         @Nullable private String overriddenStatus;
+         @Nullable private String status;
+         @Nullable private InstanceInfo instanceInfo;
+         @Nullable private Action action;
 
          private ReplicationInstanceBuilder() {
         }
@@ -120,37 +121,37 @@ public class ReplicationInstance {
             return new ReplicationInstanceBuilder();
         }
 
-        public ReplicationInstanceBuilder withAppName(String appName) {
+        public ReplicationInstanceBuilder withAppName(@Nullable String appName) {
             this.appName = appName;
             return this;
         }
 
-        public ReplicationInstanceBuilder withId(String id) {
+        public ReplicationInstanceBuilder withId(@Nullable String id) {
             this.id = id;
             return this;
         }
 
-        public ReplicationInstanceBuilder withLastDirtyTimestamp(Long lastDirtyTimestamp) {
+        public ReplicationInstanceBuilder withLastDirtyTimestamp(@Nullable Long lastDirtyTimestamp) {
             this.lastDirtyTimestamp = lastDirtyTimestamp;
             return this;
         }
 
-        public ReplicationInstanceBuilder withOverriddenStatus(String overriddenStatus) {
+        public ReplicationInstanceBuilder withOverriddenStatus(@Nullable String overriddenStatus) {
             this.overriddenStatus = overriddenStatus;
             return this;
         }
 
-        public ReplicationInstanceBuilder withStatus(String status) {
+        public ReplicationInstanceBuilder withStatus(@Nullable String status) {
             this.status = status;
             return this;
         }
 
-        public ReplicationInstanceBuilder withInstanceInfo(InstanceInfo instanceInfo) {
+        public ReplicationInstanceBuilder withInstanceInfo(@Nullable InstanceInfo instanceInfo) {
             this.instanceInfo = instanceInfo;
             return this;
         }
 
-        public ReplicationInstanceBuilder withAction(Action action) {
+        public ReplicationInstanceBuilder withAction(@Nullable Action action) {
             this.action = action;
             return this;
         }
