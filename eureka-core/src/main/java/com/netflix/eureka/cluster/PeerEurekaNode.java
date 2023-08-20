@@ -31,6 +31,7 @@ import com.netflix.eureka.util.batcher.TaskDispatcher;
 import com.netflix.eureka.util.batcher.TaskDispatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 
 /**
@@ -166,7 +167,7 @@ public class PeerEurekaNode {
                     }
 
                     @Override
-                    public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+                    public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
                         super.handleFailure(statusCode, responseEntity);
                         if (statusCode == 404) {
                             logger.warn("{}: missing entry.", getTaskName());
@@ -193,7 +194,7 @@ public class PeerEurekaNode {
      * @throws Throwable
      */
     public void heartbeat(final String appName, final String id,
-                          final InstanceInfo info, final InstanceStatus overriddenStatus,
+                          final InstanceInfo info, @Nullable final InstanceStatus overriddenStatus,
                           boolean primeConnection) throws Throwable {
         if (primeConnection) {
             // We do not care about the result for priming request.
@@ -207,7 +208,7 @@ public class PeerEurekaNode {
             }
 
             @Override
-            public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+            public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
                 super.handleFailure(statusCode, responseEntity);
                 if (statusCode == 404) {
                     logger.warn("{}: missing entry.", getTaskName());
@@ -268,7 +269,7 @@ public class PeerEurekaNode {
      *            the instance information of the instance.
      */
      public void statusUpdate(final String appName, final String id,
-                             final InstanceStatus newStatus, final InstanceInfo info) {
+                             @Nullable final InstanceStatus newStatus, final InstanceInfo info) {
         long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
         batchingDispatcher.process(
                 taskId("statusUpdate", appName, id),

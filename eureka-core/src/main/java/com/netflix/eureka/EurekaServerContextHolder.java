@@ -15,6 +15,7 @@
  */
 
 package com.netflix.eureka;
+import javax.annotation.Nullable;
 
 /**
  * A static holder for the server context for use in non-DI cases.
@@ -33,7 +34,7 @@ public class EurekaServerContextHolder {
         return this.serverContext;
     }
 
-     private static EurekaServerContextHolder holder;
+     @Nullable private static EurekaServerContextHolder holder;
 
     public static synchronized void initialize(EurekaServerContext serverContext) {
         holder = new EurekaServerContextHolder(serverContext);

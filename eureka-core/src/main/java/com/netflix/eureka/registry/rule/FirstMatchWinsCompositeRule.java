@@ -5,6 +5,7 @@ import com.netflix.eureka.lease.Lease;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * This rule takes an ordered list of rules and returns the result of the first match or the
@@ -32,7 +33,7 @@ public class FirstMatchWinsCompositeRule implements InstanceStatusOverrideRule {
 
     @Override
     public StatusOverrideResult apply(InstanceInfo instanceInfo,
-                                      Lease<InstanceInfo> existingLease,
+                                      @Nullable Lease<InstanceInfo> existingLease,
                                       boolean isReplication) {
         for (int i = 0; i < this.rules.length; ++i) {
             StatusOverrideResult result = this.rules[i].apply(instanceInfo, existingLease, isReplication);

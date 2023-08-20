@@ -61,6 +61,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import static com.netflix.eureka.Names.METRIC_REGISTRY_PREFIX;
+import javax.annotation.Nullable;
 
 
 /**
@@ -436,7 +437,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      */
      @Override
     public boolean statusUpdate(final String appName, final String id,
-                                final InstanceStatus newStatus, String lastDirtyTimestamp,
+                                final InstanceStatus newStatus, @Nullable String lastDirtyTimestamp,
                                 final boolean isReplication) {
         if (super.statusUpdate(appName, id, newStatus, lastDirtyTimestamp, isReplication)) {
             replicateToPeers(Action.StatusUpdate, appName, id, null, newStatus, isReplication);
@@ -518,7 +519,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
         return isSelfPreservationModeEnabled() ? 1 : 0;
     }
 
-     @Override
+     @Nullable @Override
     public InstanceInfo getNextServerFromEureka(String virtualHostname, boolean secure) {
         // TODO Auto-generated method stub
         return null;
@@ -628,8 +629,8 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      *
      */
     private void replicateToPeers(Action action, String appName, String id,
-                                  InstanceInfo info /* optional */,
-                                  InstanceStatus newStatus /* optional */, boolean isReplication) {
+                                  @Nullable InstanceInfo info /* optional */,
+                                  @Nullable InstanceStatus newStatus /* optional */, boolean isReplication) {
         Stopwatch tracer = action.getTimer().start();
         try {
             if (isReplication) {
@@ -658,7 +659,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
      *
      */
      private void replicateInstanceActionsToPeers(Action action, String appName,
-                                                 String id, InstanceInfo info, InstanceStatus newStatus,
+                                                 String id, @Nullable InstanceInfo info, @Nullable InstanceStatus newStatus,
                                                  PeerEurekaNode node) {
         try {
             InstanceInfo infoFromRegistry;
