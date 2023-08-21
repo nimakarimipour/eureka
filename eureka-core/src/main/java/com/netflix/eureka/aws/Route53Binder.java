@@ -24,6 +24,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.Nullable;
+import org.jspecify.annotations.NullUnmarked;
 
 
 /**
@@ -215,7 +217,7 @@ public class Route53Binder implements AwsBinder {
             amazonRoute53Client.changeResourceRecordSets(changeResourceRecordSetsRequest);
     }
 
-     private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
+     @Nullable private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
         HostedZone hostedZone = getHostedZone(domain);
         if (hostedZone != null) {
             return new ResourceRecordSetWithHostedZone(hostedZone, getResourceRecordSet(domain, hostedZone));
@@ -223,7 +225,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-     private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
+     @Nullable private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
         ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
         request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         request.setHostedZoneId(hostedZone.getId());
@@ -239,7 +241,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-     private HostedZone getHostedZone(String domain) {
+     @Nullable private HostedZone getHostedZone(String domain) {
         ListHostedZonesRequest listHostedZoneRequest = new ListHostedZonesRequest();
         listHostedZoneRequest.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         ListHostedZonesResult listHostedZonesResult = amazonRoute53Client.listHostedZones(listHostedZoneRequest);
@@ -251,7 +253,7 @@ public class Route53Binder implements AwsBinder {
         return null;
     }
 
-    private void unbindFromDomain(String domain) throws InterruptedException {
+    @NullUnmarked private void unbindFromDomain(String domain) throws InterruptedException {
         ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone = getResourceRecordSetWithHostedZone(domain);
         if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
             resourceRecordSetWithHostedZone.getResourceRecordSet().getResourceRecords().get(0).setValue(NULL_DOMAIN);
@@ -297,7 +299,7 @@ public class Route53Binder implements AwsBinder {
         }
     }
 
-    private boolean hasValue(ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone, String ip) {
+    private boolean hasValue(@Nullable ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone, String ip) {
         if (resourceRecordSetWithHostedZone != null && resourceRecordSetWithHostedZone.getResourceRecordSet() != null) {
             for (ResourceRecord rr : resourceRecordSetWithHostedZone.getResourceRecordSet().getResourceRecords()) {
                 if (ip.equals(rr.getValue())) {
@@ -310,9 +312,9 @@ public class Route53Binder implements AwsBinder {
 
     private class ResourceRecordSetWithHostedZone {
         private final HostedZone hostedZone;
-        private final ResourceRecordSet resourceRecordSet;
+        @Nullable private final ResourceRecordSet resourceRecordSet;
 
-        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, ResourceRecordSet resourceRecordSet) {
+        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, @Nullable ResourceRecordSet resourceRecordSet) {
             this.hostedZone = hostedZone;
             this.resourceRecordSet = resourceRecordSet;
         }
@@ -321,7 +323,7 @@ public class Route53Binder implements AwsBinder {
             return hostedZone;
         }
 
-        public ResourceRecordSet getResourceRecordSet() {
+        @NullUnmarked public ResourceRecordSet getResourceRecordSet() {
             return resourceRecordSet;
         }
     }

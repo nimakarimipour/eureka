@@ -3,6 +3,7 @@ package com.netflix.eureka.cluster.protocol;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.netflix.appinfo.InstanceInfo;
+import javax.annotation.Nullable;
 
 /**
  * The jersey resource class that generates the replication indivdiual response.
@@ -10,12 +11,12 @@ import com.netflix.appinfo.InstanceInfo;
 public class ReplicationInstanceResponse {
 
     private final int statusCode;
-    private final InstanceInfo responseEntity;
+    @Nullable private final InstanceInfo responseEntity;
 
     @JsonCreator
     public ReplicationInstanceResponse(
             @JsonProperty("statusCode") int statusCode,
-            @JsonProperty("responseEntity") InstanceInfo responseEntity) {
+            @Nullable @JsonProperty("responseEntity") InstanceInfo responseEntity) {
         this.statusCode = statusCode;
         this.responseEntity = responseEntity;
     }
@@ -24,7 +25,7 @@ public class ReplicationInstanceResponse {
         return statusCode;
     }
 
-    public InstanceInfo getResponseEntity() {
+    @Nullable public InstanceInfo getResponseEntity() {
         return responseEntity;
     }
 
@@ -55,7 +56,7 @@ public class ReplicationInstanceResponse {
     public static final class Builder {
 
         private int statusCode;
-         private InstanceInfo responseEntity;
+         @Nullable private InstanceInfo responseEntity;
 
         public Builder setStatusCode(int statusCode) {
             this.statusCode = statusCode;

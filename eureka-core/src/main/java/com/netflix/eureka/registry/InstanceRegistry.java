@@ -11,6 +11,7 @@ import com.netflix.eureka.lease.LeaseManager;
 
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * @author Tomasz Bak
@@ -27,7 +28,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
     void storeOverriddenStatusIfRequired(String appName, String id, InstanceStatus overriddenStatus);
 
     boolean statusUpdate(String appName, String id, InstanceStatus newStatus,
-                         String lastDirtyTimestamp, boolean isReplication);
+                         @Nullable String lastDirtyTimestamp, boolean isReplication);
 
     boolean deleteStatusOverride(String appName, String id, InstanceStatus newStatus,
                                  String lastDirtyTimestamp, boolean isReplication);
@@ -47,7 +48,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
      *                            {@link com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
      * @return the application
      */
-    Application getApplication(String appName, boolean includeRemoteRegion);
+    @Nullable Application getApplication(String appName, boolean includeRemoteRegion);
 
     /**
      * Gets the {@link InstanceInfo} information.

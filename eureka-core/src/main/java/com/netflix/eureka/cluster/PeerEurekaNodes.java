@@ -24,6 +24,8 @@ import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.transport.JerseyReplicationClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
+import org.jspecify.annotations.NullUnmarked;
 
 
 /**
@@ -45,7 +47,7 @@ public class PeerEurekaNodes {
     private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
     private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
-     private ScheduledExecutorService taskExecutor;
+     @Nullable private ScheduledExecutorService taskExecutor;
 
     @Inject
     public PeerEurekaNodes(
@@ -111,7 +113,7 @@ public class PeerEurekaNodes {
         }
     }
 
-    public void shutdown() {
+    @NullUnmarked public void shutdown() {
         taskExecutor.shutdown();
         List<PeerEurekaNode> toRemove = this.peerEurekaNodes;
 
@@ -256,7 +258,7 @@ public class PeerEurekaNodes {
         return hostName != null && hostName.equals(myInfoComparator);
     }
 
-     public static String hostFromUrl(String url) {
+     @Nullable public static String hostFromUrl(String url) {
         URI uri;
         try {
             uri = new URI(url);

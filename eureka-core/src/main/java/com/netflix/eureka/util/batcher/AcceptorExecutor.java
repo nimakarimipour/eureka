@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.netflix.eureka.Names.METRIC_REPLICATION_PREFIX;
+import org.jspecify.annotations.NullUnmarked;
 
 
 /**
@@ -318,7 +319,7 @@ class AcceptorExecutor<ID, T> {
             }
         }
 
-         private boolean hasEnoughTasksForNextBatch() {
+         @NullUnmarked private boolean hasEnoughTasksForNextBatch() {
             if (processingOrder.isEmpty()) {
                 return false;
             }

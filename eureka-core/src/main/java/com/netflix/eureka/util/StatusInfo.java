@@ -12,6 +12,8 @@ import com.netflix.config.ConfigurationManager;
 import com.netflix.discovery.provider.Serializer;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
+import javax.annotation.Nullable;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * An utility class for exposing status information of an instance.
@@ -91,18 +93,18 @@ public class StatusInfo {
     }
 
     private Map<String, String> generalStats = new HashMap<String, String>();
-     private Map<String, String> applicationStats;
-     private InstanceInfo instanceInfo;
-     private Boolean isHeathly;
+     @Nullable private Map<String, String> applicationStats;
+     @Nullable private InstanceInfo instanceInfo;
+     @Nullable private Boolean isHeathly;
 
     private StatusInfo() {
     }
 
-    public InstanceInfo getInstanceInfo() {
+    @Nullable public InstanceInfo getInstanceInfo() {
         return instanceInfo;
     }
 
-    public boolean isHealthy() {
+    @NullUnmarked public boolean isHealthy() {
         return isHeathly.booleanValue();
     }
 
@@ -110,7 +112,7 @@ public class StatusInfo {
         return generalStats;
     }
 
-    public Map<String, String> getApplicationStats() {
+    @Nullable public Map<String, String> getApplicationStats() {
         return applicationStats;
     }
 

@@ -15,6 +15,8 @@ import com.google.common.base.Strings;
 import com.netflix.appinfo.AbstractEurekaIdentity;
 import com.netflix.servo.monitor.DynamicCounter;
 import com.netflix.servo.monitor.MonitorConfig;
+import javax.annotation.Nullable;
+import org.jspecify.annotations.NullUnmarked;
 
 /**
  * An auth filter for client requests. For now, it only logs supported client identification data from header info
@@ -25,7 +27,7 @@ public class ServerRequestAuthFilter implements Filter {
 
     private static final String NAME_PREFIX = "DiscoveryServerRequestAuth_Name_";
 
-     private EurekaServerConfig serverConfig;
+     @Nullable private EurekaServerConfig serverConfig;
 
     @Inject
     public ServerRequestAuthFilter(EurekaServerContext server) {
@@ -57,7 +59,7 @@ public class ServerRequestAuthFilter implements Filter {
         // nothing to do here
     }
 
-    protected void logAuth(ServletRequest request) {
+    @NullUnmarked protected void logAuth(ServletRequest request) {
         if (serverConfig.shouldLogIdentityHeaders()) {
             if (request instanceof HttpServletRequest) {
                 HttpServletRequest httpRequest = (HttpServletRequest) request;
