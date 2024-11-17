@@ -84,7 +84,6 @@ public class Route53Binder implements AwsBinder {
     }
 
     @Override
-    @PostConstruct
     public void start() {
         try {
             doBind();
@@ -263,7 +262,6 @@ public class Route53Binder implements AwsBinder {
     }
 
     @Override
-    @PreDestroy
     public void shutdown() {
         timer.cancel();
 

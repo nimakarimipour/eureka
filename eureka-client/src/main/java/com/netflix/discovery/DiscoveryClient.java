@@ -43,7 +43,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import javax.annotation.Nullable;
-import javax.annotation.PreDestroy;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import javax.net.ssl.HostnameVerifier;
@@ -928,7 +927,6 @@ public class DiscoveryClient implements EurekaClient {
      * Shuts down Eureka Client. Also sends a deregistration request to the
      * eureka server.
      */
-    @PreDestroy
     @Override
     public synchronized void shutdown() {
         if (isShutdown.compareAndSet(false, true)) {

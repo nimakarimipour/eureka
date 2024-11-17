@@ -2,7 +2,7 @@
 <scanner>
     <serialization active="true"/>
     <uuid>e7910600-05e6-4bda-be98-4f490a033cb4</uuid>
-    <path>/home/nima/Developer/nullness-benchmarks/eureka/annotator-out/0</path>
+    <path>/Users/nima/Desktop/eureka/annotator-out/0</path>
     <processor>
         <LOMBOK active="true"/>
     </processor>

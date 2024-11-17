@@ -37,7 +37,6 @@ public class ExampleServiceBase {
         this.configInstance = configInstance;
     }
 
-    @PostConstruct
     public void start() {
         // A good practice is to register as STARTING and only change status to UP
         // after the service is ready to receive traffic
@@ -76,7 +75,6 @@ public class ExampleServiceBase {
         }
     }
 
-    @PreDestroy
     public void stop() {
         if (eurekaClient != null) {
             System.out.println("Shutting down server. Demo over.");

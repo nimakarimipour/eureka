@@ -100,7 +100,6 @@ public class EIPManager implements AwsBinder {
         }
     }
 
-    @PostConstruct
     public void start() {
         try {
             handleEIPBinding();
@@ -109,7 +108,6 @@ public class EIPManager implements AwsBinder {
         }
     }
 
-    @PreDestroy
     public void shutdown() {
         timer.cancel();
         for (int i = 0; i < serverConfig.getEIPBindRebindRetries(); i++) {

@@ -1,27 +1,26 @@
 apply plugin: 'war'
 
 dependencies {
-    compile project(':eureka-client')
-    compile project(':eureka-core')
-    compile "com.sun.jersey:jersey-server:$jerseyVersion"
-    compile "com.sun.jersey:jersey-servlet:$jerseyVersion"
-    compile 'org.slf4j:slf4j-log4j12:1.6.1'
-    compile 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
+    implementation project(':eureka-client')
+    implementation project(':eureka-core')
+    implementation "com.sun.jersey:jersey-server:$jerseyVersion"
+    implementation "com.sun.jersey:jersey-servlet:$jerseyVersion"
+    implementation 'org.slf4j:slf4j-log4j12:1.6.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.3'
 
-    runtimeOnly 'xerces:xercesImpl:2.12.0'
-    runtimeOnly 'org.codehaus.jettison:jettison:1.2'
+    implementation 'xerces:xercesImpl:2.12.0'
+    implementation 'org.codehaus.jettison:jettison:1.2'
 
-    providedCompile "javax.servlet:servlet-api:$servletVersion"
+    implementation "javax.servlet:servlet-api:$servletVersion"
 
-    testCompile project(':eureka-test-utils')
-    testCompile "org.mockito:mockito-core:${mockitoVersion}"
-    testCompile "org.eclipse.jetty:jetty-server:$jetty_version"
-    testCompile "org.eclipse.jetty:jetty-webapp:$jetty_version"
+    testImplementation project(':eureka-test-utils')
+    testImplementation "org.mockito:mockito-core:${mockitoVersion}"
+    testImplementation "org.eclipse.jetty:jetty-server:$jetty_version"
+    testImplementation "org.eclipse.jetty:jetty-webapp:$jetty_version"
 }
 
 task copyLibs(type: Copy) {
     into 'testlibs/WEB-INF/libs'
-    from configurations.runtime
 }
 
 war {

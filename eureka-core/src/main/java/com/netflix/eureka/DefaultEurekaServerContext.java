@@ -60,7 +60,6 @@ public class DefaultEurekaServerContext implements EurekaServerContext {
         this.applicationInfoManager = applicationInfoManager;
     }
 
-    @PostConstruct
     @Override
     public void initialize() {
         logger.info("Initializing ...");
@@ -73,7 +72,6 @@ public class DefaultEurekaServerContext implements EurekaServerContext {
         logger.info("Initialized");
     }
 
-    @PreDestroy
     @Override
     public void shutdown() {
         logger.info("Shutting down ...");

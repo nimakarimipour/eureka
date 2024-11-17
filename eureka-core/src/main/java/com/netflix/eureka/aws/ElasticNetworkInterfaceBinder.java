@@ -81,7 +81,6 @@ public class ElasticNetworkInterfaceBinder implements AwsBinder {
         }
     }
 
-    @PostConstruct
     public void start()  {
         int retries = serverConfig.getEIPBindRebindRetries();
         for (int i = 0; i < retries; i++) {

@@ -37,7 +37,6 @@ public class AwsBinderDelegate implements AwsBinder {
     }
 
     @Override
-    @PostConstruct
     public void start() {
         try {
             delegate.start();
@@ -47,7 +46,6 @@ public class AwsBinderDelegate implements AwsBinder {
     }
 
     @Override
-    @PreDestroy
     public void shutdown()  {
         try {
             delegate.shutdown();
