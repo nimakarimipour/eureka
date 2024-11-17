@@ -132,7 +132,10 @@ public class PeerEurekaNode {
      *            that is send to this instance.
      * @throws Exception
      */
-    public void register(final InstanceInfo info) throws Exception {
+    public void register(@Nullable final InstanceInfo info) throws Exception {
+        if(info == null){
+            return;
+        }
         long expiryTime = System.currentTimeMillis() + getLeaseRenewalOf(info);
         batchingDispatcher.process(
                 taskId("register", info),
