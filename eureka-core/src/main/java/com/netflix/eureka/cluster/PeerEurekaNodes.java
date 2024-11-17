@@ -215,6 +215,7 @@ public class PeerEurekaNodes {
      * @return true, if the url represents the current node which is trying to
      *         replicate, false otherwise.
      */
+    @SuppressWarnings("dep-ann")
     public static boolean isThisMe(String url) {
         InstanceInfo myInfo = ApplicationInfoManager.getInstance().getInfo();
         String hostName = hostFromUrl(url);

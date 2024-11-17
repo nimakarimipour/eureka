@@ -535,6 +535,7 @@ public interface EurekaServerConfig {
      * @return - array of string representing {@link java.net.URL}s.
      * @deprecated Use {@link #getRemoteRegionUrlsWithName()}
      */
+    @SuppressWarnings("dep-ann")
     String[] getRemoteRegionUrls();
 
     /**
