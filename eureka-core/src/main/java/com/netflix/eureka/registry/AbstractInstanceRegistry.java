@@ -56,6 +56,7 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.util.MeasuredRate;
 import com.netflix.servo.annotations.DataSourceType;
+import com.uber.nullaway.annotations.Initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +129,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
 
     @Override
+    @Initializer
     public synchronized void initializedResponseCache() {
         if (responseCache == null) {
             responseCache = new ResponseCacheImpl(serverConfig, serverCodecs, this);
