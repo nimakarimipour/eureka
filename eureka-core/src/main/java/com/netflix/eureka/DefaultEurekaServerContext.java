@@ -17,7 +17,6 @@
 package com.netflix.eureka;
 
 import com.netflix.appinfo.ApplicationInfoManager;
-import com.netflix.discovery.DiscoveryManager;
 import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.resources.ServerCodecs;
@@ -25,9 +24,6 @@ import com.netflix.eureka.util.EurekaMonitors;
 import com.netflix.eureka.util.ServoControl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 

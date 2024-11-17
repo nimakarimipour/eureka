@@ -25,6 +25,15 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
     implementation "com.fasterxml.woodstox:woodstox-core:${woodstoxVersion}"
 
+    // https://mvnrepository.com/artifact/com.netflix.servo/servo-core
+    implementation 'com.netflix.servo:servo-core:0.13.2'
+    // https://mvnrepository.com/artifact/com.netflix.archaius/archaius-core
+    implementation 'com.netflix.archaius:archaius-core:0.7.12'
+    // https://mvnrepository.com/artifact/javax.inject/javax.inject
+    implementation 'javax.inject:javax.inject:1'
+    // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
+    implementation 'com.sun.jersey:jersey-client:1.17'
+
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
     errorprone "com.google.errorprone:error_prone_core:2.3.2"
     errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"

@@ -43,9 +43,6 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.servo.monitor.Monitors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -357,7 +354,7 @@ public class EIPManager implements AwsBinder {
                 String eip = eipStr.replaceAll("\\-", ".");
                 returnedUrls.add(eip);
             }
-            
+
             // Otherwise, if CNAME doesn't contain, do nothing.
             // Handle case where there are no cnames containing "ec2-". Reasons include:
             //  Systems without public addresses - purely attached to corp lan via AWS Direct Connect
