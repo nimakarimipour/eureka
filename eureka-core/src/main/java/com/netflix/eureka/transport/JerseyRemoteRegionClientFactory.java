@@ -35,6 +35,7 @@ import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * @author Tomasz Bak
@@ -47,7 +48,7 @@ public class JerseyRemoteRegionClientFactory implements TransportClientFactory {
     private final ServerCodecs serverCodecs;
     private final String region;
 
-    private volatile EurekaJerseyClient jerseyClient;
+    @Nullable private volatile EurekaJerseyClient jerseyClient;
     private final Object lock = new Object();
 
     @Inject

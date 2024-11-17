@@ -35,6 +35,7 @@ import com.netflix.eureka.cluster.protocol.ReplicationListResponse;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A <em>jersey</em> resource that handles requests for replication purposes.
@@ -144,7 +145,7 @@ public class PeerReplicationResource {
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    private static Builder handleHeartbeat(EurekaServerConfig config, InstanceResource resource, String lastDirtyTimestamp, String overriddenStatus, String instanceStatus) {
+    private static Builder handleHeartbeat(EurekaServerConfig config, InstanceResource resource, @Nullable String lastDirtyTimestamp, @Nullable String overriddenStatus, @Nullable String instanceStatus) {
         Response response = resource.renewLease(REPLICATION, overriddenStatus, instanceStatus, lastDirtyTimestamp);
         int responseStatus = response.getStatus();
         Builder responseBuilder = new Builder().setStatusCode(responseStatus);
@@ -173,7 +174,7 @@ public class PeerReplicationResource {
         return new Builder().setStatusCode(response.getStatus());
     }
 
-    private static <T> String toString(T value) {
+    @Nullable private static <T> String toString(@Nullable T value) {
         if (value == null) {
             return null;
         }

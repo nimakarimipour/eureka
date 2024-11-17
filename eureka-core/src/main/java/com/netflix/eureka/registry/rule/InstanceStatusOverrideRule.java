@@ -3,6 +3,7 @@ package com.netflix.eureka.registry.rule;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
 import com.netflix.eureka.registry.AbstractInstanceRegistry;
+import javax.annotation.Nullable;
 
 /**
  * A single rule that if matched it returns an instance status.
@@ -24,7 +25,7 @@ public interface InstanceStatusOverrideRule {
      * @return A result with whether we matched and what we propose the status to be overriden to.
      */
     StatusOverrideResult apply(final InstanceInfo instanceInfo,
-                               final Lease<InstanceInfo> existingLease,
+                               @Nullable final Lease<InstanceInfo> existingLease,
                                boolean isReplication);
 
 }
