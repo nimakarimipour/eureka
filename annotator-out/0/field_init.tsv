@@ -1,4 +1,5 @@
 kind	class	method	param	index	uri	field
+METHOD	com.netflix.eureka.ServerRequestAuthFilter	init(javax.servlet.FilterConfig)	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/ServerRequestAuthFilter.java	serverConfig
 METHOD	com.netflix.eureka.cluster.PeerEurekaNodes	shutdown()	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/PeerEurekaNodes.java	peerEurekaNodes
 METHOD	com.netflix.eureka.cluster.PeerEurekaNodes	shutdown()	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/PeerEurekaNodes.java	peerEurekaNodeUrls
 METHOD	com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl	init(com.netflix.eureka.cluster.PeerEurekaNodes)	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/registry/PeerAwareInstanceRegistryImpl.java	peerEurekaNodes
