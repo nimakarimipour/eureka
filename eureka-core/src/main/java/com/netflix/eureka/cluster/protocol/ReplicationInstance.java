@@ -43,6 +43,7 @@ public class ReplicationInstance {
         return id;
     }
 
+    @Nullable
     public Long getLastDirtyTimestamp() {
         return lastDirtyTimestamp;
     }

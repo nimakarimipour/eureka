@@ -530,7 +530,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     @Override
     public boolean deleteStatusOverride(String appName, String id,
                                         InstanceStatus newStatus,
-                                        String lastDirtyTimestamp,
+                                        @Nullable String lastDirtyTimestamp,
                                         boolean isReplication) {
         read.lock();
         try {

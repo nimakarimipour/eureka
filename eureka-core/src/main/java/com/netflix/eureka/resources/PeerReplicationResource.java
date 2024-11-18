@@ -170,7 +170,7 @@ public class PeerReplicationResource {
 
     private static Builder handleDeleteStatusOverride(ReplicationInstance instanceInfo, InstanceResource resource) {
         Response response = resource.deleteStatusUpdate(REPLICATION, instanceInfo.getStatus(),
-                instanceInfo.getLastDirtyTimestamp().toString());
+                toString(instanceInfo.getLastDirtyTimestamp()));
         return new Builder().setStatusCode(response.getStatus());
     }
 

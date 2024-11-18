@@ -31,7 +31,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
                          @Nullable String lastDirtyTimestamp, boolean isReplication);
 
     boolean deleteStatusOverride(String appName, String id, InstanceStatus newStatus,
-                                 String lastDirtyTimestamp, boolean isReplication);
+                                 @Nullable String lastDirtyTimestamp, boolean isReplication);
 
     Map<String, InstanceStatus> overriddenInstanceStatusesSnapshot();
 

@@ -202,7 +202,7 @@ public class InstanceResource {
     public Response deleteStatusUpdate(
             @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
             @Nullable @QueryParam("value") String newStatusValue,
-            @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
+            @Nullable @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
         try {
             if (registry.getInstanceByAppAndId(app.getName(), id) == null) {
                 logger.warn("Instance not found: {}/{}", app.getName(), id);

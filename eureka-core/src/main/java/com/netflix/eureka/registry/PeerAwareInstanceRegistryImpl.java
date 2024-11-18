@@ -450,7 +450,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     @Override
     public boolean deleteStatusOverride(String appName, String id,
                                         InstanceStatus newStatus,
-                                        String lastDirtyTimestamp,
+                                        @Nullable String lastDirtyTimestamp,
                                         boolean isReplication) {
         if (super.deleteStatusOverride(appName, id, newStatus, lastDirtyTimestamp, isReplication)) {
             replicateToPeers(Action.DeleteStatusOverride, appName, id, null, null, isReplication);

@@ -1,0 +1,3 @@
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/protocol/ReplicationInstance.java:116: error: [NullAway] initializer method does not guarantee @NonNull fields appName (line 108), id (line 109), lastDirtyTimestamp (line 110), instanceInfo (line 113), action (line 114) are initialized along all control-flow paths (remember to check for exceptions or early returns).
+        private ReplicationInstanceBuilder() {
+For field: lastTimeStamp
