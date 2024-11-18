@@ -115,10 +115,6 @@ public class RateLimitingFilter implements Filter {
         this.serverConfig = server.getServerConfig();
     }
 
-    // for non-DI use
-    public RateLimitingFilter() {
-    }
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         if (serverConfig == null) {
