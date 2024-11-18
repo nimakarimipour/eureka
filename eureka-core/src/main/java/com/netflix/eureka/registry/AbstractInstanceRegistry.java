@@ -766,7 +766,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             }
         }
         if (includeRemoteRegion) {
-            remoteRegions = Utils
             for (String remoteRegion : remoteRegions) {
                 RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
                 if (null != remoteRegistry) {
