@@ -1,0 +1,4 @@
+Stopping file watching and invalidating VFS after an error happened
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/registry/AbstractInstanceRegistry.java:910: error: [NullAway] dereferenced expression applications is @Nullable
+                    for (Application application : applications.getRegisteredApplications()) {
+                                                               ^
