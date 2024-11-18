@@ -9,6 +9,7 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -81,5 +82,12 @@ public class StatusUtil {
             logger.error("Could not determine if the replica is available ", e);
         }
         return false;
+    }
+
+    public static <T> T castToNonnull(@Nullable T param){
+        if(param == null){
+            throw new RuntimeException("param is null");
+        }
+        return param;
     }
 }
