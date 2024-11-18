@@ -308,9 +308,9 @@ public class Route53Binder implements AwsBinder {
 
     private class ResourceRecordSetWithHostedZone {
         private final HostedZone hostedZone;
-        private final ResourceRecordSet resourceRecordSet;
+        @Nullable private final ResourceRecordSet resourceRecordSet;
 
-        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, ResourceRecordSet resourceRecordSet) {
+        public ResourceRecordSetWithHostedZone(HostedZone hostedZone, @Nullable ResourceRecordSet resourceRecordSet) {
             this.hostedZone = hostedZone;
             this.resourceRecordSet = resourceRecordSet;
         }
