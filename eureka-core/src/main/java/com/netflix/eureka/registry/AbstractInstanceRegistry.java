@@ -56,6 +56,7 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.util.MeasuredRate;
 import com.netflix.servo.annotations.DataSourceType;
+import com.netflix.spectator.api.Utils;
 import com.uber.nullaway.annotations.Initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -765,6 +766,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             }
         }
         if (includeRemoteRegion) {
+            remoteRegions = Utils
             for (String remoteRegion : remoteRegions) {
                 RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
                 if (null != remoteRegistry) {

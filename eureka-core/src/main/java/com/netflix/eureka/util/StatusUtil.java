@@ -83,11 +83,4 @@ public class StatusUtil {
         }
         return false;
     }
-
-    public static <T> T castToNonnull(@Nullable T param){
-        if(param == null){
-            throw new RuntimeException("param is null");
-        }
-        return param;
-    }
 }
