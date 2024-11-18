@@ -1,0 +1,4 @@
+Stopping file watching and invalidating VFS after an error happened
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/aws/Route53Binder.java:219: error: [NullAway] passing @Nullable parameter 'getResourceRecordSet(domain, hostedZone)' where @NonNull is required
+            return new ResourceRecordSetWithHostedZone(hostedZone, getResourceRecordSet(domain, hostedZone));
+                                                                                       ^

@@ -215,17 +215,13 @@ public class Route53Binder implements AwsBinder {
 
     @Nullable private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
         HostedZone hostedZone = getHostedZone(domain);
-
         if (hostedZone != null) {
-            ResourceRecordSet resourceRecordSet = getResourceRecordSet(domain, hostedZone);
-            if(resourceRecordSet != null){
-                return new ResourceRecordSetWithHostedZone(hostedZone, getResourceRecordSet(domain, hostedZone));
-            }
+            return new ResourceRecordSetWithHostedZone(hostedZone, getResourceRecordSet(domain, hostedZone));
         }
         return null;
     }
 
-    private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
+    @Nullable private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
         ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
         request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
         request.setHostedZoneId(hostedZone.getId());
