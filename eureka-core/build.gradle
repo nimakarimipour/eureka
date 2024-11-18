@@ -34,7 +34,7 @@ dependencies {
     // https://mvnrepository.com/artifact/com.sun.jersey/jersey-client
     implementation 'com.sun.jersey:jersey-client:1.17'
     implementation 'org.jetbrains:annotations:24.0.0' // Replace with the latest version
-    
+
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
     errorprone "com.google.errorprone:error_prone_core:2.35.1"
     errorproneJavac "com.google.errorprone:javac:9+181-r4173-1"
