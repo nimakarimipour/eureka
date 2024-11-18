@@ -58,6 +58,7 @@ import com.netflix.servo.monitor.Stopwatch;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.uber.nullaway.annotations.EnsuresNonNullIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,6 +94,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     private final AtomicReference<Applications> applicationsDelta = new AtomicReference<>(new Applications());
     private final EurekaServerConfig serverConfig;
     private volatile boolean readyForServingData;
+    @Nullable
     private final EurekaHttpClient eurekaHttpClient;
     private long timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
     private long deltaSuccesses = 0;
@@ -515,6 +517,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return this.applicationsDelta.get();
     }
 
+    @EnsuresNonNullIf("eurekaHttpClient")
     private boolean shouldUseExperimentalTransport() {
         if (eurekaHttpClient == null) {
             return false;
