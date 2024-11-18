@@ -1,0 +1,4 @@
+Stopping file watching and invalidating VFS after an error happened
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/EurekaServerContextHolder.java:44: error: [NullAway] returning @Nullable expression from method with @NonNull return type
+        return holder;
+        ^

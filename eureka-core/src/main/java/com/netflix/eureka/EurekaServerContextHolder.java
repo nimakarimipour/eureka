@@ -36,6 +36,7 @@ public class EurekaServerContextHolder {
 
     @Nullable private static EurekaServerContextHolder holder;
 
+    @Initializer
     public static synchronized void initialize(EurekaServerContext serverContext) {
         holder = new EurekaServerContextHolder(serverContext);
     }
