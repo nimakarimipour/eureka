@@ -1052,7 +1052,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
                 }
             }
         }
-        return null;
+        throw new RuntimeException("Instance not found");
     }
 
     /**
