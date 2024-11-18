@@ -21,7 +21,7 @@ public class ReplicationInstance {
     @JsonCreator
     public ReplicationInstance(@JsonProperty("appName") String appName,
                                @JsonProperty("id") String id,
-                               @JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
+                               @Nullable@JsonProperty("lastDirtyTimestamp") Long lastDirtyTimestamp,
                                @Nullable @JsonProperty("overriddenStatus") String overriddenStatus,
                                @Nullable @JsonProperty("status") String status,
                                @JsonProperty("instanceInfo") InstanceInfo instanceInfo,
@@ -108,7 +108,7 @@ public class ReplicationInstance {
     public static class ReplicationInstanceBuilder {
         private String appName;
         private String id;
-        private Long lastDirtyTimestamp;
+        @Nullable private Long lastDirtyTimestamp;
         @Nullable private String overriddenStatus;
         @Nullable private String status;
         private InstanceInfo instanceInfo;
@@ -131,7 +131,7 @@ public class ReplicationInstance {
             return this;
         }
 
-        public ReplicationInstanceBuilder withLastDirtyTimestamp(Long lastDirtyTimestamp) {
+        public ReplicationInstanceBuilder withLastDirtyTimestamp(@Nullable Long lastDirtyTimestamp) {
             this.lastDirtyTimestamp = lastDirtyTimestamp;
             return this;
         }
