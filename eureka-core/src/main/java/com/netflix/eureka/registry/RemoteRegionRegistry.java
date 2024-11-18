@@ -504,7 +504,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     public List<InstanceInfo> getInstancesById(String id) {
         List<InstanceInfo> list = new ArrayList<>(1);
 
-        for (Application app : applications.get().getRegisteredApplications()) {
+        for (Application app : NullabilityUtil.castToNonnull(applications.get()).getRegisteredApplications()) {
             InstanceInfo info = app.getByInstanceId(id);
             if (info != null) {
                 list.add(info);
