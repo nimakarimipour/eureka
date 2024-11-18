@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 public class ReplicationInstance {
     private String appName;
     private String id;
-    private Long lastDirtyTimestamp;
+    @Nullable private Long lastDirtyTimestamp;
     @Nullable private String overriddenStatus;
     @Nullable private String status;
     private InstanceInfo instanceInfo;
