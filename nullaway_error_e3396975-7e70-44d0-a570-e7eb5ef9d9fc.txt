@@ -1,2 +1,0 @@
-/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/cluster/ReplicationTaskProcessor.java:197: error: [NullAway] dereferenced expression e.getMessage() is @Nullable
-                String message = e.getMessage().toLowerCase();
