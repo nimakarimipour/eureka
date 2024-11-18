@@ -114,6 +114,7 @@ public class ReplicationInstance {
         private InstanceInfo instanceInfo;
         private Action action;
 
+        @SuppressWarnings("NullAway")
         private ReplicationInstanceBuilder() {
         }
 
