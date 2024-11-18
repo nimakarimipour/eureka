@@ -19,6 +19,7 @@ package com.netflix.eureka.registry;
 import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.eureka.EurekaServerConfig;
+import com.netflix.eureka.Initializer;
 import com.netflix.eureka.aws.AwsAsgUtil;
 import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.registry.rule.AsgEnabledRule;
@@ -43,7 +44,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
 
     @Nullable private AwsAsgUtil awsAsgUtil;
 
-    @Nullable private InstanceStatusOverrideRule instanceStatusOverrideRule;
+    private InstanceStatusOverrideRule instanceStatusOverrideRule;
 
     @Inject
     public AwsInstanceRegistry(EurekaServerConfig serverConfig,
@@ -54,6 +55,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
     }
 
     @Override
+    @Initializer
     public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
         super.init(peerEurekaNodes);
         this.awsAsgUtil = new AwsAsgUtil(serverConfig, clientConfig, this);
