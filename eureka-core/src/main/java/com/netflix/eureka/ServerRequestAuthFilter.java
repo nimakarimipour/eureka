@@ -38,6 +38,7 @@ public class ServerRequestAuthFilter implements Filter {
     }
 
     @Override
+    @Initializer
     public void init(FilterConfig filterConfig) throws ServletException {
         if (serverConfig == null) {
             EurekaServerContext serverContext = (EurekaServerContext) filterConfig.getServletContext()
