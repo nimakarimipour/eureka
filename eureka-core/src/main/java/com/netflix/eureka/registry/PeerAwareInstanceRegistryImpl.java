@@ -36,6 +36,7 @@ import com.netflix.discovery.EurekaClient;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.shared.Application;
 import com.netflix.discovery.shared.Applications;
+import com.netflix.eureka.Initializer;
 import com.netflix.eureka.registry.rule.DownOrStartingRule;
 import com.netflix.eureka.registry.rule.FirstMatchWinsCompositeRule;
 import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
@@ -149,6 +150,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
     }
 
     @Override
+    @Initializer
     public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
         this.numberOfReplicationsLastMin.start();
         this.peerEurekaNodes = peerEurekaNodes;
