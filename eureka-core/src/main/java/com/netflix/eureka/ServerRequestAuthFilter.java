@@ -26,7 +26,7 @@ public class ServerRequestAuthFilter implements Filter {
 
     private static final String NAME_PREFIX = "DiscoveryServerRequestAuth_Name_";
 
-    @Nullable private EurekaServerConfig serverConfig;
+    private EurekaServerConfig serverConfig;
 
     @Inject
     public ServerRequestAuthFilter(EurekaServerContext server) {
