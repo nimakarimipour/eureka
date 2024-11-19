@@ -19,6 +19,7 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.endpoint.EndpointUtils;
 import com.netflix.eureka.EurekaServerConfig;
+import com.netflix.eureka.Initializer;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.transport.JerseyReplicationClient;
@@ -45,7 +46,7 @@ public class PeerEurekaNodes {
     private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
     private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
-    @Nullable private ScheduledExecutorService taskExecutor;
+    private ScheduledExecutorService taskExecutor;
 
     @Inject
     public PeerEurekaNodes(
@@ -73,6 +74,7 @@ public class PeerEurekaNodes {
         return serverConfig.getHealthStatusMinNumberOfAvailablePeers();
     }
 
+    @Initializer
     public void start() {
         taskExecutor = Executors.newSingleThreadScheduledExecutor(
                 new ThreadFactory() {
