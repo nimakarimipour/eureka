@@ -31,6 +31,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import com.uber.nullaway.annotations.Initializer;
 
 /**
  * Override some methods with aws specific use cases.
@@ -52,7 +53,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
         super(serverConfig, clientConfig, serverCodecs, eurekaClient);
     }
 
-    @Override
+    @Initializer @Override
     public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
         super.init(peerEurekaNodes);
         this.awsAsgUtil = new AwsAsgUtil(serverConfig, clientConfig, this);

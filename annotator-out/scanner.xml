@@ -1,10 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<scanner>
-    <serialization active="true"/>
-    <uuid>e7910600-05e6-4bda-be98-4f490a033cb4</uuid>
-    <path>/home/nima/Developer/nullness-benchmarks/eureka/annotator-out/0</path>
-    <processor>
-        <LOMBOK active="true"/>
-    </processor>
-    <annotations/>
-</scanner>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><scanner><serialization active="false"/><uuid>6de8bc6b-fa67-4c26-8277-46a973571a4f</uuid><path>/home/nima/Developer/nullness-benchmarks/eureka/annotator-out/0</path><processor><LOMBOK active="true"/></processor><annotations/></scanner>
