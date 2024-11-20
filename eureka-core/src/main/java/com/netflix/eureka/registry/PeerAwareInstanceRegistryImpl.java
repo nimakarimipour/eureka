@@ -37,7 +37,6 @@ import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.discovery.shared.Application;
 import com.netflix.discovery.shared.Applications;
 import com.netflix.eureka.Initializer;
-import com.netflix.eureka.NullabilityUtil;
 import com.netflix.eureka.registry.rule.DownOrStartingRule;
 import com.netflix.eureka.registry.rule.FirstMatchWinsCompositeRule;
 import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
@@ -676,7 +675,6 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
                     node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
                     break;
                 case Register:
-                    info = NullabilityUtil.castToNonNull(info);
                     node.register(info);
                     break;
                 case StatusUpdate:
