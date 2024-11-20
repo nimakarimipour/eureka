@@ -1,4 +1,0 @@
-Stopping file watching and invalidating VFS after an error happened
-/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/registry/PeerAwareInstanceRegistryImpl.java:131: error: [NullAway] initializer method does not guarantee @NonNull field peerEurekaNodes (line 123) is initialized along all control-flow paths (remember to check for exceptions or early returns).
-    public PeerAwareInstanceRegistryImpl(
-           ^
