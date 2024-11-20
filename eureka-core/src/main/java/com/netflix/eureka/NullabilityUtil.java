@@ -10,4 +10,11 @@ public class NullabilityUtil {
         }
         return param;
     }
+
+    public static <T> T castToNonNull(@Nullable T param, String message){
+        if(param == null){
+            throw new RuntimeException("param is null");
+        }
+        return param;
+    }
 }
