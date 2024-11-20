@@ -41,6 +41,8 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
+
 /**
  * The class that holds information required for registration with
  * <tt>Eureka Server</tt> and to be discovered by other components.
@@ -1180,7 +1182,7 @@ public class InstanceInfo {
      *
      * @param status status for this instance.
      */
-    public synchronized void setStatusWithoutDirty(InstanceStatus status) {
+    public synchronized void setStatusWithoutDirty(@Nullable InstanceStatus status) {
         if (this.status != status) {
             this.status = status;
         }
