@@ -52,6 +52,7 @@ import com.netflix.discovery.shared.Applications;
 import com.netflix.discovery.shared.Pair;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.Initializer;
+import com.netflix.eureka.NullabilityUtil;
 import com.netflix.eureka.lease.Lease;
 import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.resources.ServerCodecs;
@@ -765,6 +766,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
             }
         }
         if (includeRemoteRegion) {
+            remoteRegions = NullabilityUtil.castToNonNull(remoteRegions);
             for (String remoteRegion : remoteRegions) {
                 RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
                 if (null != remoteRegistry) {

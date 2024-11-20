@@ -1,4 +1,0 @@
-Stopping file watching and invalidating VFS after an error happened
-Note: Some input files use or override a deprecated API.
-Note: Recompile with -Xlint:deprecation for details.
-Note: Some input files use unchecked or unsafe operations.
