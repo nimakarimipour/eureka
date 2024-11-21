@@ -94,6 +94,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     private final AtomicReference<Applications> applicationsDelta = new AtomicReference<>(new Applications());
     private final EurekaServerConfig serverConfig;
     private volatile boolean readyForServingData;
+    @Nullable
     private final EurekaHttpClient eurekaHttpClient;
     private long timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
     private long deltaSuccesses = 0;
@@ -516,6 +517,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         return this.applicationsDelta.get();
     }
 
+    @EnsuresNonNullIf("eurekaHttpClient")
     private boolean shouldUseExperimentalTransport() {
         if (eurekaHttpClient == null) {
             return false;
