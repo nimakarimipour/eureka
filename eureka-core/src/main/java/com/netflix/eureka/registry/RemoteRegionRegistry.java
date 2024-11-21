@@ -50,6 +50,7 @@ import com.netflix.discovery.shared.transport.jersey.EurekaJerseyClient;
 import com.netflix.discovery.shared.transport.jersey.EurekaJerseyClientImpl.EurekaJerseyClientBuilder;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.EurekaServerIdentity;
+import com.netflix.eureka.NullabilityUtil;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.transport.EurekaServerHttpClients;
 import com.netflix.servo.annotations.DataSourceType;
@@ -486,7 +487,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
 
     @Override
     public Applications getApplications() {
-        return applications.get();
+        return NullabilityUtil.castToNonNull(applications.get());
     }
 
     @Nullable @Override
