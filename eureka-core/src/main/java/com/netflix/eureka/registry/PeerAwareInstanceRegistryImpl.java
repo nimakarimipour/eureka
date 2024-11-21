@@ -673,6 +673,10 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
                 case Heartbeat:
                     InstanceStatus overriddenStatus = overriddenInstanceStatusMap.get(id);
                     infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+                    if(infoFromRegistry == null) {
+                        logger.warn("Missing instance id in the registry {}", id);
+                        return;
+                    }
                     node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
                     break;
                 case Register:
@@ -681,10 +685,18 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry impl
                     break;
                 case StatusUpdate:
                     infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+                    if(infoFromRegistry == null) {
+                        logger.warn("Missing instance id in the registry {}", id);
+                        return;
+                    }
                     node.statusUpdate(appName, id, newStatus, infoFromRegistry);
                     break;
                 case DeleteStatusOverride:
                     infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+                    if(infoFromRegistry == null) {
+                        logger.warn("Missing instance id in the registry {}", id);
+                        return;
+                    }
                     node.deleteStatusOverride(appName, id, infoFromRegistry);
                     break;
             }

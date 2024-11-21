@@ -442,6 +442,10 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
                     id, overriddenStatus.name());
             overriddenInstanceStatusMap.put(id, overriddenStatus);
             InstanceInfo instanceInfo = this.getInstanceByAppAndId(appName, id, false);
+            if(instanceInfo == null){
+                logger.warn("Instance not found during overridden status update for instance id {}", id);
+                return;
+            }
             instanceInfo.setOverriddenStatus(overriddenStatus);
             logger.info("Set the overridden status for instance (appname:{}, id:{}} and the value is {} ",
                     appName, id, overriddenStatus.name());
@@ -1019,6 +1023,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return the information about the instance.
      */
     @Override
+    @Nullable
     public InstanceInfo getInstanceByAppAndId(String appName, String id) {
         return this.getInstanceByAppAndId(appName, id, true);
     }
@@ -1034,6 +1039,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
      * @return the information about the instance.
      */
     @Override
+    @Nullable
     public InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions) {
         Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
         Lease<InstanceInfo> lease = null;

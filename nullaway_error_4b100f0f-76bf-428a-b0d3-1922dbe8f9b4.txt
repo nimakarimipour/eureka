@@ -1,0 +1,3 @@
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/registry/AbstractInstanceRegistry.java:1054: error: [NullAway] returning @Nullable expression from method with @NonNull return type
+        return null;
+        ^
