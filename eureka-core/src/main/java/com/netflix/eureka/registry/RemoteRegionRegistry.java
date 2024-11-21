@@ -58,6 +58,7 @@ import com.netflix.servo.monitor.Stopwatch;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
+import com.uber.nullaway.annotations.EnsuresNonNullIf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
