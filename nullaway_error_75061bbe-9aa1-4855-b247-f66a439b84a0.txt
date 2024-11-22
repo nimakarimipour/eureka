@@ -1,4 +1,0 @@
-Stopping file watching and invalidating VFS after an error happened
-/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/registry/RemoteRegionRegistry.java:507: error: [NullAway] dereferenced expression applications.get() is @Nullable
-        for (Application app : applications.get().getRegisteredApplications()) {
-                                                 ^
