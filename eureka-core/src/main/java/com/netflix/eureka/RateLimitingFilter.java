@@ -116,6 +116,7 @@ public class RateLimitingFilter implements Filter {
     }
 
     // for non-DI use
+    @SuppressWarnings("NullAway")
     public RateLimitingFilter() {
     }
 
