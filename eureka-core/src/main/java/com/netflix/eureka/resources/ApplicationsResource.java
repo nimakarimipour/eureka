@@ -32,12 +32,9 @@ import javax.ws.rs.core.UriInfo;
 import java.util.Arrays;
 
 import com.netflix.appinfo.EurekaAccept;
-import com.netflix.eureka.EurekaServerContext;
-import com.netflix.eureka.EurekaServerContextHolder;
+import com.netflix.eureka.*;
 import com.netflix.eureka.registry.AbstractInstanceRegistry;
-import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
-import com.netflix.eureka.Version;
 import com.netflix.eureka.registry.ResponseCache;
 import com.netflix.eureka.registry.Key.KeyType;
 import com.netflix.eureka.registry.ResponseCacheImpl;
@@ -126,6 +123,7 @@ public class ApplicationsResource {
         if (!isRemoteRegionRequested) {
             EurekaMonitors.GET_ALL.increment();
         } else {
+            regionsStr = NullabilityUtil.castToNonNull(regionsStr);
             regions = regionsStr.toLowerCase().split(",");
             Arrays.sort(regions); // So we don't have different caches for same regions queried in different order.
             EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
