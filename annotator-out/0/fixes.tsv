@@ -1,4 +1,3 @@
 kind	class	method	param	index	uri	reason	annotation	rootClass	rootMethod
-METHOD	com.netflix.eureka.EurekaServerContextHolder	getInstance()	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/EurekaServerContextHolder.java	RETURN_NULLABLE	nullable	com.netflix.eureka.EurekaServerContextHolder	getInstance()
 METHOD	com.netflix.eureka.aws.Route53Binder$ResourceRecordSetWithHostedZone	getResourceRecordSet()	null	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/aws/Route53Binder.java	RETURN_NULLABLE	nullable	com.netflix.eureka.aws.Route53Binder$ResourceRecordSetWithHostedZone	getResourceRecordSet()
 FIELD	com.netflix.eureka.RateLimitingFilter	null	serverConfig	null	/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/RateLimitingFilter.java	METHOD_NO_INIT	nullable	com.netflix.eureka.RateLimitingFilter	null
