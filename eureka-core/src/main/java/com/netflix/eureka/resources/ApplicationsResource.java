@@ -211,6 +211,7 @@ public class ApplicationsResource {
         if (!isRemoteRegionRequested) {
             EurekaMonitors.GET_ALL_DELTA.increment();
         } else {
+            regionsStr = NullabilityUtil.castToNonNull(regionsStr);
             regions = regionsStr.toLowerCase().split(",");
             Arrays.sort(regions); // So we don't have different caches for same regions queried in different order.
             EurekaMonitors.GET_ALL_DELTA_WITH_REMOTE_REGIONS.increment();
