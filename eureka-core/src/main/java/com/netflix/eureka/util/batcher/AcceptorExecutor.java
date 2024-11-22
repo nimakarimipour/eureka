@@ -324,8 +324,10 @@ class AcceptorExecutor<ID, T> {
             if (pendingTasks.size() >= maxBufferSize) {
                 return true;
             }
-
             TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
+            if (nextHolder == null) {
+                return false; // or handle the null case appropriately
+            }
             long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
             return delay >= maxBatchingDelay;
         }
