@@ -319,6 +319,7 @@ public class Route53Binder implements AwsBinder {
             return hostedZone;
         }
 
+        @SuppressWarnings("NullAway") // Possibly out of scope
         public ResourceRecordSet getResourceRecordSet() {
             return resourceRecordSet;
         }
