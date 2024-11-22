@@ -1,0 +1,4 @@
+Stopping file watching and invalidating VFS after an error happened
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/aws/Route53Binder.java:255: error: [NullAway] dereferenced expression resourceRecordSetWithHostedZone is @Nullable
+            resourceRecordSetWithHostedZone.getResourceRecordSet().getResourceRecords().get(0).setValue(NULL_DOMAIN);
+                                           ^

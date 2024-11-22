@@ -293,7 +293,8 @@ public class Route53Binder implements AwsBinder {
                     clientConfiguration);
         }
     }
-    
+
+    @Contract("null,_->false")
     private boolean hasValue(@Nullable ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone, String ip) {
         if (resourceRecordSetWithHostedZone != null && resourceRecordSetWithHostedZone.getResourceRecordSet() != null) {
             for (ResourceRecord rr : resourceRecordSetWithHostedZone.getResourceRecordSet().getResourceRecords()) {
