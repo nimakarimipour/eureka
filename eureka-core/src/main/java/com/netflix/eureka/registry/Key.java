@@ -20,7 +20,7 @@ public class Key {
   }
 
   private final String entityName;
-  private final String[] regions;
+  @Nullable private final String[] regions;
   private final KeyType requestType;
   private final Version requestVersion;
   private final String hashKey;
@@ -86,6 +86,7 @@ public class Key {
     return null != regions && regions.length != 0;
   }
 
+  @Nullable
   public String[] getRegions() {
     return regions;
   }

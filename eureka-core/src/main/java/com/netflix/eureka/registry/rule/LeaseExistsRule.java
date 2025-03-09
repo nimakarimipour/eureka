@@ -2,6 +2,7 @@ package com.netflix.eureka.registry.rule;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +17,9 @@ public class LeaseExistsRule implements InstanceStatusOverrideRule {
 
   @Override
   public StatusOverrideResult apply(
-      InstanceInfo instanceInfo, Lease<InstanceInfo> existingLease, boolean isReplication) {
+      InstanceInfo instanceInfo,
+      @Nullable Lease<InstanceInfo> existingLease,
+      boolean isReplication) {
     // This is for backward compatibility until all applications have ASG
     // names, otherwise while starting up
     // the client status may override status replicated from other servers

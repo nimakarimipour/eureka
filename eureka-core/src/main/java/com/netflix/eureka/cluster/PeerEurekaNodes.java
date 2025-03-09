@@ -19,6 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class PeerEurekaNodes {
   private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
   private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
-  private ScheduledExecutorService taskExecutor;
+  @Nullable private ScheduledExecutorService taskExecutor;
 
   @Inject
   public PeerEurekaNodes(
@@ -255,6 +256,7 @@ public class PeerEurekaNodes {
     return hostName != null && hostName.equals(myInfoComparator);
   }
 
+  @Nullable
   public static String hostFromUrl(String url) {
     URI uri;
     try {

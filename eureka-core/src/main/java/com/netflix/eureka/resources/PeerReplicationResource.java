@@ -26,6 +26,7 @@ import com.netflix.eureka.cluster.protocol.ReplicationInstanceResponse.Builder;
 import com.netflix.eureka.cluster.protocol.ReplicationList;
 import com.netflix.eureka.cluster.protocol.ReplicationListResponse;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -151,9 +152,9 @@ public class PeerReplicationResource {
   private static Builder handleHeartbeat(
       EurekaServerConfig config,
       InstanceResource resource,
-      String lastDirtyTimestamp,
-      String overriddenStatus,
-      String instanceStatus) {
+      @Nullable String lastDirtyTimestamp,
+      @Nullable String overriddenStatus,
+      @Nullable String instanceStatus) {
     Response response =
         resource.renewLease(REPLICATION, overriddenStatus, instanceStatus, lastDirtyTimestamp);
     int responseStatus = response.getStatus();
@@ -189,7 +190,8 @@ public class PeerReplicationResource {
     return new Builder().setStatusCode(response.getStatus());
   }
 
-  private static <T> String toString(T value) {
+  @Nullable
+  private static <T> String toString(@Nullable T value) {
     if (value == null) {
       return null;
     }

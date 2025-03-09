@@ -57,6 +57,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
@@ -378,7 +379,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
    *
    * @param response the HttpResponse object.
    */
-  private void closeResponse(ClientResponse response) {
+  private void closeResponse(@Nullable ClientResponse response) {
     if (response != null) {
       try {
         response.close();
@@ -415,6 +416,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @param delta - true, if the fetch needs to get deltas, false otherwise
    * @return - response which has information about the data.
    */
+  @Nullable
   private Applications fetchRemoteRegistry(boolean delta) {
     logger.info(
         "Getting instance registry info from the eureka server : {} , delta : {}",
@@ -511,6 +513,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     return applications.get();
   }
 
+  @Nullable
   @Override
   public InstanceInfo getNextServerFromEureka(String arg0, boolean arg1) {
     return null;
@@ -535,6 +538,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     return Collections.emptyList();
   }
 
+  @Nullable
   public Applications getApplicationDeltas() {
     return this.applicationsDelta.get();
   }

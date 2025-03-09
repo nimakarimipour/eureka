@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /**
  * An utility class for exposing status information of an instance.
@@ -83,12 +84,13 @@ public class StatusInfo {
   }
 
   private Map<String, String> generalStats = new HashMap<String, String>();
-  private Map<String, String> applicationStats;
-  private InstanceInfo instanceInfo;
-  private Boolean isHeathly;
+  @Nullable private Map<String, String> applicationStats;
+  @Nullable private InstanceInfo instanceInfo;
+  @Nullable private Boolean isHeathly;
 
   private StatusInfo() {}
 
+  @Nullable
   public InstanceInfo getInstanceInfo() {
     return instanceInfo;
   }
@@ -101,6 +103,7 @@ public class StatusInfo {
     return generalStats;
   }
 
+  @Nullable
   public Map<String, String> getApplicationStats() {
     return applicationStats;
   }

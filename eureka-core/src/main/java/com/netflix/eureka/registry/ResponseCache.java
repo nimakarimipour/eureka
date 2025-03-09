@@ -21,6 +21,7 @@ public interface ResponseCache {
    * @param key the key for which the cached information needs to be obtained.
    * @return payload which contains information about the applications.
    */
+  @Nullable
   String get(Key key);
 
   /**
@@ -29,6 +30,7 @@ public interface ResponseCache {
    * @param key the key for which the compressed cached information needs to be obtained.
    * @return compressed payload which contains information about the applications.
    */
+  @Nullable
   byte[] getGZIP(Key key);
 
   /**

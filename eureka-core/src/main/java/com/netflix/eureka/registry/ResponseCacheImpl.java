@@ -221,10 +221,12 @@ public class ResponseCacheImpl implements ResponseCache {
    * @param key the key for which the cached information needs to be obtained.
    * @return payload which contains information about the applications.
    */
+  @Nullable
   public String get(final Key key) {
     return get(key, shouldUseReadOnlyResponseCache);
   }
 
+  @Nullable
   @VisibleForTesting
   String get(final Key key, boolean useReadOnlyCache) {
     Value payload = getValue(key, useReadOnlyCache);
@@ -241,6 +243,7 @@ public class ResponseCacheImpl implements ResponseCache {
    * @param key the key for which the compressed cached information needs to be obtained.
    * @return compressed payload which contains information about the applications.
    */
+  @Nullable
   public byte[] getGZIP(Key key) {
     Value payload = getValue(key, shouldUseReadOnlyResponseCache);
     if (payload == null) {
@@ -365,6 +368,7 @@ public class ResponseCacheImpl implements ResponseCache {
   }
 
   /** Get the payload in both compressed and uncompressed form. */
+  @Nullable
   @VisibleForTesting
   Value getValue(final Key key, boolean useReadOnlyCache) {
     Value payload = null;
@@ -406,7 +410,7 @@ public class ResponseCacheImpl implements ResponseCache {
   }
 
   /** Generate pay load with both JSON and XML formats for a given application. */
-  private String getPayLoad(Key key, Application app) {
+  private String getPayLoad(Key key, @Nullable Application app) {
     if (app == null) {
       return EMPTY_PAYLOAD;
     }
@@ -526,7 +530,7 @@ public class ResponseCacheImpl implements ResponseCache {
   /** The class that stores payload in both compressed and uncompressed form. */
   public class Value {
     private final String payload;
-    private byte[] gzipped;
+    @Nullable private byte[] gzipped;
 
     public Value(String payload) {
       this.payload = payload;
@@ -558,6 +562,7 @@ public class ResponseCacheImpl implements ResponseCache {
       return payload;
     }
 
+    @Nullable
     public byte[] getGzipped() {
       return gzipped;
     }

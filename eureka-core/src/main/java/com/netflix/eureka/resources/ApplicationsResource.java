@@ -124,7 +124,7 @@ public class ApplicationsResource {
       regions = regionsStr.toLowerCase().split(",");
       Arrays.sort(
           regions); // So we don't have different caches for same regions queried in different
-                    // order.
+      // order.
       EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
     }
 
@@ -215,7 +215,7 @@ public class ApplicationsResource {
       regions = regionsStr.toLowerCase().split(",");
       Arrays.sort(
           regions); // So we don't have different caches for same regions queried in different
-                    // order.
+      // order.
       EurekaMonitors.GET_ALL_DELTA_WITH_REMOTE_REGIONS.increment();
     }
 

@@ -4,6 +4,7 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.appinfo.InstanceInfo.InstanceStatus;
 import com.netflix.eureka.aws.AsgClient;
 import com.netflix.eureka.lease.Lease;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,7 +25,9 @@ public class AsgEnabledRule implements InstanceStatusOverrideRule {
 
   @Override
   public StatusOverrideResult apply(
-      InstanceInfo instanceInfo, Lease<InstanceInfo> existingLease, boolean isReplication) {
+      InstanceInfo instanceInfo,
+      @Nullable Lease<InstanceInfo> existingLease,
+      boolean isReplication) {
     // If the ASGName is present- check for its status
     if (instanceInfo.getASGName() != null) {
       boolean isASGDisabled = !asgClient.isASGEnabled(instanceInfo);

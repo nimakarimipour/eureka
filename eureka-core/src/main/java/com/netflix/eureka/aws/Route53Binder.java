@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
@@ -222,6 +223,7 @@ public class Route53Binder implements AwsBinder {
     amazonRoute53Client.changeResourceRecordSets(changeResourceRecordSetsRequest);
   }
 
+  @Nullable
   private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
     HostedZone hostedZone = getHostedZone(domain);
     if (hostedZone != null) {
@@ -231,6 +233,7 @@ public class Route53Binder implements AwsBinder {
     return null;
   }
 
+  @Nullable
   private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
     ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
     request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
@@ -248,6 +251,7 @@ public class Route53Binder implements AwsBinder {
     return null;
   }
 
+  @Nullable
   private HostedZone getHostedZone(String domain) {
     ListHostedZonesRequest listHostedZoneRequest = new ListHostedZonesRequest();
     listHostedZoneRequest.setMaxItems(String.valueOf(Integer.MAX_VALUE));
@@ -313,7 +317,7 @@ public class Route53Binder implements AwsBinder {
   }
 
   private boolean hasValue(
-      ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone, String ip) {
+      @Nullable ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone, String ip) {
     if (resourceRecordSetWithHostedZone != null
         && resourceRecordSetWithHostedZone.getResourceRecordSet() != null) {
       for (ResourceRecord rr :
@@ -328,10 +332,10 @@ public class Route53Binder implements AwsBinder {
 
   private class ResourceRecordSetWithHostedZone {
     private final HostedZone hostedZone;
-    private final ResourceRecordSet resourceRecordSet;
+    @Nullable private final ResourceRecordSet resourceRecordSet;
 
     public ResourceRecordSetWithHostedZone(
-        HostedZone hostedZone, ResourceRecordSet resourceRecordSet) {
+        HostedZone hostedZone, @Nullable ResourceRecordSet resourceRecordSet) {
       this.hostedZone = hostedZone;
       this.resourceRecordSet = resourceRecordSet;
     }

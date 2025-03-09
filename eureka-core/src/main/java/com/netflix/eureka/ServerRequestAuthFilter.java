@@ -5,6 +5,7 @@ import com.netflix.appinfo.AbstractEurekaIdentity;
 import com.netflix.servo.monitor.DynamicCounter;
 import com.netflix.servo.monitor.MonitorConfig;
 import java.io.IOException;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.Filter;
@@ -25,7 +26,7 @@ public class ServerRequestAuthFilter implements Filter {
 
   private static final String NAME_PREFIX = "DiscoveryServerRequestAuth_Name_";
 
-  private EurekaServerConfig serverConfig;
+  @Nullable private EurekaServerConfig serverConfig;
 
   @Inject
   public ServerRequestAuthFilter(EurekaServerContext server) {

@@ -2,6 +2,7 @@ package com.netflix.eureka.registry.rule;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +16,9 @@ public class AlwaysMatchInstanceStatusRule implements InstanceStatusOverrideRule
 
   @Override
   public StatusOverrideResult apply(
-      InstanceInfo instanceInfo, Lease<InstanceInfo> existingLease, boolean isReplication) {
+      InstanceInfo instanceInfo,
+      @Nullable Lease<InstanceInfo> existingLease,
+      boolean isReplication) {
     logger.debug(
         "Returning the default instance status {} for instance {}",
         instanceInfo.getStatus(),

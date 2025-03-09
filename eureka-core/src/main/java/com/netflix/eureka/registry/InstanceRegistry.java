@@ -10,6 +10,7 @@ import com.netflix.discovery.shared.Pair;
 import com.netflix.eureka.lease.LeaseManager;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 /** @author Tomasz Bak */
 public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupService<String> {
@@ -27,7 +28,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
       String appName,
       String id,
       InstanceStatus newStatus,
-      String lastDirtyTimestamp,
+      @Nullable String lastDirtyTimestamp,
       boolean isReplication);
 
   boolean deleteStatusOverride(
@@ -52,6 +53,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
    *     com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the application
    */
+  @Nullable
   Application getApplication(String appName, boolean includeRemoteRegion);
 
   /**

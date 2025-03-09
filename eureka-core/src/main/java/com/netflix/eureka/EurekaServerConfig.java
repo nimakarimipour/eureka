@@ -39,6 +39,7 @@ public interface EurekaServerConfig {
    *
    * @return
    */
+  @Nullable
   String getAWSAccessId();
 
   /**
@@ -47,6 +48,7 @@ public interface EurekaServerConfig {
    *
    * @return
    */
+  @Nullable
   String getAWSSecretKey();
 
   /**
@@ -478,6 +480,7 @@ public interface EurekaServerConfig {
    * @return - array of string representing {@link java.net.URL}s.
    * @deprecated Use {@link #getRemoteRegionUrlsWithName()}
    */
+  @Nullable
   @SuppressWarnings("dep-ann")
   String[] getRemoteRegionUrls();
 

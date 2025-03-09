@@ -22,6 +22,7 @@ import com.netflix.eureka.aws.AwsAsgUtil;
 import com.netflix.eureka.cluster.PeerEurekaNode;
 import com.netflix.eureka.registry.AwsInstanceRegistry;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.PUT;
@@ -69,7 +70,7 @@ public class ASGResource {
   }
 
   protected final PeerAwareInstanceRegistry registry;
-  protected final AwsAsgUtil awsAsgUtil;
+  @Nullable protected final AwsAsgUtil awsAsgUtil;
 
   @Inject
   ASGResource(EurekaServerContext eurekaServer) {

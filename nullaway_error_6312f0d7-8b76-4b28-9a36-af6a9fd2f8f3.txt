@@ -1,0 +1,4 @@
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/ServerRequestAuthFilter.java:62: error: [NullAway] dereferenced expression serverConfig is @Nullable
+    if (serverConfig.shouldLogIdentityHeaders()) {
+                    ^
+    (see http://t.uber.com/nullaway )

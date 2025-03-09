@@ -42,6 +42,7 @@ import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.util.EurekaMonitors;
 import com.thoughtworks.xstream.XStream;
 import java.util.Date;
+import javax.annotation.Nullable;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -75,10 +76,10 @@ public class EurekaBootStrap implements ServletContextListener {
 
   private static final String EUREKA_DATACENTER = "eureka.datacenter";
 
-  protected volatile EurekaServerContext serverContext;
-  protected volatile AwsBinder awsBinder;
+  @Nullable protected volatile EurekaServerContext serverContext;
+  @Nullable protected volatile AwsBinder awsBinder;
 
-  private EurekaClient eurekaClient;
+  @Nullable private EurekaClient eurekaClient;
 
   /** Construct a default instance of Eureka boostrap */
   public EurekaBootStrap() {
@@ -90,7 +91,7 @@ public class EurekaBootStrap implements ServletContextListener {
    *
    * @param eurekaClient the eureka client to bootstrap
    */
-  public EurekaBootStrap(EurekaClient eurekaClient) {
+  public EurekaBootStrap(@Nullable EurekaClient eurekaClient) {
     this.eurekaClient = eurekaClient;
   }
 

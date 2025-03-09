@@ -28,6 +28,7 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.registry.rule.LeaseExistsRule;
 import com.netflix.eureka.registry.rule.OverrideExistsRule;
 import com.netflix.eureka.resources.ServerCodecs;
+import com.uber.nullaway.annotations.Initializer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -52,6 +53,7 @@ public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
     super(serverConfig, clientConfig, serverCodecs, eurekaClient);
   }
 
+  @Initializer
   @Override
   public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
     super.init(peerEurekaNodes);

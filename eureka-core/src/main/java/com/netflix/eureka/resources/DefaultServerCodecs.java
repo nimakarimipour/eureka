@@ -6,6 +6,7 @@ import com.netflix.discovery.converters.wrappers.CodecWrappers;
 import com.netflix.discovery.converters.wrappers.EncoderWrapper;
 import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.registry.Key;
+import com.uber.nullaway.annotations.Initializer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -130,6 +131,7 @@ public class DefaultServerCodecs implements ServerCodecs {
       return this;
     }
 
+    @Initializer
     public ServerCodecs build() {
       if (fullJsonCodec == null) {
         fullJsonCodec = CodecWrappers.getCodec(CodecWrappers.LegacyJacksonJson.class);
