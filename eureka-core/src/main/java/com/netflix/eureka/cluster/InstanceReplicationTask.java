@@ -11,61 +11,63 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
  */
 public abstract class InstanceReplicationTask extends ReplicationTask {
 
-    /**
-     * For cancel request there may be no InstanceInfo object available so we need to store app/id pair
-     * explicitly.
-     */
-    private final String appName;
-    private final String id;
+  /**
+   * For cancel request there may be no InstanceInfo object available so we need to store app/id
+   * pair explicitly.
+   */
+  private final String appName;
 
-    private final InstanceInfo instanceInfo;
-    private final InstanceStatus overriddenStatus;
+  private final String id;
 
-    private final boolean replicateInstanceInfo;
+  private final InstanceInfo instanceInfo;
+  private final InstanceStatus overriddenStatus;
 
-    protected InstanceReplicationTask(String peerNodeName, Action action, String appName, String id) {
-        super(peerNodeName, action);
-        this.appName = appName;
-        this.id = id;
-        this.instanceInfo = null;
-        this.overriddenStatus = null;
-        this.replicateInstanceInfo = false;
-    }
+  private final boolean replicateInstanceInfo;
 
-    protected InstanceReplicationTask(String peerNodeName,
-                                      Action action,
-                                      InstanceInfo instanceInfo,
-                                      InstanceStatus overriddenStatus,
-                                      boolean replicateInstanceInfo) {
-        super(peerNodeName, action);
-        this.appName = instanceInfo.getAppName();
-        this.id = instanceInfo.getId();
-        this.instanceInfo = instanceInfo;
-        this.overriddenStatus = overriddenStatus;
-        this.replicateInstanceInfo = replicateInstanceInfo;
-    }
+  protected InstanceReplicationTask(String peerNodeName, Action action, String appName, String id) {
+    super(peerNodeName, action);
+    this.appName = appName;
+    this.id = id;
+    this.instanceInfo = null;
+    this.overriddenStatus = null;
+    this.replicateInstanceInfo = false;
+  }
 
-    public String getTaskName() {
-        return appName + '/' + id + ':' + action + '@' + peerNodeName;
-    }
+  protected InstanceReplicationTask(
+      String peerNodeName,
+      Action action,
+      InstanceInfo instanceInfo,
+      InstanceStatus overriddenStatus,
+      boolean replicateInstanceInfo) {
+    super(peerNodeName, action);
+    this.appName = instanceInfo.getAppName();
+    this.id = instanceInfo.getId();
+    this.instanceInfo = instanceInfo;
+    this.overriddenStatus = overriddenStatus;
+    this.replicateInstanceInfo = replicateInstanceInfo;
+  }
 
-    public String getAppName() {
-        return appName;
-    }
+  public String getTaskName() {
+    return appName + '/' + id + ':' + action + '@' + peerNodeName;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getAppName() {
+    return appName;
+  }
 
-    public InstanceInfo getInstanceInfo() {
-        return instanceInfo;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public InstanceStatus getOverriddenStatus() {
-        return overriddenStatus;
-    }
+  public InstanceInfo getInstanceInfo() {
+    return instanceInfo;
+  }
 
-    public boolean shouldReplicateInstanceInfo() {
-        return replicateInstanceInfo;
-    }
+  public InstanceStatus getOverriddenStatus() {
+    return overriddenStatus;
+  }
+
+  public boolean shouldReplicateInstanceInfo() {
+    return replicateInstanceInfo;
+  }
 }

@@ -16,25 +16,24 @@
 
 package com.netflix.eureka;
 
-
 /**
  * Supported versions for Eureka.
  *
- * <p>The latest versions are always recommended.</p>
+ * <p>The latest versions are always recommended.
  *
  * @author Karthik Ranganathan, Greg Kim
- *
  */
 public enum Version {
-    V1, V2;
+  V1,
+  V2;
 
-    public static Version toEnum(String v) {
-        for (Version version : Version.values()) {
-            if (version.name().equalsIgnoreCase(v)) {
-                return version;
-            }
-        }
-        //Defaults to v2
-        return V2;
+  public static Version toEnum(String v) {
+    for (Version version : Version.values()) {
+      if (version.name().equalsIgnoreCase(v)) {
+        return version;
+      }
     }
+    // Defaults to v2
+    return V2;
+  }
 }

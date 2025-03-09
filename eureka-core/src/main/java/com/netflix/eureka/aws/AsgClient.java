@@ -3,7 +3,7 @@ package com.netflix.eureka.aws;
 import com.netflix.appinfo.InstanceInfo;
 
 public interface AsgClient {
-    boolean isASGEnabled(InstanceInfo instanceInfo);
+  boolean isASGEnabled(InstanceInfo instanceInfo);
 
-    void setStatus(String asgName, boolean enabled);
+  void setStatus(String asgName, boolean enabled);
 }

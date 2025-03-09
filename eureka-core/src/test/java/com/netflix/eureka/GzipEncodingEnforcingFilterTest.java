@@ -16,110 +16,107 @@
 
 package com.netflix.eureka;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.*;
 
+import java.io.IOException;
+import java.util.Enumeration;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.io.IOException;
-import java.util.Enumeration;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
-
-/**
- * @author Kebe Liu
- */
+/** @author Kebe Liu */
 @RunWith(MockitoJUnitRunner.class)
 public class GzipEncodingEnforcingFilterTest {
 
-    private static final String ACCEPT_ENCODING_HEADER = "Accept-Encoding";
-    @Mock
-    private HttpServletRequest request;
+  private static final String ACCEPT_ENCODING_HEADER = "Accept-Encoding";
+  @Mock private HttpServletRequest request;
 
-    private HttpServletRequest filteredRequest;
+  private HttpServletRequest filteredRequest;
 
-    @Mock
-    private HttpServletResponse response;
+  @Mock private HttpServletResponse response;
 
-    @Mock
-    private FilterChain filterChain;
+  @Mock private FilterChain filterChain;
 
-    private GzipEncodingEnforcingFilter filter;
+  private GzipEncodingEnforcingFilter filter;
 
-    @Before
-    public void setUp() throws Exception {
-        filter = new GzipEncodingEnforcingFilter();
-        filterChain = new FilterChain() {
-            @Override
-            public void doFilter(ServletRequest req, ServletResponse response) throws IOException, ServletException {
-                filteredRequest = (HttpServletRequest) req;
-            }
+  @Before
+  public void setUp() throws Exception {
+    filter = new GzipEncodingEnforcingFilter();
+    filterChain =
+        new FilterChain() {
+          @Override
+          public void doFilter(ServletRequest req, ServletResponse response)
+              throws IOException, ServletException {
+            filteredRequest = (HttpServletRequest) req;
+          }
         };
+  }
+
+  @Test
+  public void testAlreadyGzip() throws Exception {
+    gzipRequest();
+    filter.doFilter(request, response, filterChain);
+    Enumeration values = filteredRequest.getHeaders(ACCEPT_ENCODING_HEADER);
+    assertEquals("Expected Accept-Encoding null", null, values);
+  }
+
+  @Test
+  public void testForceGzip() throws Exception {
+    noneGzipRequest();
+    filter.doFilter(request, response, filterChain);
+    String res = "";
+    Enumeration values = filteredRequest.getHeaders(ACCEPT_ENCODING_HEADER);
+    while (values.hasMoreElements()) {
+      res = res + values.nextElement() + "\n";
     }
+    assertEquals("Expected Accept-Encoding gzip", "gzip\n", res);
+  }
 
-    @Test
-    public void testAlreadyGzip() throws Exception {
-        gzipRequest();
-        filter.doFilter(request, response, filterChain);
-        Enumeration values = filteredRequest.getHeaders(ACCEPT_ENCODING_HEADER);
-        assertEquals("Expected Accept-Encoding null", null, values);
-    }
+  @Test
+  public void testForceGzipOtherHeader() throws Exception {
+    noneGzipRequest();
+    when(request.getHeader("Test")).thenReturn("ok");
+    when(request.getHeaders("Test"))
+        .thenReturn(
+            new Enumeration() {
+              private int c = 0;
 
-    @Test
-    public void testForceGzip() throws Exception {
-        noneGzipRequest();
-        filter.doFilter(request, response, filterChain);
-        String res = "";
-        Enumeration values = filteredRequest.getHeaders(ACCEPT_ENCODING_HEADER);
-        while (values.hasMoreElements()) {
-            res = res + values.nextElement() + "\n";
-        }
-        assertEquals("Expected Accept-Encoding gzip", "gzip\n", res);
-    }
-
-    @Test
-    public void testForceGzipOtherHeader() throws Exception {
-        noneGzipRequest();
-        when(request.getHeader("Test")).thenReturn("ok");
-        when(request.getHeaders("Test")).thenReturn(new Enumeration() {
-            private int c = 0;
-
-            @Override
-            public boolean hasMoreElements() {
+              @Override
+              public boolean hasMoreElements() {
                 return c == 0;
-            }
+              }
 
-            @Override
-            public Object nextElement() {
+              @Override
+              public Object nextElement() {
                 c++;
                 return "ok";
-            }
-        });
-        filter.doFilter(request, response, filterChain);
-        String res = "";
-        Enumeration values = filteredRequest.getHeaders("Test");
-        while (values.hasMoreElements()) {
-            res = res + values.nextElement() + "\n";
-        }
-        assertEquals("Expected Test ok", "ok\n", res);
+              }
+            });
+    filter.doFilter(request, response, filterChain);
+    String res = "";
+    Enumeration values = filteredRequest.getHeaders("Test");
+    while (values.hasMoreElements()) {
+      res = res + values.nextElement() + "\n";
     }
+    assertEquals("Expected Test ok", "ok\n", res);
+  }
 
-    private void gzipRequest() {
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getHeader(ACCEPT_ENCODING_HEADER)).thenReturn("gzip");
-    }
+  private void gzipRequest() {
+    when(request.getMethod()).thenReturn("GET");
+    when(request.getHeader(ACCEPT_ENCODING_HEADER)).thenReturn("gzip");
+  }
 
-    private void noneGzipRequest() {
-        when(request.getMethod()).thenReturn("GET");
-        when(request.getHeader(ACCEPT_ENCODING_HEADER)).thenReturn(null);
-    }
+  private void noneGzipRequest() {
+    when(request.getMethod()).thenReturn("GET");
+    when(request.getHeader(ACCEPT_ENCODING_HEADER)).thenReturn(null);
+  }
 }

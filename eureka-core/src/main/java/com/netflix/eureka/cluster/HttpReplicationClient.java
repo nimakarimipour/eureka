@@ -6,12 +6,10 @@ import com.netflix.eureka.cluster.protocol.ReplicationList;
 import com.netflix.eureka.cluster.protocol.ReplicationListResponse;
 import com.netflix.eureka.resources.ASGResource.ASGStatus;
 
-/**
- * @author Tomasz Bak
- */
+/** @author Tomasz Bak */
 public interface HttpReplicationClient extends EurekaHttpClient {
 
-    EurekaHttpResponse<Void> statusUpdate(String asgName, ASGStatus newStatus);
+  EurekaHttpResponse<Void> statusUpdate(String asgName, ASGStatus newStatus);
 
-    EurekaHttpResponse<ReplicationListResponse> submitBatchUpdates(ReplicationList replicationList);
+  EurekaHttpResponse<ReplicationListResponse> submitBatchUpdates(ReplicationList replicationList);
 }

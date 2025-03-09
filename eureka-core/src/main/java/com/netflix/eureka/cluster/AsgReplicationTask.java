@@ -10,25 +10,26 @@ import com.netflix.eureka.resources.ASGResource.ASGStatus;
  */
 public abstract class AsgReplicationTask extends ReplicationTask {
 
-    private final String asgName;
-    private final ASGStatus newStatus;
+  private final String asgName;
+  private final ASGStatus newStatus;
 
-    protected AsgReplicationTask(String peerNodeName, Action action, String asgName, ASGStatus newStatus) {
-        super(peerNodeName, action);
-        this.asgName = asgName;
-        this.newStatus = newStatus;
-    }
+  protected AsgReplicationTask(
+      String peerNodeName, Action action, String asgName, ASGStatus newStatus) {
+    super(peerNodeName, action);
+    this.asgName = asgName;
+    this.newStatus = newStatus;
+  }
 
-    @Override
-    public String getTaskName() {
-        return asgName + ':' + action + '@' + peerNodeName;
-    }
+  @Override
+  public String getTaskName() {
+    return asgName + ':' + action + '@' + peerNodeName;
+  }
 
-    public String getAsgName() {
-        return asgName;
-    }
+  public String getAsgName() {
+    return asgName;
+  }
 
-    public ASGStatus getNewStatus() {
-        return newStatus;
-    }
+  public ASGStatus getNewStatus() {
+    return newStatus;
+  }
 }

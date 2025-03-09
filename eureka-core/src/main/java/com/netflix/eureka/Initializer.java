@@ -1,4 +1,3 @@
 package com.netflix.eureka;
 
-public @interface Initializer {
-}
+public @interface Initializer {}

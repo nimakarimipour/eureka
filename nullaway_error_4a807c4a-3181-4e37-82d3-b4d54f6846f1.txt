@@ -1,0 +1,4 @@
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-client/src/main/java/com/netflix/discovery/EurekaClientConfig.java:130: warning: [dep-ann] deprecated item is not annotated with @Deprecated
+    boolean shouldGZipContent();
+            ^
+Note: Some input files use or override a deprecated API.

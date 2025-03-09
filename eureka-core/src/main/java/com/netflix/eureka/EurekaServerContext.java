@@ -21,23 +21,20 @@ import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.resources.ServerCodecs;
 
-/**
- * @author David Liu
- */
+/** @author David Liu */
 public interface EurekaServerContext {
 
-    void initialize() throws Exception;
+  void initialize() throws Exception;
 
-    void shutdown() throws Exception;
+  void shutdown() throws Exception;
 
-    EurekaServerConfig getServerConfig();
+  EurekaServerConfig getServerConfig();
 
-    PeerEurekaNodes getPeerEurekaNodes();
+  PeerEurekaNodes getPeerEurekaNodes();
 
-    ServerCodecs getServerCodecs();
+  ServerCodecs getServerCodecs();
 
-    PeerAwareInstanceRegistry getRegistry();
+  PeerAwareInstanceRegistry getRegistry();
 
-    ApplicationInfoManager getApplicationInfoManager();
-
+  ApplicationInfoManager getApplicationInfoManager();
 }
