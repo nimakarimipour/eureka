@@ -390,7 +390,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         // touchASGCache(instanceInfo.getASGName());
         InstanceStatus overriddenInstanceStatus =
             this.getOverriddenInstanceStatus(instanceInfo, leaseToRenew, isReplication);
-        if (overriddenInstanceStatus == InstanceStatus.UNKNOWN) {
+        if (overriddenInstanceStatus != null
+            && overriddenInstanceStatus == InstanceStatus.UNKNOWN) {
           logger.info(
               "Instance status UNKNOWN possibly due to deleted override for instance {}"
                   + "; re-register required",
@@ -398,7 +399,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
           RENEW_NOT_FOUND.increment(isReplication);
           return false;
         }
-        if (!instanceInfo.getStatus().equals(overriddenInstanceStatus)) {
+        if (overriddenInstanceStatus != null
+            && !instanceInfo.getStatus().equals(overriddenInstanceStatus)) {
           logger.info(
               "The instance status {} is different from overridden instance status {} for instance {}. "
                   + "Hence setting the status to overridden status",
