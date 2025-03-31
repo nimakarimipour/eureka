@@ -95,7 +95,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
       new AtomicReference<>(new Applications());
   private final EurekaServerConfig serverConfig;
   private volatile boolean readyForServingData;
-  private final EurekaHttpClient eurekaHttpClient;
+  @Nullable private final EurekaHttpClient eurekaHttpClient;
   private long timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
   private long deltaSuccesses = 0;
   private long deltaMismatches = 0;
@@ -417,48 +417,51 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @return - response which has information about the data.
    */
   @Nullable
-  private Applications fetchRemoteRegistry(boolean delta) {
-    logger.info(
-        "Getting instance registry info from the eureka server : {} , delta : {}",
-        this.remoteRegionURL,
-        delta);
-
-    if (shouldUseExperimentalTransport()) {
-      try {
-        EurekaHttpResponse<Applications> httpResponse =
-            delta ? eurekaHttpClient.getDelta() : eurekaHttpClient.getApplications();
-        int httpStatus = httpResponse.getStatusCode();
-        if (httpStatus >= 200 && httpStatus < 300) {
-          logger.debug("Got the data successfully : {}", httpStatus);
-          return httpResponse.getEntity();
+    private Applications fetchRemoteRegistry(boolean delta) {
+      logger.info(
+          "Getting instance registry info from the eureka server : {} , delta : {}",
+          this.remoteRegionURL,
+          delta);
+  
+      if (shouldUseExperimentalTransport()) {
+        try {
+          EurekaHttpResponse<Applications> httpResponse =
+              if (eurekaHttpClient == null) {
+              	return null;
+              }
+              delta ? eurekaHttpClient.getDelta() : eurekaHttpClient.getApplications();
+          int httpStatus = httpResponse.getStatusCode();
+          if (httpStatus >= 200 && httpStatus < 300) {
+            logger.debug("Got the data successfully : {}", httpStatus);
+            return httpResponse.getEntity();
+          }
+          logger.warn("Cannot get the data from {} : {}", this.remoteRegionURL, httpStatus);
+        } catch (Throwable t) {
+          logger.error("Can't get a response from {}", this.remoteRegionURL, t);
         }
-        logger.warn("Cannot get the data from {} : {}", this.remoteRegionURL, httpStatus);
-      } catch (Throwable t) {
-        logger.error("Can't get a response from {}", this.remoteRegionURL, t);
-      }
-    } else {
-      ClientResponse response = null;
-      try {
-        String urlPath = delta ? "apps/delta" : "apps/";
-
-        response =
-            discoveryApacheClient
-                .resource(this.remoteRegionURL + urlPath)
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .get(ClientResponse.class);
-        int httpStatus = response.getStatus();
-        if (httpStatus >= 200 && httpStatus < 300) {
-          logger.debug("Got the data successfully : {}", httpStatus);
-          return response.getEntity(Applications.class);
+      } else {
+        ClientResponse response = null;
+        try {
+          String urlPath = delta ? "apps/delta" : "apps/";
+  
+          response =
+              discoveryApacheClient
+                  .resource(this.remoteRegionURL + urlPath)
+                  .accept(MediaType.APPLICATION_JSON_TYPE)
+                  .get(ClientResponse.class);
+          int httpStatus = response.getStatus();
+          if (httpStatus >= 200 && httpStatus < 300) {
+            logger.debug("Got the data successfully : {}", httpStatus);
+            return response.getEntity(Applications.class);
+          }
+          logger.warn("Cannot get the data from {} : {}", this.remoteRegionURL, httpStatus);
+        } catch (Throwable t) {
+          logger.error("Can't get a response from {}", this.remoteRegionURL, t);
+        } finally {
+          closeResponse(response);
         }
-        logger.warn("Cannot get the data from {} : {}", this.remoteRegionURL, httpStatus);
-      } catch (Throwable t) {
-        logger.error("Can't get a response from {}", this.remoteRegionURL, t);
-      } finally {
-        closeResponse(response);
       }
-    }
-    return null;
+      return null;
   }
 
   /**
