@@ -196,7 +196,7 @@ public class PeerEurekaNode {
   public void heartbeat(
       final String appName,
       final String id,
-      @Nullable final InstanceInfo info,
+      final InstanceInfo info,
       @Nullable final InstanceStatus overriddenStatus,
       boolean primeConnection)
       throws Throwable {
@@ -272,7 +272,7 @@ public class PeerEurekaNode {
       final String appName,
       final String id,
       @Nullable final InstanceStatus newStatus,
-      @Nullable final InstanceInfo info) {
+      final InstanceInfo info) {
     long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
     batchingDispatcher.process(
         taskId("statusUpdate", appName, id),
@@ -292,8 +292,7 @@ public class PeerEurekaNode {
    * @param id the unique identifier of the instance.
    * @param info the instance information of the instance.
    */
-  public void deleteStatusOverride(
-      final String appName, final String id, @Nullable final InstanceInfo info) {
+  public void deleteStatusOverride(final String appName, final String id, final InstanceInfo info) {
     long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
     batchingDispatcher.process(
         taskId("deleteStatusOverride", appName, id),

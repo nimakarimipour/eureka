@@ -75,7 +75,6 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
    *     com.netflix.eureka.EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the information about the instance.
    */
-  @Nullable
   InstanceInfo getInstanceByAppAndId(String appName, String id, boolean includeRemoteRegions);
 
   void clearRegistry();
