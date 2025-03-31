@@ -42,7 +42,6 @@ import com.netflix.servo.monitor.Stopwatch;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -262,9 +261,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
         logger.info("Application is null : {}", getApplications() == null);
         logger.info(
             "Registered Applications size is zero : {}",
-            Nullability.castToNonnull(getApplications(), "reason...")
-                .getRegisteredApplications()
-                .isEmpty());
+            getApplications().getRegisteredApplications().isEmpty());
         success = storeFullRegistry();
       } else {
         success = fetchAndStoreDelta();
@@ -312,12 +309,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
       if (fetchRegistryUpdateLock.tryLock()) {
         try {
           updateDelta(delta);
-          Applications applicationsInstance = getApplications();
-          if (applicationsInstance != null) {
-            reconcileHashCode = applicationsInstance.getReconcileHashCode();
-          } else {
-            logger.warn("Applications instance is null");
-          }
+          reconcileHashCode = getApplications().getReconcileHashCode();
         } finally {
           fetchRegistryUpdateLock.unlock();
         }
@@ -345,33 +337,37 @@ public class RemoteRegionRegistry implements LookupService<String> {
    */
   private void updateDelta(Applications delta) {
     int deltaCount = 0;
-    Applications apps = getApplications();
     for (Application app : delta.getRegisteredApplications()) {
       for (InstanceInfo instance : app.getInstances()) {
         ++deltaCount;
         if (ActionType.ADDED.equals(instance.getActionType())) {
-          Application existingApp = apps.getRegisteredApplications(instance.getAppName());
+          Application existingApp =
+              getApplications().getRegisteredApplications(instance.getAppName());
           if (existingApp == null) {
-            apps.addApplication(app);
+            getApplications().addApplication(app);
           }
           logger.debug("Added instance {} to the existing apps ", instance.getId());
-          apps.getRegisteredApplications(instance.getAppName()).addInstance(instance);
+          getApplications().getRegisteredApplications(instance.getAppName()).addInstance(instance);
         } else if (ActionType.MODIFIED.equals(instance.getActionType())) {
-          Application existingApp = apps.getRegisteredApplications(instance.getAppName());
+          Application existingApp =
+              getApplications().getRegisteredApplications(instance.getAppName());
           if (existingApp == null) {
-            apps.addApplication(app);
+            getApplications().addApplication(app);
           }
           logger.debug("Modified instance {} to the existing apps ", instance.getId());
 
-          apps.getRegisteredApplications(instance.getAppName()).addInstance(instance);
+          getApplications().getRegisteredApplications(instance.getAppName()).addInstance(instance);
 
         } else if (ActionType.DELETED.equals(instance.getActionType())) {
-          Application existingApp = apps.getRegisteredApplications(instance.getAppName());
+          Application existingApp =
+              getApplications().getRegisteredApplications(instance.getAppName());
           if (existingApp == null) {
-            apps.addApplication(app);
+            getApplications().addApplication(app);
           }
           logger.debug("Deleted instance {} to the existing apps ", instance.getId());
-          apps.getRegisteredApplications(instance.getAppName()).removeInstance(instance);
+          getApplications()
+              .getRegisteredApplications(instance.getAppName())
+              .removeInstance(instance);
         }
       }
     }
@@ -493,7 +489,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
       applicationsDelta.set(apps);
       logger.warn(
           "The Reconcile hashcodes after complete sync up, client : {}, server : {}.",
-          Nullability.castToNonnull(getApplications(), "reason...").getReconcileHashCode(),
+          getApplications().getReconcileHashCode(),
           delta.getAppsHashCode());
       return true;
     } else {
@@ -506,16 +502,12 @@ public class RemoteRegionRegistry implements LookupService<String> {
   /** Logs the total number of non-filtered instances stored locally. */
   private void logTotalInstances() {
     int totInstances = 0;
-    Applications applications = getApplications();
-    if (applications != null) {
-      for (Application application : applications.getRegisteredApplications()) {
-        totInstances += application.getInstancesAsIsFromEureka().size();
-      }
+    for (Application application : getApplications().getRegisteredApplications()) {
+      totInstances += application.getInstancesAsIsFromEureka().size();
     }
     logger.debug("The total number of all instances in the client now is {}", totInstances);
   }
 
-  @Nullable
   @Override
   public Applications getApplications() {
     return applications.get();
