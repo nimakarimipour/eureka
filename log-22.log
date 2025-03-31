@@ -1,0 +1,165 @@
+====================
+Type='RETURN_NULLABLE', message='returning @Nullable expression from method with @NonNull return type'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/EurekaServerContextHolder.java:44
+    return holder;
+Log:
+---NullAway.lambda$resolveRemainingErrors$17---
+==============================
+---NullAway.lambda$resolveRemainingErrors$17---
+TOP LEVEL CALL TO FIX ERROR: Type='RETURN_NULLABLE', message='returning @Nullable expression from method with @NonNull return type'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/EurekaServerContextHolder.java:44
+    return holder;
+---NullAwayCodeFix.fix---
+Fixing error: Type='RETURN_NULLABLE', message='returning @Nullable expression from method with @NonNull return type'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/EurekaServerContextHolder.java:44
+    return holder;
+---NullAwayCodeFix.resolveNullableReturnError---
+Checking if the method is actually returning nullable.
+---ChatGPT.checkNullabilityPossibilityAtErrorPoint---
+Asking if the error can be null at error point point
+---ChatGPT.ask---
+Asking ChatGPT:
+In the method below, is there a possibility that the expression "return holder;" at line "return holder;" is null?
+public static EurekaServerContextHolder getInstance() {
+    return holder;
+}
+Give a single-word answer in XML format. If it is possible for the expression to be null, respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>YES</value>
+</response>
+```
+If it is not possible for the expression to be null, respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>NO</value>
+</response>
+```
+If you are unsure or need more information, respond with where you can ask for more details or what specific information you need.
+
+If additional information is required, list each request inside a `<request>` tag. If no additional information is needed, omit the `<requests>` section.
+
+Respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>UNKNOWN</value>
+    <!-- Include <requests> only if additional information is needed -->
+    <requests>
+        <request><![CDATA[YOUR REQUEST 1]]></request>
+        <request><![CDATA[YOUR REQUEST 2]]></request>
+    </requests>
+</response>
+```
+---ChatGPT.sendRequestToOpenAI---
+Retrieving response from cache
+---Response.<init>---
+Creating Response:
+```xml
+<response>
+    <reason><![CDATA[The code does not provide information about how the 'holder' is initialized, which could affect its nullability. Without knowing the class context or initialization details, it's unclear whether 'holder' can be null.]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[How is the 'holder' variable initialized in the class?]]></request>
+        <request><![CDATA[Is there any synchronization or lazy initialization involved in setting the value of 'holder'?]]></request>
+    </requests>
+</response>
+```
+---Response.<init>---
+Response created:
+Unknown: The code does not provide information about how the 'holder' is initialized, which could affect its nullability. Without knowing the class context or initialization details, it's unclear whether 'holder' can be null.
+---NullAwayCodeFix.resolveNullableReturnError---
+Checking if the method is a getter for field.
+---NullAwayCodeFix.resolveNullableReturnError---
+Not a getter method.
+---NullAwayCodeFix.resolveNullableReturnError---
+Made the method nullable and resolving triggered errors.
+---NullAwayCodeFix.fixTriggeredErrorsForLocation---
+Fixing triggered errors for location: OnMethod{method='getInstance()', clazz='com.netflix.eureka.EurekaServerContextHolder'}
+---NullAwayCodeFix.fixTriggeredErrorsForLocation---
+Adding annotations for resolvable errors, size: 0
+---NullAwayCodeFix.fixTriggeredErrorsForLocation---
+Resolving unresolvable error for triggered error: Type='DEREFERENCE_NULLABLE', message='dereferenced expression EurekaServerContextHolder.getInstance() is @Nullable'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/resources/ASGResource.java:85
+    this(EurekaServerContextHolder.getInstance().getServerContext());
+---NullAwayCodeFix.fix---
+Fixing error: Type='DEREFERENCE_NULLABLE', message='dereferenced expression EurekaServerContextHolder.getInstance() is @Nullable'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/resources/ASGResource.java:85
+    this(EurekaServerContextHolder.getInstance().getServerContext());
+---NullAwayCodeFix.resolveDereferenceError---
+Checking nullability possibility at error point
+---ChatGPT.checkNullabilityPossibilityAtErrorPoint---
+Asking if the error can be null at error point point
+---ChatGPT.ask---
+Asking ChatGPT:
+In the method below, is there a possibility that the expression "EurekaServerContextHolder.getInstance()" at line "this(EurekaServerContextHolder.getInstance().getServerContext());" is null?
+public ASGResource() {
+    this(EurekaServerContextHolder.getInstance().getServerContext());
+}
+Give a single-word answer in XML format. If it is possible for the expression to be null, respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>YES</value>
+</response>
+```
+If it is not possible for the expression to be null, respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>NO</value>
+</response>
+```
+If you are unsure or need more information, respond with where you can ask for more details or what specific information you need.
+
+If additional information is required, list each request inside a `<request>` tag. If no additional information is needed, omit the `<requests>` section.
+
+Respond with:
+```xml
+<response>
+    <reason><![CDATA[YOUR REASON]]></reason>
+    <value>UNKNOWN</value>
+    <!-- Include <requests> only if additional information is needed -->
+    <requests>
+        <request><![CDATA[YOUR REQUEST 1]]></request>
+        <request><![CDATA[YOUR REQUEST 2]]></request>
+    </requests>
+</response>
+```
+---ChatGPT.sendRequestToOpenAI---
+Retrieving response from cache
+---Response.<init>---
+Creating Response:
+```xml
+<response>
+    <reason><![CDATA[Without more context on the implementation of EurekaServerContextHolder and getInstance(), it's unclear whether getInstance() can return a null value or whether getServerContext() can result in null.]]></reason>
+    <value>UNKNOWN</value>
+    <requests>
+        <request><![CDATA[Is EurekaServerContextHolder.getInstance() guaranteed to return a non-null object?]]></request>
+        <request><![CDATA[Can the getServerContext() method return a null value?]]></request>
+    </requests>
+</response>
+```
+---Response.<init>---
+Response created:
+Unknown: Without more context on the implementation of EurekaServerContextHolder and getInstance(), it's unclear whether getInstance() can return a null value or whether getServerContext() can result in null.
+---NullAway.lambda$resolveRemainingErrors$17---
+--------Exception occurred in computing fix--------
+java.lang.NullPointerException: null
+	at edu.ucr.cs.riple.injector.util.TypeUtils.isAnnotatedWith(TypeUtils.java:104) ~[injector-1.3.16-SNAPSHOT.jar:?]
+	at edu.ucr.cs.riple.core.util.ASTParser.isMethodWithNullableReturn(ASTParser.java:147) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.codefix.NullAwayCodeFix.resolveDereferenceError(NullAwayCodeFix.java:368) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.codefix.NullAwayCodeFix.fix(NullAwayCodeFix.java:137) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.codefix.NullAwayCodeFix.fixTriggeredErrorsForLocation(NullAwayCodeFix.java:707) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.codefix.NullAwayCodeFix.resolveNullableReturnError(NullAwayCodeFix.java:289) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.codefix.NullAwayCodeFix.fix(NullAwayCodeFix.java:144) ~[main/:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.NullAway.lambda$resolveRemainingErrors$17(NullAway.java:401) ~[main/:?]
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1541) ~[?:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.NullAway.lambda$resolveRemainingErrors$18(NullAway.java:386) ~[main/:?]
+	at java.base/java.util.HashMap.forEach(HashMap.java:1337) [?:?]
+	at edu.ucr.cs.riple.core.checkers.nullaway.NullAway.resolveRemainingErrors(NullAway.java:384) [main/:?]
+	at edu.ucr.cs.riple.core.Annotator.annotate(Annotator.java:130) [main/:?]
+	at edu.ucr.cs.riple.core.Annotator.start(Annotator.java:87) [main/:?]
+	at edu.ucr.cs.riple.core.Main.main(Main.java:150) [main/:?]
