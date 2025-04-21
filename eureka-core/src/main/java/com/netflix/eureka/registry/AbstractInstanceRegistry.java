@@ -1093,11 +1093,15 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
       for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
         Application application = remoteRegistry.getApplication(appName);
         if (application != null) {
-          return application.getByInstanceId(id);
+          InstanceInfo instanceInfo = application.getByInstanceId(id);
+          if (instanceInfo != null) {
+            return instanceInfo;
+          }
         }
       }
     }
-    return null;
+    throw new NoSuchElementException(
+        "No instance found for appName: " + appName + " and id: " + id);
   }
 
   /**
