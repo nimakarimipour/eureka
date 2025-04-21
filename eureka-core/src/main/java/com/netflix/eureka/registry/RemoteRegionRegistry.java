@@ -140,7 +140,9 @@ public class RemoteRegionRegistry implements LookupService<String> {
     discoveryJerseyClient = clientBuilder.build();
     discoveryApacheClient = discoveryJerseyClient.getClient();
 
+    // should we enable GZip decoding of responses based on Response Headers?
     if (serverConfig.shouldGZipContentFromRemoteRegion()) {
+      // compressed only if there exists a 'Content-Encoding' header whose value is "gzip"
       discoveryApacheClient.addFilter(new GZIPContentEncodingFilter(false));
     }
 
@@ -153,6 +155,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     EurekaServerIdentity identity = new EurekaServerIdentity(ip);
     discoveryApacheClient.addFilter(new EurekaIdentityHeaderFilter(identity));
 
+    // Configure new transport layer (candidate for injecting in the future)
     EurekaHttpClient newEurekaHttpClient = null;
     try {
       ClusterResolver clusterResolver = StaticClusterResolver.fromURL(regionName, remoteRegionURL);
@@ -162,7 +165,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     } catch (Exception e) {
       logger.warn("Transport initialization failure", e);
     }
-    this.eurekaHttpClient = Objects.requireNonNull(newEurekaHttpClient);
+    this.eurekaHttpClient = newEurekaHttpClient;
 
     try {
       if (fetchRegistry()) {
@@ -176,6 +179,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
       logger.error("Problem fetching registry information :", e);
     }
 
+    // remote region fetch
     Runnable remoteRegionFetchTask =
         new Runnable() {
           @Override
@@ -200,7 +204,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
             serverConfig.getRemoteRegionFetchThreadPoolSize(),
             0,
             TimeUnit.SECONDS,
-            new SynchronousQueue<Runnable>());
+            new SynchronousQueue<Runnable>()); // use direct handoff
 
     scheduler =
         Executors.newScheduledThreadPool(
@@ -217,7 +221,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
             remoteRegionFetchExecutor,
             serverConfig.getRemoteRegionRegistryFetchInterval(),
             TimeUnit.SECONDS,
-            5,
+            5, // exponential backoff bound
             remoteRegionFetchTask),
         serverConfig.getRemoteRegionRegistryFetchInterval(),
         TimeUnit.SECONDS);
