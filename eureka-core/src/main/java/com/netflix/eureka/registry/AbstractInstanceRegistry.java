@@ -387,10 +387,10 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     } else {
       InstanceInfo instanceInfo = leaseToRenew.getHolder();
       if (instanceInfo != null) {
-        // touchASGCache(instanceInfo.getASGName());
         InstanceStatus overriddenInstanceStatus =
             this.getOverriddenInstanceStatus(instanceInfo, leaseToRenew, isReplication);
-        if (overriddenInstanceStatus == InstanceStatus.UNKNOWN) {
+        if (overriddenInstanceStatus == null
+            || overriddenInstanceStatus == InstanceStatus.UNKNOWN) {
           logger.info(
               "Instance status UNKNOWN possibly due to deleted override for instance {}"
                   + "; re-register required",
