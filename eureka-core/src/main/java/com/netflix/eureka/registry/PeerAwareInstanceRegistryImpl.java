@@ -661,8 +661,8 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
       Action action,
       String appName,
       String id,
-      @Nullable InstanceInfo info,
-      @Nullable InstanceStatus newStatus,
+      InstanceInfo info,
+      InstanceStatus newStatus,
       PeerEurekaNode node) {
     try {
       InstanceInfo infoFromRegistry;
@@ -677,7 +677,9 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
           node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
           break;
         case Register:
-          node.register(info);
+          if (info != null) {
+            node.register(info);
+          }
           break;
         case StatusUpdate:
           infoFromRegistry = getInstanceByAppAndId(appName, id, false);
