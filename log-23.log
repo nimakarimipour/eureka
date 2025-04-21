@@ -1,0 +1,107 @@
+====================
+Type='DEREFERENCE_NULLABLE', message='dereferenced expression nextHolder is @Nullable'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/util/batcher/AcceptorExecutor.java:364
+      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+Log:
+---NullAway.lambda$resolveRemainingErrors$17---
+==============================
+---NullAway.lambda$resolveRemainingErrors$17---
+TOP LEVEL CALL TO FIX ERROR: Type='DEREFERENCE_NULLABLE', message='dereferenced expression nextHolder is @Nullable'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/util/batcher/AcceptorExecutor.java:364
+      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+---ChatGPT.ask---
+Asking ChatGPT:
+I want to resolve a warning reported by NullAway.
+The error is of the type of "DEREFERENCE_NULLABLE" and the full error message is: "dereferenced expression nextHolder is @Nullable".
+The line with the error is: "      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();".
+
+The error is within "the method: hasEnoughTasksForNextBatch()" and the code surrounding the error is:
+```java
+          }
+          if (holders.isEmpty()) {
+            batchWorkRequests.release();
+          } else {
+            batchSizeMetric.record(holders.size(), TimeUnit.MILLISECONDS);
+            batchWorkQueue.add(holders);
+          }
+        }
+      }
+    }
+
+    private boolean hasEnoughTasksForNextBatch() {
+      if (processingOrder.isEmpty()) {
+        return false;
+      }
+      if (pendingTasks.size() >= maxBufferSize) {
+        return true;
+      }
+
+      TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
+      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+      return delay >= maxBatchingDelay;
+    }
+  }
+}
+```
+
+Give me the fixed code snippet (ONLY THE METHOD REWRITE OF "hasEnoughTasksForNextBatch()") in XML format in <response> tag like the example below. I will apply the fix to my codebase.
+Do not import any additional libraries or classes or java comments.
+If you can provide the fixed code snippet, provide it in the following format and place the code snippet in the <code> tag within ```java block.
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  Your fixed code snippet here
+  ```
+    ]]>
+  </code>
+</response>
+
+---ChatGPT.sendRequestToOpenAI---
+Sending request to OpenAI...
+---ChatGPT.sendRequestToOpenAI---
+Response received from OpenAI.
+---Response.<init>---
+Creating Response:
+```xml
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  private boolean hasEnoughTasksForNextBatch() {
+      if (processingOrder.isEmpty()) {
+        return false;
+      }
+      if (pendingTasks.size() >= maxBufferSize) {
+        return true;
+      }
+
+      TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
+      if (nextHolder == null) {
+        return false;
+      }
+      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+      return delay >= maxBatchingDelay;
+  }
+  ```
+  ]]>
+  </code>
+</response>
+```
+---Response.<init>---
+Response created:
+private boolean hasEnoughTasksForNextBatch() {
+      if (processingOrder.isEmpty()) {
+        return false;
+      }
+      if (pendingTasks.size() >= maxBufferSize) {
+        return true;
+      }
+
+      TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
+      if (nextHolder == null) {
+        return false;
+      }
+      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+      return delay >= maxBatchingDelay;
+  }
