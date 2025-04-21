@@ -952,13 +952,11 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
 
         for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
           Applications applications = remoteRegistry.getApplicationDeltas();
-          if (applications != null) {
-            for (Application application : applications.getRegisteredApplications()) {
-              Application appInLocalRegistry =
-                  allAppsInLocalRegion.getRegisteredApplications(application.getName());
-              if (appInLocalRegistry == null) {
-                apps.addApplication(application);
-              }
+          for (Application application : applications.getRegisteredApplications()) {
+            Application appInLocalRegistry =
+                allAppsInLocalRegion.getRegisteredApplications(application.getName());
+            if (appInLocalRegistry == null) {
+              apps.addApplication(application);
             }
           }
         }
