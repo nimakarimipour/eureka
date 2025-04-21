@@ -114,23 +114,18 @@ public class ApplicationsResource {
       @HeaderParam(HEADER_ACCEPT_ENCODING) String acceptEncoding,
       @HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
       @Context UriInfo uriInfo,
-      @Nullable @QueryParam("regions") String regionsStr) {
+      @QueryParam("regions") String regionsStr) {
 
-    boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
+    boolean isRemoteRegionRequested = regionsStr != null && !regionsStr.isEmpty();
     String[] regions = null;
     if (!isRemoteRegionRequested) {
       EurekaMonitors.GET_ALL.increment();
     } else {
       regions = regionsStr.toLowerCase().split(",");
-      Arrays.sort(
-          regions); // So we don't have different caches for same regions queried in different
-      // order.
+      Arrays.sort(regions);
       EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
     }
 
-    // Check if the server allows the access to the registry. The server can
-    // restrict access if it is not
-    // ready to serve traffic depending on various reasons.
     if (!registry.shouldAllowAccess(isRemoteRegionRequested)) {
       return Response.status(Status.FORBIDDEN).build();
     }
