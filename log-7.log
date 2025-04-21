@@ -1,0 +1,98 @@
+====================
+Type='METHOD_NO_INIT', message='initializer method does not guarantee @NonNull field serverConfig (line 106) is initialized along all control-flow paths (remember to check for exceptions or early returns).'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/RateLimitingFilter.java:114
+  public RateLimitingFilter() {}
+Log:
+---NullAway.lambda$resolveRemainingErrors$17---
+==============================
+---NullAway.lambda$resolveRemainingErrors$17---
+TOP LEVEL CALL TO FIX ERROR: Type='METHOD_NO_INIT', message='initializer method does not guarantee @NonNull field serverConfig (line 106) is initialized along all control-flow paths (remember to check for exceptions or early returns).'
+/home/nima/Developer/nullness-benchmarks/eureka/eureka-core/src/main/java/com/netflix/eureka/RateLimitingFilter.java:114
+  public RateLimitingFilter() {}
+---ChatGPT.ask---
+Asking ChatGPT:
+I want to resolve a warning reported by NullAway.
+The error is of the type of "METHOD_NO_INIT" and the full error message is: "initializer method does not guarantee @NonNull field serverConfig (line 106) is initialized along all control-flow paths (remember to check for exceptions or early returns).".
+The line with the error is: "  public RateLimitingFilter() {}".
+
+The error is within "the method: RateLimitingFilter()" and the code surrounding the error is:
+```java
+    FullFetch,
+    DeltaFetch,
+    Application,
+    Other
+  }
+
+  /** Includes both full and delta fetches. */
+  private static final RateLimiter registryFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
+
+  /** Only full registry fetches. */
+  private static final RateLimiter registryFullFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
+
+  private EurekaServerConfig serverConfig;
+
+  @Inject
+  public RateLimitingFilter(EurekaServerContext server) {
+    this.serverConfig = server.getServerConfig();
+  }
+
+  // for non-DI use
+  public RateLimitingFilter() {}
+
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    if (serverConfig == null) {
+      EurekaServerContext serverContext =
+          (EurekaServerContext)
+              filterConfig.getServletContext().getAttribute(EurekaServerContext.class.getName());
+      serverConfig = serverContext.getServerConfig();
+    }
+  }
+
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+    Target target = getTarget(request);
+    if (target == Target.Other) {
+      chain.doFilter(request, response);
+      return;
+    }
+```
+
+Give me the fixed code snippet (ONLY THE METHOD REWRITE OF "RateLimitingFilter()") in XML format in <response> tag like the example below. I will apply the fix to my codebase.
+Do not import any additional libraries or classes or java comments.
+If you can provide the fixed code snippet, provide it in the following format and place the code snippet in the <code> tag within ```java block.
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  Your fixed code snippet here
+  ```
+    ]]>
+  </code>
+</response>
+
+---ChatGPT.sendRequestToOpenAI---
+Sending request to OpenAI...
+---ChatGPT.sendRequestToOpenAI---
+Response received from OpenAI.
+---Response.<init>---
+Creating Response:
+```xml
+<response>
+  <success>true</success>
+  <code><![CDATA[
+  ```java
+  public RateLimitingFilter() {
+      this.serverConfig = null;
+  }
+  ```
+    ]]>
+  </code>
+</response>
+```
+---Response.<init>---
+Response created:
+public RateLimitingFilter() {
+      this.serverConfig = null;
+  }
