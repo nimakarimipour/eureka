@@ -5,7 +5,9 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl.Action;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 class TestableInstanceReplicationTask extends InstanceReplicationTask {
 
   public static final String APP_NAME = "testableReplicationTaskApp";

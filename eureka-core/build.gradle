@@ -1,6 +1,6 @@
 plugins {
     id("net.ltgt.errorprone") version "3.0.1"
-    id 'com.github.sherter.google-java-format' version '0.9'
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 apply plugin: "java"
@@ -8,6 +8,13 @@ apply plugin: "java"
 repositories {
     mavenLocal()
     mavenCentral()
+}
+
+spotless {
+    java {
+        googleJavaFormat('1.17.0') // or latest compatible with Java 17
+        target 'src/**/*.java'
+    }
 }
 
 dependencies {

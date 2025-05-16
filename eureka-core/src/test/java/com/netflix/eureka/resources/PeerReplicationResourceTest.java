@@ -25,7 +25,9 @@ import javax.ws.rs.core.Response.Status;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class PeerReplicationResourceTest {
 
   private final ApplicationResource applicationResource = mock(ApplicationResource.class);

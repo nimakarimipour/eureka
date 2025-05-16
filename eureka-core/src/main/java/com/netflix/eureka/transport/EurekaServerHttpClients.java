@@ -31,7 +31,9 @@ import com.netflix.eureka.EurekaServerConfig;
 import com.netflix.eureka.Names;
 import com.netflix.eureka.resources.ServerCodecs;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public final class EurekaServerHttpClients {
 
   public static final long RECONNECT_INTERVAL_MINUTES = 30;

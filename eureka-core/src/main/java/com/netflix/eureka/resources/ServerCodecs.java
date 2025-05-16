@@ -5,7 +5,9 @@ import com.netflix.discovery.converters.wrappers.CodecWrapper;
 import com.netflix.discovery.converters.wrappers.EncoderWrapper;
 import com.netflix.eureka.registry.Key;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 public interface ServerCodecs {
 
   CodecWrapper getFullJsonCodec();

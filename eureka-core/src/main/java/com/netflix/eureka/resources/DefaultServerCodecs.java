@@ -10,7 +10,9 @@ import com.uber.nullaway.annotations.Initializer;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 @Singleton
 public class DefaultServerCodecs implements ServerCodecs {
 

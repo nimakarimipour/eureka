@@ -8,7 +8,9 @@ import com.netflix.discovery.converters.EurekaJacksonCodec;
 import com.netflix.discovery.shared.transport.ClusterSampleData;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class JacksonEncodingTest {
 
   private final EurekaJacksonCodec jacksonCodec = new EurekaJacksonCodec();

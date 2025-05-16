@@ -36,7 +36,9 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class JerseyRemoteRegionClientFactory implements TransportClientFactory {
 
   private static final Logger logger =

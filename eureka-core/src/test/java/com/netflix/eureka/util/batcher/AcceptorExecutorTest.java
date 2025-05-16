@@ -29,7 +29,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class AcceptorExecutorTest {
 
   private static final long SERVER_UNAVAILABLE_SLEEP_TIME_MS = 1000;

@@ -9,7 +9,9 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 public class StatusUtil {
   private static final Logger logger = LoggerFactory.getLogger(StatusUtil.class);
 

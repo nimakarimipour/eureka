@@ -1383,7 +1383,9 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
   }
 
-  /** @return The rule that will process the instance status override. */
+  /**
+   * @return The rule that will process the instance status override.
+   */
   protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
   @Nullable

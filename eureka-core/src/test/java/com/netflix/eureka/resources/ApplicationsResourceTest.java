@@ -18,7 +18,9 @@ import javax.ws.rs.core.Response;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 public class ApplicationsResourceTest extends AbstractTester {
   private ApplicationsResource applicationsResource;
   private Applications testApplications;

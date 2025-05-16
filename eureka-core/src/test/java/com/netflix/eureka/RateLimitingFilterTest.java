@@ -38,7 +38,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class RateLimitingFilterTest {
 

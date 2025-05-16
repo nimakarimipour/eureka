@@ -13,7 +13,9 @@ import java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class ReplicationTaskProcessorTest {
 
   private final TestableHttpReplicationClient replicationClient =

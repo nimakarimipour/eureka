@@ -36,7 +36,9 @@ import javax.annotation.Nullable;
 import org.junit.After;
 import org.junit.Before;
 
-/** @author Nitesh Kant */
+/**
+ * @author Nitesh Kant
+ */
 public class AbstractTester {
 
   public static final String REMOTE_REGION_NAME = "us-east-1";

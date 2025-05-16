@@ -29,7 +29,9 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author Joseph Witthuhn */
+/**
+ * @author Joseph Witthuhn
+ */
 public class EIPManagerTest {
   private EurekaClientConfig config = mock(EurekaClientConfig.class);
   private EIPManager eipManager;

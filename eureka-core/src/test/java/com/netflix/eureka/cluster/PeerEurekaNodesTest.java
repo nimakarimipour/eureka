@@ -25,7 +25,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class PeerEurekaNodesTest {
 
   private static final String PEER_EUREKA_URL_A = "http://a.eureka.test";

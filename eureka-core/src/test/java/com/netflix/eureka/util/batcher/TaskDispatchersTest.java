@@ -31,7 +31,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Test;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class TaskDispatchersTest {
 
   private static final long SERVER_UNAVAILABLE_SLEEP_TIME_MS = 1000;

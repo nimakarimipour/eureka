@@ -16,7 +16,9 @@
 
 package com.netflix.eureka;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class Names {
 
   /**

@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 @Serializer("jackson") // For backwards compatibility with DiscoveryJerseyProvider
 public class ReplicationList {
   private final List<ReplicationInstance> replicationList;

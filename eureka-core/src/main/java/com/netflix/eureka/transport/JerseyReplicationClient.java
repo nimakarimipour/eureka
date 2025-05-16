@@ -32,7 +32,9 @@ import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public class JerseyReplicationClient extends AbstractJerseyEurekaHttpClient
     implements HttpReplicationClient {
 

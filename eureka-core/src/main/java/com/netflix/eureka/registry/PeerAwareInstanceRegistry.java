@@ -20,7 +20,9 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.resources.ASGResource;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public interface PeerAwareInstanceRegistry extends InstanceRegistry {
 
   void init(PeerEurekaNodes peerEurekaNodes) throws Exception;

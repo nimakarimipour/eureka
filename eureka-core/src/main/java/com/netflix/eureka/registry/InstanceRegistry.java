@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupService<String> {
 
   void openForTraffic(ApplicationInfoManager applicationInfoManager, int count);

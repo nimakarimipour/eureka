@@ -611,7 +611,9 @@ public interface EurekaServerConfig {
    */
   AwsBindingStrategy getBindingStrategy();
 
-  /** @return the ttl used to set up the route53 domain if new */
+  /**
+   * @return the ttl used to set up the route53 domain if new
+   */
   long getRoute53DomainTTL();
 
   /**

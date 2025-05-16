@@ -24,7 +24,9 @@ import org.mortbay.jetty.Server;
 import org.mortbay.jetty.servlet.FilterHolder;
 import org.mortbay.jetty.servlet.ServletHandler;
 
-/** @author Nitesh Kant */
+/**
+ * @author Nitesh Kant
+ */
 public class MockRemoteEurekaServer extends ExternalResource {
 
   public static final String EUREKA_API_BASE_PATH = "/eureka/v2/";

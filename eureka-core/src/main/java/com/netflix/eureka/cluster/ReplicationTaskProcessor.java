@@ -18,7 +18,9 @@ import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
 
   private static final Logger logger = LoggerFactory.getLogger(ReplicationTaskProcessor.class);

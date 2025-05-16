@@ -6,7 +6,9 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Test;
 
-/** @author Nitesh Kant */
+/**
+ * @author Nitesh Kant
+ */
 public class DefaultEurekaServerConfigTest {
 
   @Test

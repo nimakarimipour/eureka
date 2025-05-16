@@ -3,7 +3,9 @@ package com.netflix.eureka.registry;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.Nullable;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 public interface ResponseCache {
 
   void invalidate(String appName, @Nullable String vipAddress, @Nullable String secureVipAddress);

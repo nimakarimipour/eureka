@@ -19,7 +19,9 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-/** @author Nitesh Kant */
+/**
+ * @author Nitesh Kant
+ */
 public class InstanceRegistryTest extends AbstractTester {
 
   @Test

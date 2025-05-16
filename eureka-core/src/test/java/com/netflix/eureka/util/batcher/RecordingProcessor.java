@@ -26,7 +26,9 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
-/** @author Tomasz Bak */
+/**
+ * @author Tomasz Bak
+ */
 class RecordingProcessor implements TaskProcessor<ProcessingResult> {
 
   final BlockingDeque<ProcessingResult> completedTasks = new LinkedBlockingDeque<>();

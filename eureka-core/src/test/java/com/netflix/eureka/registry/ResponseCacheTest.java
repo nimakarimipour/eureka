@@ -14,7 +14,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/** @author Nitesh Kant */
+/**
+ * @author Nitesh Kant
+ */
 public class ResponseCacheTest extends AbstractTester {
 
   private static final String REMOTE_REGION = "myremote";

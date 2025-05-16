@@ -33,7 +33,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
-/** @author Kebe Liu */
+/**
+ * @author Kebe Liu
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class GzipEncodingEnforcingFilterTest {
 

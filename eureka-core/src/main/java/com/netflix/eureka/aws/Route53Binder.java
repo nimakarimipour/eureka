@@ -55,7 +55,9 @@ public class Route53Binder implements AwsBinder {
         applicationInfoManager);
   }
 
-  /** @param registrationHostname the hostname to register under the Route53 CNAME */
+  /**
+   * @param registrationHostname the hostname to register under the Route53 CNAME
+   */
   public Route53Binder(
       String registrationHostname,
       EurekaServerConfig serverConfig,

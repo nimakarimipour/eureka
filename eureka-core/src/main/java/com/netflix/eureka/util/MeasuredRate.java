@@ -36,7 +36,9 @@ public class MeasuredRate {
 
   private volatile boolean isActive;
 
-  /** @param sampleInterval in milliseconds */
+  /**
+   * @param sampleInterval in milliseconds
+   */
   public MeasuredRate(long sampleInterval) {
     this.sampleInterval = sampleInterval;
     this.timer = new Timer("Eureka-MeasureRateTimer", true);

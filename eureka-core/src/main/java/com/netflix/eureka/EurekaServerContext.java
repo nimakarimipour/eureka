@@ -21,7 +21,9 @@ import com.netflix.eureka.cluster.PeerEurekaNodes;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.resources.ServerCodecs;
 
-/** @author David Liu */
+/**
+ * @author David Liu
+ */
 public interface EurekaServerContext {
 
   void initialize() throws Exception;
