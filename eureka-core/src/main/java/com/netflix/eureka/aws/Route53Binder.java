@@ -347,9 +347,6 @@ public class Route53Binder implements AwsBinder {
     }
 
     public ResourceRecordSet getResourceRecordSet() {
-      if (resourceRecordSet == null) {
-        throw new NullPointerException("resourceRecordSet is null");
-      }
       return resourceRecordSet;
     }
   }
