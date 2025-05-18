@@ -156,15 +156,16 @@ public class RemoteRegionRegistry implements LookupService<String> {
     discoveryApacheClient.addFilter(new EurekaIdentityHeaderFilter(identity));
 
     // Configure new transport layer (candidate for injecting in the future)
+    EurekaHttpClient newEurekaHttpClient = null;
     try {
       ClusterResolver clusterResolver = StaticClusterResolver.fromURL(regionName, remoteRegionURL);
-      this.eurekaHttpClient =
+      newEurekaHttpClient =
           EurekaServerHttpClients.createRemoteRegionClient(
               serverConfig, clientConfig.getTransportConfig(), serverCodecs, clusterResolver);
     } catch (Exception e) {
       logger.warn("Transport initialization failure", e);
-      this.eurekaHttpClient = new EurekaHttpClientFallback(); // or other appropriate fallback
     }
+    this.eurekaHttpClient = newEurekaHttpClient;
 
     try {
       if (fetchRegistry()) {
