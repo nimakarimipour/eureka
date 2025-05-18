@@ -658,49 +658,46 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
    * node.
    */
   private void replicateInstanceActionsToPeers(
-        Action action,
-        String appName,
-        String id,
-        InstanceInfo info,
-        InstanceStatus newStatus,
-        PeerEurekaNode node) {
-      try {
-        InstanceInfo infoFromRegistry;
-        CurrentRequestVersion.set(Version.V2);
-        switch (action) {
-          case Cancel:
-            node.cancel(appName, id);
-            break;
-          case Heartbeat:
-            InstanceStatus overriddenStatus = overriddenInstanceStatusMap.get(id);
-            infoFromRegistry = getInstanceByAppAndId(appName, id, false);
-            node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
-            break;
-          case Register:
-            if (info != null) {
-              node.register(info);
-            } else {
-              throw new IllegalArgumentException("InstanceInfo cannot be null for Register action");
-            }
-            break;
-          case StatusUpdate:
-            infoFromRegistry = getInstanceByAppAndId(appName, id, false);
-            node.statusUpdate(appName, id, newStatus, infoFromRegistry);
-            break;
-          case DeleteStatusOverride:
-            infoFromRegistry = getInstanceByAppAndId(appName, id, false);
-            node.deleteStatusOverride(appName, id, infoFromRegistry);
-            break;
-        }
-      } catch (Throwable t) {
-        logger.error(
-            "Cannot replicate information to {} for action {}",
-            node.getServiceUrl(),
-            action.name(),
-            t);
-      } finally {
-        CurrentRequestVersion.remove();
+      Action action,
+      String appName,
+      String id,
+      @Nullable InstanceInfo info,
+      @Nullable InstanceStatus newStatus,
+      PeerEurekaNode node) {
+    try {
+      InstanceInfo infoFromRegistry;
+      CurrentRequestVersion.set(Version.V2);
+      switch (action) {
+        case Cancel:
+          node.cancel(appName, id);
+          break;
+        case Heartbeat:
+          InstanceStatus overriddenStatus = overriddenInstanceStatusMap.get(id);
+          infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+          node.heartbeat(appName, id, infoFromRegistry, overriddenStatus, false);
+          break;
+        case Register:
+          node.register(info);
+          break;
+        case StatusUpdate:
+          infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+          node.statusUpdate(appName, id, newStatus, infoFromRegistry);
+          break;
+        case DeleteStatusOverride:
+          infoFromRegistry = getInstanceByAppAndId(appName, id, false);
+          node.deleteStatusOverride(appName, id, infoFromRegistry);
+          break;
       }
+    } catch (Throwable t) {
+      logger.error(
+          "Cannot replicate information to {} for action {}",
+          node.getServiceUrl(),
+          action.name(),
+          t);
+    } finally {
+      CurrentRequestVersion.remove();
+    }
+  }
 
   /**
    * Replicates all ASG status changes to peer eureka nodes except for replication traffic to this
