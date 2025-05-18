@@ -776,9 +776,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     The instances from remote regions can be only for certain whitelisted apps as explained
    *     above.
    */
-  public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
-
-    boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
+  public Applications getApplicationsFromMultipleRegions(String[] remoteRegions) {
+    boolean includeRemoteRegion = remoteRegions != null && remoteRegions.length != 0;
 
     logger.debug(
         "Fetching applications registry with remote regions: {}, Regions argument {}",
@@ -810,35 +809,37 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
     if (includeRemoteRegion) {
       for (String remoteRegion : remoteRegions) {
-        RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
-        if (null != remoteRegistry) {
-          Applications remoteApps = remoteRegistry.getApplications();
-          for (Application application : remoteApps.getRegisteredApplications()) {
-            if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
-              logger.info(
-                  "Application {}  fetched from the remote region {}",
-                  application.getName(),
-                  remoteRegion);
+        if (remoteRegion != null) {
+          RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
+          if (remoteRegistry != null) {
+            Applications remoteApps = remoteRegistry.getApplications();
+            for (Application application : remoteApps.getRegisteredApplications()) {
+              if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
+                logger.info(
+                    "Application {}  fetched from the remote region {}",
+                    application.getName(),
+                    remoteRegion);
 
-              Application appInstanceTillNow =
-                  apps.getRegisteredApplications(application.getName());
-              if (appInstanceTillNow == null) {
-                appInstanceTillNow = new Application(application.getName());
-                apps.addApplication(appInstanceTillNow);
+                Application appInstanceTillNow =
+                    apps.getRegisteredApplications(application.getName());
+                if (appInstanceTillNow == null) {
+                  appInstanceTillNow = new Application(application.getName());
+                  apps.addApplication(appInstanceTillNow);
+                }
+                for (InstanceInfo instanceInfo : application.getInstances()) {
+                  appInstanceTillNow.addInstance(instanceInfo);
+                }
+              } else {
+                logger.debug(
+                    "Application {} not fetched from the remote region {} as there exists a "
+                        + "whitelist and this app is not in the whitelist.",
+                    application.getName(),
+                    remoteRegion);
               }
-              for (InstanceInfo instanceInfo : application.getInstances()) {
-                appInstanceTillNow.addInstance(instanceInfo);
-              }
-            } else {
-              logger.debug(
-                  "Application {} not fetched from the remote region {} as there exists a "
-                      + "whitelist and this app is not in the whitelist.",
-                  application.getName(),
-                  remoteRegion);
             }
+          } else {
+            logger.warn("No remote registry available for the remote region {}", remoteRegion);
           }
-        } else {
-          logger.warn("No remote registry available for the remote region {}", remoteRegion);
         }
       }
     }
