@@ -102,13 +102,13 @@ public class ReplicationInstance {
   }
 
   public static class ReplicationInstanceBuilder {
-    @Nullable private String appName;
-    @Nullable private String id;
-    @Nullable private Long lastDirtyTimestamp;
+    private String appName;
+    private String id;
+    private Long lastDirtyTimestamp;
     @Nullable private String overriddenStatus;
     @Nullable private String status;
-    @Nullable private InstanceInfo instanceInfo;
-    @Nullable private Action action;
+    private InstanceInfo instanceInfo;
+    private Action action;
 
     private ReplicationInstanceBuilder() {}
 
