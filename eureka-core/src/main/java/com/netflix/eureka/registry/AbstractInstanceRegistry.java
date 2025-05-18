@@ -1079,6 +1079,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the information about the instance.
    */
+  @SuppressWarnings("NullAway")
   @Override
   public InstanceInfo getInstanceByAppAndId(
       String appName, String id, boolean includeRemoteRegions) {
