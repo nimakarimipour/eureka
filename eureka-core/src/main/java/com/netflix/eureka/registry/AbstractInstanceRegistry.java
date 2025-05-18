@@ -108,7 +108,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
   protected final EurekaServerConfig serverConfig;
   protected final EurekaClientConfig clientConfig;
   protected final ServerCodecs serverCodecs;
-  protected volatile ResponseCache responseCache;
+  @Nullable protected volatile ResponseCache responseCache;
 
   /** Create a new, empty instance registry. */
   protected AbstractInstanceRegistry(
