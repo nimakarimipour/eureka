@@ -197,10 +197,12 @@ public class ApplicationsResource {
       @HeaderParam(HEADER_ACCEPT_ENCODING) String acceptEncoding,
       @HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
       @Context UriInfo uriInfo,
-      @QueryParam("regions") String regionsStr) {
+      @Nullable @QueryParam("regions") String regionsStr) {
 
-    boolean isRemoteRegionRequested = regionsStr != null && !regionsStr.isEmpty();
+    boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
 
+    // If the delta flag is disabled in discovery or if the lease expiration
+    // has been disabled, redirect clients to get all instances
     if ((serverConfig.shouldDisableDelta())
         || (!registry.shouldAllowAccess(isRemoteRegionRequested))) {
       return Response.status(Status.FORBIDDEN).build();
@@ -211,7 +213,9 @@ public class ApplicationsResource {
       EurekaMonitors.GET_ALL_DELTA.increment();
     } else {
       regions = regionsStr.toLowerCase().split(",");
-      Arrays.sort(regions);
+      Arrays.sort(
+          regions); // So we don't have different caches for same regions queried in different
+      // order.
       EurekaMonitors.GET_ALL_DELTA_WITH_REMOTE_REGIONS.increment();
     }
 
