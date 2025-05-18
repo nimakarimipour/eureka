@@ -70,4 +70,3 @@ atlassian-ide-plugin.xml
 secrets/signing-key
 
 annotator-out/
-*.log
