@@ -134,12 +134,7 @@ public class Route53Binder implements AwsBinder {
 
     for (ResourceRecordSetWithHostedZone rrs : freeDomains) {
       if (createResourceRecordSet(rrs)) {
-        logger.info(
-            "Bind {} to {}",
-            registrationHostname,
-            NullabilityUtil.castToNonnull(
-                    rrs.getResourceRecordSet(), "conditional check ensures nonnull")
-                .getName());
+        logger.info("Bind {} to {}", registrationHostname, rrs.getResourceRecordSet().getName());
         return;
       }
     }
@@ -149,24 +144,18 @@ public class Route53Binder implements AwsBinder {
 
   private boolean createResourceRecordSet(ResourceRecordSetWithHostedZone rrs)
       throws InterruptedException {
-    NullabilityUtil.castToNonnull(rrs.getResourceRecordSet(), "cannot be null")
+    rrs.getResourceRecordSet()
         .setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
-    Change change =
-        new Change(
-            ChangeAction.UPSERT,
-            NullabilityUtil.castToNonnull(rrs.getResourceRecordSet(), "cannot be null"));
+    Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
     if (executeChangeWithRetry(change, rrs.getHostedZone())) {
       Thread.sleep(1000);
+      // check change not overwritten
       ResourceRecordSet resourceRecordSet =
-          getResourceRecordSet(
-              NullabilityUtil.castToNonnull(rrs.getResourceRecordSet(), "cannot be null").getName(),
-              rrs.getHostedZone());
+          getResourceRecordSet(rrs.getResourceRecordSet().getName(), rrs.getHostedZone());
       if (resourceRecordSet != null) {
         return resourceRecordSet
             .getResourceRecords()
-            .equals(
-                NullabilityUtil.castToNonnull(rrs.getResourceRecordSet(), "cannot be null")
-                    .getResourceRecords());
+            .equals(rrs.getResourceRecordSet().getResourceRecords());
       }
     }
     return false;
@@ -281,9 +270,7 @@ public class Route53Binder implements AwsBinder {
   private void unbindFromDomain(String domain) throws InterruptedException {
     ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone =
         getResourceRecordSetWithHostedZone(domain);
-    if (resourceRecordSetWithHostedZone != null
-        && resourceRecordSetWithHostedZone.getResourceRecordSet() != null
-        && hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
+    if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
       resourceRecordSetWithHostedZone
           .getResourceRecordSet()
           .getResourceRecords()
@@ -359,7 +346,6 @@ public class Route53Binder implements AwsBinder {
       return hostedZone;
     }
 
-    @Nullable
     public ResourceRecordSet getResourceRecordSet() {
       return resourceRecordSet;
     }
