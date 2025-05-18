@@ -50,7 +50,11 @@ public class InstancesResource {
   }
 
   public InstancesResource() {
-    this(EurekaServerContextHolder.getInstance().getServerContext());
+    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
+    if (instance == null) {
+      throw new NullPointerException("EurekaServerContextHolder instance is null");
+    }
+    this(instance.getServerContext());
   }
 
   @GET

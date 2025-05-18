@@ -71,7 +71,14 @@ public class ApplicationsResource {
   }
 
   public ApplicationsResource() {
-    this(EurekaServerContextHolder.getInstance().getServerContext());
+    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
+    if (instance != null) {
+      this(instance.getServerContext());
+    } else {
+      // handle the case where instance is null, possibly by throwing an exception or a default
+      // behavior
+      throw new NullPointerException("EurekaServerContextHolder instance is null");
+    }
   }
 
   /**
