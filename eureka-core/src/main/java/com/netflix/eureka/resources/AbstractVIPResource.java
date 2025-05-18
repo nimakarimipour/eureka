@@ -45,12 +45,7 @@ abstract class AbstractVIPResource {
   }
 
   AbstractVIPResource() {
-    EurekaServerContextHolder holder = EurekaServerContextHolder.getInstance();
-    if (holder != null) {
-      this(holder.getServerContext());
-    } else {
-      throw new NullPointerException("EurekaServerContextHolder instance is null");
-    }
+    this(EurekaServerContextHolder.getInstance().getServerContext());
   }
 
   protected Response getVipResponse(
