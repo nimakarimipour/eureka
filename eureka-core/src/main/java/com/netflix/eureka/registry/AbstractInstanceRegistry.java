@@ -125,6 +125,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         getDeltaRetentionTask(),
         serverConfig.getDeltaRetentionTimerIntervalInMs(),
         serverConfig.getDeltaRetentionTimerIntervalInMs());
+
+    this.responseCache = new ResponseCacheImpl(serverConfig, serverCodecs, this);
   }
 
   @Override
