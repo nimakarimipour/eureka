@@ -776,7 +776,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     The instances from remote regions can be only for certain whitelisted apps as explained
    *     above.
    */
-  public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
+  public Applications getApplicationsFromMultipleRegions(String[] remoteRegions) {
 
     boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -809,7 +809,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
       }
     }
     if (includeRemoteRegion) {
-      for (String remoteRegion : remoteRegions) {
+      for (String remoteRegion :
+          NullabilityUtil.castToNonnull(remoteRegions, "checked for nullity")) {
         RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
         if (null != remoteRegistry) {
           Applications remoteApps = remoteRegistry.getApplications();
