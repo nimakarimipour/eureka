@@ -95,7 +95,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
       new AtomicReference<>(new Applications());
   private final EurekaServerConfig serverConfig;
   private volatile boolean readyForServingData;
-  @Nullable private final EurekaHttpClient eurekaHttpClient;
+  private final EurekaHttpClient eurekaHttpClient;
   private long timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
   private long deltaSuccesses = 0;
   private long deltaMismatches = 0;
@@ -416,6 +416,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @param delta - true, if the fetch needs to get deltas, false otherwise
    * @return - response which has information about the data.
    */
+  @Nullable
   private Applications fetchRemoteRegistry(boolean delta) {
     logger.info(
         "Getting instance registry info from the eureka server : {} , delta : {}",
@@ -423,16 +424,9 @@ public class RemoteRegionRegistry implements LookupService<String> {
         delta);
 
     if (shouldUseExperimentalTransport()) {
-      if (eurekaHttpClient == null) {
-        logger.error("EurekaHttpClient is null; cannot fetch data.");
-        return null;
-      }
       try {
         EurekaHttpResponse<Applications> httpResponse =
-            delta
-                ? NullabilityUtil.castToNonnull(eurekaHttpClient, "checked for null").getDelta()
-                : NullabilityUtil.castToNonnull(eurekaHttpClient, "checked for null")
-                    .getApplications();
+            delta ? eurekaHttpClient.getDelta() : eurekaHttpClient.getApplications();
         int httpStatus = httpResponse.getStatusCode();
         if (httpStatus >= 200 && httpStatus < 300) {
           logger.debug("Got the data successfully : {}", httpStatus);
