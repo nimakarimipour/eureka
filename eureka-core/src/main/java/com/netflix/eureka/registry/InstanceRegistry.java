@@ -83,6 +83,7 @@ public interface InstanceRegistry extends LeaseManager<InstanceInfo>, LookupServ
 
   void initializedResponseCache();
 
+  @Nullable
   ResponseCache getResponseCache();
 
   long getNumOfRenewsInLastMin();
