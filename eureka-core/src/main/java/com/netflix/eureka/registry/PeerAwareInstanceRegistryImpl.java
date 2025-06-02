@@ -48,6 +48,7 @@ import com.netflix.servo.DefaultMonitorRegistry;
 import com.netflix.servo.annotations.DataSourceType;
 import com.netflix.servo.monitor.Monitors;
 import com.netflix.servo.monitor.Stopwatch;
+import com.uber.nullaway.annotations.Initializer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,6 +146,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
     return this.instanceStatusOverrideRule;
   }
 
+  @Initializer
   @Override
   public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
     this.numberOfReplicationsLastMin.start();
