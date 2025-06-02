@@ -59,13 +59,7 @@ public class PeerReplicationResource {
   }
 
   public PeerReplicationResource() {
-    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
-    if (instance != null) {
-      this(instance.getServerContext());
-    } else {
-      // Handle the potential null case, maybe throw an exception or use a default context
-      throw new IllegalStateException("EurekaServerContextHolder instance is null");
-    }
+    this(EurekaServerContextHolder.getInstance().getServerContext());
   }
 
   /**

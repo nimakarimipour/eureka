@@ -43,12 +43,7 @@ public class SecureVIPResource extends AbstractVIPResource {
   }
 
   public SecureVIPResource() {
-    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
-    if (instance != null) {
-      this(instance.getServerContext());
-    } else {
-      throw new NullPointerException("EurekaServerContextHolder instance is null");
-    }
+    this(EurekaServerContextHolder.getInstance().getServerContext());
   }
 
   @GET

@@ -48,12 +48,7 @@ public class StatusResource {
   }
 
   public StatusResource() {
-    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
-    if (instance != null) {
-      this(instance.getServerContext());
-    } else {
-      throw new IllegalStateException("EurekaServerContextHolder instance is null");
-    }
+    this(EurekaServerContextHolder.getInstance().getServerContext());
   }
 
   @GET
