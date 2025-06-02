@@ -83,7 +83,11 @@ public class ASGResource {
   }
 
   public ASGResource() {
-    this(EurekaServerContextHolder.getInstance().getServerContext());
+    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
+    if (instance != null) {
+      this(instance.getServerContext());
+    }
+    // handle the case where instance is null, e.g., throw an exception or use a default context
   }
 
   /**

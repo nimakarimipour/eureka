@@ -26,7 +26,12 @@ public class ServerInfoResource {
   }
 
   public ServerInfoResource() {
-    this(EurekaServerContextHolder.getInstance().getServerContext());
+    EurekaServerContextHolder instance = EurekaServerContextHolder.getInstance();
+    if (instance != null) {
+      this(instance.getServerContext());
+    } else {
+      throw new NullPointerException("EurekaServerContextHolder instance is null");
+    }
   }
 
   @GET
