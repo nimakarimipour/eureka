@@ -108,7 +108,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
   protected final EurekaServerConfig serverConfig;
   protected final EurekaClientConfig clientConfig;
   protected final ServerCodecs serverCodecs;
-  @Nullable protected volatile ResponseCache responseCache;
+  protected volatile ResponseCache responseCache;
 
   /** Create a new, empty instance registry. */
   protected AbstractInstanceRegistry(
@@ -157,7 +157,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         (Object) allKnownRemoteRegions);
   }
 
-  @Nullable
   @Override
   public ResponseCache getResponseCache() {
     return responseCache;
@@ -922,9 +921,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
   public Applications getApplicationDeltas() {
     GET_ALL_CACHE_MISS_DELTA.increment();
     Applications apps = new Applications();
-    if (responseCache == null) {
-      initializedResponseCache();
-    }
     apps.setVersion(responseCache.getVersionDelta().get());
     Map<String, Application> applicationInstancesMap = new HashMap<String, Application>();
     write.lock();
@@ -991,7 +987,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     instances from remote regions can be further be restricted as explained above. <code>null
    *     </code> if the application does not exist locally or in remote regions.
    */
-  public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegions) {
+  public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
     if (null == remoteRegions) {
       remoteRegions = allKnownRemoteRegions; // null means all remote regions.
     }
@@ -1005,11 +1001,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
 
     Applications apps = new Applications();
-    synchronized (this) {
-      if (responseCache == null) {
-        responseCache = new ResponseCacheImpl(serverConfig, serverCodecs, this);
-      }
-    }
     apps.setVersion(responseCache.getVersionDeltaWithRegions().get());
     Map<String, Application> applicationInstancesMap = new HashMap<String, Application>();
     write.lock();
@@ -1244,11 +1235,10 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     return list;
   }
 
-  private void invalidateCache(String appName, String vipAddress, String secureVipAddress) {
-    // Check if responseCache is initialized before using it
-    if (responseCache != null) {
-      responseCache.invalidate(appName, vipAddress, secureVipAddress);
-    }
+  private void invalidateCache(
+      String appName, @Nullable String vipAddress, @Nullable String secureVipAddress) {
+    // invalidate cache
+    responseCache.invalidate(appName, vipAddress, secureVipAddress);
   }
 
   protected void updateRenewsPerMinThreshold() {
@@ -1295,9 +1285,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     deltaRetentionTimer.cancel();
     evictionTimer.cancel();
     renewsLastMin.stop();
-    if (responseCache != null) {
-      responseCache.stop();
-    }
+    responseCache.stop();
   }
 
   @com.netflix.servo.annotations.Monitor(
