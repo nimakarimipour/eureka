@@ -776,7 +776,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     The instances from remote regions can be only for certain whitelisted apps as explained
    *     above.
    */
-  public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
+  public Applications getApplicationsFromMultipleRegions(String[] remoteRegions) {
 
     boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -813,28 +813,30 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
         if (null != remoteRegistry) {
           Applications remoteApps = remoteRegistry.getApplications();
-          for (Application application : remoteApps.getRegisteredApplications()) {
-            if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
-              logger.info(
-                  "Application {}  fetched from the remote region {}",
-                  application.getName(),
-                  remoteRegion);
+          if (remoteApps != null) { // Ensure remoteApps is not null
+            for (Application application : remoteApps.getRegisteredApplications()) {
+              if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
+                logger.info(
+                    "Application {}  fetched from the remote region {}",
+                    application.getName(),
+                    remoteRegion);
 
-              Application appInstanceTillNow =
-                  apps.getRegisteredApplications(application.getName());
-              if (appInstanceTillNow == null) {
-                appInstanceTillNow = new Application(application.getName());
-                apps.addApplication(appInstanceTillNow);
+                Application appInstanceTillNow =
+                    apps.getRegisteredApplications(application.getName());
+                if (appInstanceTillNow == null) {
+                  appInstanceTillNow = new Application(application.getName());
+                  apps.addApplication(appInstanceTillNow);
+                }
+                for (InstanceInfo instanceInfo : application.getInstances()) {
+                  appInstanceTillNow.addInstance(instanceInfo);
+                }
+              } else {
+                logger.debug(
+                    "Application {} not fetched from the remote region {} as there exists a "
+                        + "whitelist and this app is not in the whitelist.",
+                    application.getName(),
+                    remoteRegion);
               }
-              for (InstanceInfo instanceInfo : application.getInstances()) {
-                appInstanceTillNow.addInstance(instanceInfo);
-              }
-            } else {
-              logger.debug(
-                  "Application {} not fetched from the remote region {} as there exists a "
-                      + "whitelist and this app is not in the whitelist.",
-                  application.getName(),
-                  remoteRegion);
             }
           }
         } else {
@@ -893,10 +895,12 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     if (includeRemoteRegion) {
       for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
         Applications applications = remoteRegistry.getApplications();
-        for (Application application : applications.getRegisteredApplications()) {
-          Application appInLocalRegistry = apps.getRegisteredApplications(application.getName());
-          if (appInLocalRegistry == null) {
-            apps.addApplication(application);
+        if (applications != null) { // Ensure applications is not null
+          for (Application application : applications.getRegisteredApplications()) {
+            Application appInLocalRegistry = apps.getRegisteredApplications(application.getName());
+            if (appInLocalRegistry == null) {
+              apps.addApplication(application);
+            }
           }
         }
       }
@@ -1144,12 +1148,14 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
     if (list.isEmpty() && includeRemoteRegions) {
       for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
-        for (Application application :
-            remoteRegistry.getApplications().getRegisteredApplications()) {
-          InstanceInfo instanceInfo = application.getByInstanceId(id);
-          if (instanceInfo != null) {
-            list.add(instanceInfo);
-            return list;
+        Applications remoteApplications = remoteRegistry.getApplications();
+        if (remoteApplications != null) {
+          for (Application application : remoteApplications.getRegisteredApplications()) {
+            InstanceInfo instanceInfo = application.getByInstanceId(id);
+            if (instanceInfo != null) {
+              list.add(instanceInfo);
+              return list;
+            }
           }
         }
       }
