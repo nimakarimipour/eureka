@@ -114,15 +114,15 @@ public class Route53Binder implements AwsBinder {
       ResourceRecordSetWithHostedZone rrs = getResourceRecordSetWithHostedZone(domain);
 
       if (rrs != null) {
-        if (rrs.getResourceRecordSet() == null) {
-          ResourceRecordSet resourceRecordSet = new ResourceRecordSet();
+        ResourceRecordSet resourceRecordSet = rrs.getResourceRecordSet();
+        if (resourceRecordSet == null) {
+          resourceRecordSet = new ResourceRecordSet();
           resourceRecordSet.setName(domain);
           resourceRecordSet.setType(RRType.CNAME);
           resourceRecordSet.setTTL(serverConfig.getRoute53DomainTTL());
           freeDomains.add(
               new ResourceRecordSetWithHostedZone(rrs.getHostedZone(), resourceRecordSet));
-        } else if (NULL_DOMAIN.equals(
-            rrs.getResourceRecordSet().getResourceRecords().get(0).getValue())) {
+        } else if (NULL_DOMAIN.equals(resourceRecordSet.getResourceRecords().get(0).getValue())) {
           freeDomains.add(rrs);
         }
         // already registered
@@ -134,7 +134,10 @@ public class Route53Binder implements AwsBinder {
 
     for (ResourceRecordSetWithHostedZone rrs : freeDomains) {
       if (createResourceRecordSet(rrs)) {
-        logger.info("Bind {} to {}", registrationHostname, rrs.getResourceRecordSet().getName());
+        ResourceRecordSet resourceRecordSet = rrs.getResourceRecordSet();
+        if (resourceRecordSet != null) {
+          logger.info("Bind {} to {}", registrationHostname, resourceRecordSet.getName());
+        }
         return;
       }
     }
@@ -144,18 +147,20 @@ public class Route53Binder implements AwsBinder {
 
   private boolean createResourceRecordSet(ResourceRecordSetWithHostedZone rrs)
       throws InterruptedException {
-    rrs.getResourceRecordSet()
-        .setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
-    Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
-    if (executeChangeWithRetry(change, rrs.getHostedZone())) {
-      Thread.sleep(1000);
-      // check change not overwritten
-      ResourceRecordSet resourceRecordSet =
-          getResourceRecordSet(rrs.getResourceRecordSet().getName(), rrs.getHostedZone());
-      if (resourceRecordSet != null) {
-        return resourceRecordSet
-            .getResourceRecords()
-            .equals(rrs.getResourceRecordSet().getResourceRecords());
+    if (rrs != null && rrs.getResourceRecordSet() != null) {
+      rrs.getResourceRecordSet()
+          .setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
+      Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
+      if (executeChangeWithRetry(change, rrs.getHostedZone())) {
+        Thread.sleep(1000);
+        // check change not overwritten
+        ResourceRecordSet resourceRecordSet =
+            getResourceRecordSet(rrs.getResourceRecordSet().getName(), rrs.getHostedZone());
+        if (resourceRecordSet != null) {
+          return resourceRecordSet
+              .getResourceRecords()
+              .equals(rrs.getResourceRecordSet().getResourceRecords());
+        }
       }
     }
     return false;
@@ -270,7 +275,9 @@ public class Route53Binder implements AwsBinder {
   private void unbindFromDomain(String domain) throws InterruptedException {
     ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone =
         getResourceRecordSetWithHostedZone(domain);
-    if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
+    if (resourceRecordSetWithHostedZone != null
+        && resourceRecordSetWithHostedZone.getResourceRecordSet() != null
+        && hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
       resourceRecordSetWithHostedZone
           .getResourceRecordSet()
           .getResourceRecords()
@@ -346,6 +353,7 @@ public class Route53Binder implements AwsBinder {
       return hostedZone;
     }
 
+    @Nullable
     public ResourceRecordSet getResourceRecordSet() {
       return resourceRecordSet;
     }
