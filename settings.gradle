@@ -1,4 +1,4 @@
-rootProject.name='eureka' 
+rootProject.name='eureka'
 include 'eureka-client',
         'eureka-client-jersey2',
         'eureka-client-archaius2',
@@ -7,5 +7,5 @@ include 'eureka-client',
         'eureka-core',
         'eureka-core-jersey2',
         'eureka-resources',
-        'eureka-examples',
+//        'eureka-examples',
         'eureka-test-utils'

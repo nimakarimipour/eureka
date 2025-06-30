@@ -11,17 +11,6 @@ buildscript {
     }
 }
 
-plugins {
-    id 'nebula.netflixoss' version '9.1.0'
-    id 'org.gretty' version '2.1.0'
-}
-
-idea {
-    project {
-        languageLevel = '1.8'
-    }
-}
-
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
         tasks.withType(Javadoc) {
@@ -58,15 +47,16 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'nebula.netflixoss'
+//    apply plugin: 'nebula.netflixoss'
     apply plugin: 'java'
 
     group = "com.netflix.${githubProjectName}"
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 
