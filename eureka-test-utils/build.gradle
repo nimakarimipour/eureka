@@ -1,5 +1,11 @@
 dependencies {
-    compile project(':eureka-core')
-    compile "junit:junit:${junit_version}"
-    compile "org.mockito:mockito-core:${mockitoVersion}"
+    implementation project(':eureka-client')
+    implementation project(':eureka-core')
+    implementation "junit:junit:${junit_version}"
+    implementation "org.mockito:mockito-core:${mockitoVersion}"
+    implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    implementation("com.google.guava:guava-base:r03")
+    implementation 'com.netflix.archaius:archaius-core:0.7.12'
+    implementation "javax.servlet:servlet-api:${servletVersion}"
+    implementation "com.netflix.netflix-commons:netflix-eventbus:0.3.0"
 }

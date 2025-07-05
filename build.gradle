@@ -12,13 +12,13 @@ buildscript {
 }
 
 plugins {
-    id 'nebula.netflixoss' version '9.1.0'
-    id 'org.gretty' version '2.1.0'
+    id 'nebula.netflixoss' version '11.1.0'
+    id 'org.gretty' version '3.1.0'
 }
 
 idea {
     project {
-        languageLevel = '1.8'
+        languageLevel = '17'
     }
 }
 
@@ -63,8 +63,8 @@ subprojects {
 
     group = "com.netflix.${githubProjectName}"
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     repositories {
         mavenCentral()

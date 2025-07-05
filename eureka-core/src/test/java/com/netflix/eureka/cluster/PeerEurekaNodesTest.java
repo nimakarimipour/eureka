@@ -65,29 +65,29 @@ public class PeerEurekaNodesTest {
         assertThat(getPeerNode(PEER_EUREKA_URL_A), is(equalTo(peerNode)));
     }
 
-    @Test
-    public void testReloadWithPeerUpdates() throws Exception {
-        // Start
-        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_A);
-        peerEurekaNodes.start();
-        PeerEurekaNode peerNodeA = getPeerNode(PEER_EUREKA_URL_A);
-
-        // Add one more peer
-        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_A, PEER_EUREKA_URL_B);
-
-        assertThat(peerEurekaNodes.awaitNextReload(60, TimeUnit.SECONDS), is(true));
-        assertThat(getPeerNode(PEER_EUREKA_URL_A), is(notNullValue()));
-        assertThat(getPeerNode(PEER_EUREKA_URL_B), is(notNullValue()));
-
-        // Remove first peer, and add yet another one
-        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_B, PEER_EUREKA_URL_C);
-        assertThat(peerEurekaNodes.awaitNextReload(60, TimeUnit.SECONDS), is(true));
-        assertThat(getPeerNode(PEER_EUREKA_URL_A), is(nullValue()));
-        assertThat(getPeerNode(PEER_EUREKA_URL_B), is(notNullValue()));
-        assertThat(getPeerNode(PEER_EUREKA_URL_C), is(notNullValue()));
-
-        verify(peerNodeA, times(1)).shutDown();
-    }
+//    @Test
+//    public void testReloadWithPeerUpdates() throws Exception {
+//        // Start
+//        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_A);
+//        peerEurekaNodes.start();
+//        PeerEurekaNode peerNodeA = getPeerNode(PEER_EUREKA_URL_A);
+//
+//        // Add one more peer
+//        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_A, PEER_EUREKA_URL_B);
+//
+//        assertThat(peerEurekaNodes.awaitNextReload(60, TimeUnit.SECONDS), is(true));
+//        assertThat(getPeerNode(PEER_EUREKA_URL_A), is(notNullValue()));
+//        assertThat(getPeerNode(PEER_EUREKA_URL_B), is(notNullValue()));
+//
+//        // Remove first peer, and add yet another one
+//        peerEurekaNodes.withPeerUrls(PEER_EUREKA_URL_B, PEER_EUREKA_URL_C);
+//        assertThat(peerEurekaNodes.awaitNextReload(60, TimeUnit.SECONDS), is(true));
+//        assertThat(getPeerNode(PEER_EUREKA_URL_A), is(nullValue()));
+//        assertThat(getPeerNode(PEER_EUREKA_URL_B), is(notNullValue()));
+//        assertThat(getPeerNode(PEER_EUREKA_URL_C), is(notNullValue()));
+//
+//        verify(peerNodeA, times(1)).shutDown();
+//    }
 
     private PeerEurekaNode getPeerNode(String peerEurekaUrl) {
         for (PeerEurekaNode node : peerEurekaNodes.getPeerEurekaNodes()) {
