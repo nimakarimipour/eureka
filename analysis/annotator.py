@@ -18,13 +18,9 @@ def run_annotator():
     prepare()
     commands = []
     commands += ["java", "-jar", ANNOTATOR_JAR]
-    commands += ['-d', OUT_DIR]
-    commands += ['-bc', 'cd {} && ./gradlew clean eureka-core:compileJava --rerun-tasks --no-build-cache'.format(REPO)]
-    commands += ['-cp', '{}/paths.tsv'.format(OUT_DIR)]
-    commands += ['-i', 'com.uber.nullaway.annotations.Initializer']
-    commands += ['-n', 'javax.annotation.Nullable']
-    commands += ['-cn', 'NULLAWAY']
-    commands += ["--depth", "6"]
+    commands += ["eureka"]
+    commands += ["disabled"]
+
     # Uncomment to see build output
     # commands += ['-rboserr']
     # Comment to inject root at a time
