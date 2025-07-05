@@ -72,3 +72,5 @@ atlassian-ide-plugin.xml
 
 # publishing secrets
 secrets/signing-key
+
+annotator-out/

@@ -22,32 +22,31 @@ import com.netflix.discovery.converters.Converters.InstanceInfoConverter;
 import com.netflix.eureka.resources.CurrentRequestVersion;
 
 /**
- * Support for {@link Version#V1}. {@link Version#V2} introduces a new status
- * {@link InstanceStatus#OUT_OF_SERVICE}.
+ * Support for {@link Version#V1}. {@link Version#V2} introduces a new status {@link
+ * InstanceStatus#OUT_OF_SERVICE}.
  *
  * @author Karthik Ranganathan, Greg Kim
- *
  */
 public class V1AwareInstanceInfoConverter extends InstanceInfoConverter {
 
-    @Override
-    public String getStatus(InstanceInfo info) {
-        Version version = CurrentRequestVersion.get();
-        if (version == null || version == Version.V1) {
-            InstanceStatus status = info.getStatus();
-            switch (status) {
-                case DOWN:
-                case STARTING:
-                case UP:
-                    break;
-                default:
-                    // otherwise return DOWN
-                    status = InstanceStatus.DOWN;
-                    break;
-            }
-            return status.name();
-        } else {
-            return super.getStatus(info);
-        }
+  @Override
+  public String getStatus(InstanceInfo info) {
+    Version version = CurrentRequestVersion.get();
+    if (version == null || version == Version.V1) {
+      InstanceStatus status = info.getStatus();
+      switch (status) {
+        case DOWN:
+        case STARTING:
+        case UP:
+          break;
+        default:
+          // otherwise return DOWN
+          status = InstanceStatus.DOWN;
+          break;
+      }
+      return status.name();
+    } else {
+      return super.getStatus(info);
     }
+  }
 }

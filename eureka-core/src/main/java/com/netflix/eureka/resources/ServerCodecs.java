@@ -10,15 +10,15 @@ import com.netflix.eureka.registry.Key;
  */
 public interface ServerCodecs {
 
-    CodecWrapper getFullJsonCodec();
+  CodecWrapper getFullJsonCodec();
 
-    CodecWrapper getCompactJsonCodec();
+  CodecWrapper getCompactJsonCodec();
 
-    CodecWrapper getFullXmlCodec();
+  CodecWrapper getFullXmlCodec();
 
-    CodecWrapper getCompactXmlCodecr();
+  CodecWrapper getCompactXmlCodecr();
 
-    EncoderWrapper getEncoder(Key.KeyType keyType, boolean compact);
+  EncoderWrapper getEncoder(Key.KeyType keyType, boolean compact);
 
-    EncoderWrapper getEncoder(Key.KeyType keyType, EurekaAccept eurekaAccept);
+  EncoderWrapper getEncoder(Key.KeyType keyType, EurekaAccept eurekaAccept);
 }

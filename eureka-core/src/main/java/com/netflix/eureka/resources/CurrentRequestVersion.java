@@ -16,51 +16,41 @@
 
 package com.netflix.eureka.resources;
 
-
 import com.netflix.eureka.Version;
 
 /**
  * A thread-scoped value that holds the "current {@link com.netflix.eureka.Version}" for the
  * request.
  *
- * <p>This is not intended as a general mechanism for passing data.
- * Rather it is here to support those cases where someplace deep in
- * a library we need to know about the context of the request that
- * initially triggered the current request.</p>
+ * <p>This is not intended as a general mechanism for passing data. Rather it is here to support
+ * those cases where someplace deep in a library we need to know about the context of the request
+ * that initially triggered the current request.
  *
  * @author Karthik Ranganathan, Greg Kim
  */
 public final class CurrentRequestVersion {
 
-    private static final ThreadLocal<Version> CURRENT_REQ_VERSION =
-            new ThreadLocal<>();
+  private static final ThreadLocal<Version> CURRENT_REQ_VERSION = new ThreadLocal<>();
 
-    private CurrentRequestVersion() {
-    }
+  private CurrentRequestVersion() {}
 
-    /**
-     * Gets the current {@link Version}
-     * Will return null if no current version has been set.
-     */
-    public static Version get() {
-        return CURRENT_REQ_VERSION.get();
-    }
+  /** Gets the current {@link Version} Will return null if no current version has been set. */
+  public static Version get() {
+    return CURRENT_REQ_VERSION.get();
+  }
 
-    /**
-     * Sets the current {@link Version}.
-     *
-     * Use {@link #remove()} as soon as the version is no longer required
-     * in order to purge the ThreadLocal used for storing it.
-     */
-    public static void set(Version version) {
-        CURRENT_REQ_VERSION.set(version);
-    }
+  /**
+   * Sets the current {@link Version}.
+   *
+   * <p>Use {@link #remove()} as soon as the version is no longer required in order to purge the
+   * ThreadLocal used for storing it.
+   */
+  public static void set(Version version) {
+    CURRENT_REQ_VERSION.set(version);
+  }
 
-    /**
-     * Clears the {@link ThreadLocal} used to store the version.
-     */
-    public static void remove() {
-        CURRENT_REQ_VERSION.remove();
-    }
-
+  /** Clears the {@link ThreadLocal} used to store the version. */
+  public static void remove() {
+    CURRENT_REQ_VERSION.remove();
+  }
 }

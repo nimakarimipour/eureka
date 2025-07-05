@@ -23,23 +23,23 @@ package com.netflix.eureka;
  */
 public class EurekaServerContextHolder {
 
-    private final EurekaServerContext serverContext;
+  private final EurekaServerContext serverContext;
 
-    private EurekaServerContextHolder(EurekaServerContext serverContext) {
-        this.serverContext = serverContext;
-    }
+  private EurekaServerContextHolder(EurekaServerContext serverContext) {
+    this.serverContext = serverContext;
+  }
 
-    public EurekaServerContext getServerContext() {
-        return this.serverContext;
-    }
+  public EurekaServerContext getServerContext() {
+    return this.serverContext;
+  }
 
-    private static EurekaServerContextHolder holder;
+  private static EurekaServerContextHolder holder;
 
-    public static synchronized void initialize(EurekaServerContext serverContext) {
-        holder = new EurekaServerContextHolder(serverContext);
-    }
+  public static synchronized void initialize(EurekaServerContext serverContext) {
+    holder = new EurekaServerContextHolder(serverContext);
+  }
 
-    public static EurekaServerContextHolder getInstance() {
-        return holder;
-    }
+  public static EurekaServerContextHolder getInstance() {
+    return holder;
+  }
 }

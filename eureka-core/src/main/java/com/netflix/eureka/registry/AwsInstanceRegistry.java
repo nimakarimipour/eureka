@@ -28,7 +28,6 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.registry.rule.LeaseExistsRule;
 import com.netflix.eureka.registry.rule.OverrideExistsRule;
 import com.netflix.eureka.resources.ServerCodecs;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -40,35 +39,39 @@ import javax.inject.Singleton;
 @Singleton
 public class AwsInstanceRegistry extends PeerAwareInstanceRegistryImpl {
 
-    private AwsAsgUtil awsAsgUtil;
+  private AwsAsgUtil awsAsgUtil;
 
-    private InstanceStatusOverrideRule instanceStatusOverrideRule;
+  private InstanceStatusOverrideRule instanceStatusOverrideRule;
 
-    @Inject
-    public AwsInstanceRegistry(EurekaServerConfig serverConfig,
-                               EurekaClientConfig clientConfig,
-                               ServerCodecs serverCodecs,
-                               EurekaClient eurekaClient) {
-        super(serverConfig, clientConfig, serverCodecs, eurekaClient);
-    }
+  @Inject
+  public AwsInstanceRegistry(
+      EurekaServerConfig serverConfig,
+      EurekaClientConfig clientConfig,
+      ServerCodecs serverCodecs,
+      EurekaClient eurekaClient) {
+    super(serverConfig, clientConfig, serverCodecs, eurekaClient);
+  }
 
-    @Override
-    public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
-        super.init(peerEurekaNodes);
-        this.awsAsgUtil = new AwsAsgUtil(serverConfig, clientConfig, this);
-        // We first check if the instance is STARTING or DOWN, then we check explicit overrides,
-        // then we see if our ASG is UP, then we check the status of a potentially existing lease.
-        this.instanceStatusOverrideRule = new FirstMatchWinsCompositeRule(new DownOrStartingRule(),
-                new OverrideExistsRule(overriddenInstanceStatusMap), new AsgEnabledRule(this.awsAsgUtil),
-                new LeaseExistsRule());
-    }
+  @Override
+  public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
+    super.init(peerEurekaNodes);
+    this.awsAsgUtil = new AwsAsgUtil(serverConfig, clientConfig, this);
+    // We first check if the instance is STARTING or DOWN, then we check explicit overrides,
+    // then we see if our ASG is UP, then we check the status of a potentially existing lease.
+    this.instanceStatusOverrideRule =
+        new FirstMatchWinsCompositeRule(
+            new DownOrStartingRule(),
+            new OverrideExistsRule(overriddenInstanceStatusMap),
+            new AsgEnabledRule(this.awsAsgUtil),
+            new LeaseExistsRule());
+  }
 
-    @Override
-    protected InstanceStatusOverrideRule getInstanceInfoOverrideRule() {
-        return this.instanceStatusOverrideRule;
-    }
+  @Override
+  protected InstanceStatusOverrideRule getInstanceInfoOverrideRule() {
+    return this.instanceStatusOverrideRule;
+  }
 
-    public AwsAsgUtil getAwsAsgUtil() {
-        return awsAsgUtil;
-    }
+  public AwsAsgUtil getAwsAsgUtil() {
+    return awsAsgUtil;
+  }
 }
