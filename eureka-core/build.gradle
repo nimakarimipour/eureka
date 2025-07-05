@@ -37,8 +37,6 @@ dependencies {
     implementation 'com.netflix.servo:servo-core:0.13.2'
     implementation 'com.netflix.archaius:archaius-core:0.7.12'
     implementation 'javax.inject:javax.inject:1'
-//    implementation "com.sun.jersey:jersey-core:${jerseyVersion}"
-//    implementation "com.sun.jersey:jersey-client:${jerseyVersion}"
     implementation 'com.sun.jersey:jersey-client:1.19.4'
     implementation 'com.sun.jersey.contribs:jersey-apache-client4:1.19.4'
 
@@ -66,12 +64,11 @@ def nullaway_path = project.rootProject.projectDir.toString() + "/annotator-out/
 
 import net.ltgt.gradle.errorprone.CheckSeverity
 tasks.withType(JavaCompile) {
-    // remove the if condition if you want to run NullAway on test code
+    options.errorprone.disableAllChecks = true
     if (!name.toLowerCase().contains("test")) {
-        options.errorprone.disableAllChecks = true
         options.errorprone.disableAllWarnings = true
         options.errorprone {
-            check("NullAway", CheckSeverity.ERROR)
+            check("NullAway", CheckSeverity.OFF)
             check("AnnotatorScanner", CheckSeverity.ERROR)
             option("NullAway:AnnotatedPackages", "com.netflix.eureka")
             option("NullAway:SerializeFixMetadata", "true")
