@@ -68,7 +68,7 @@ tasks.withType(JavaCompile) {
     if (!name.toLowerCase().contains("test")) {
         options.errorprone.disableAllWarnings = true
         options.errorprone {
-            check("NullAway", CheckSeverity.OFF)
+            check("NullAway", CheckSeverity.ERROR)
             check("AnnotatorScanner", CheckSeverity.ERROR)
             option("NullAway:AnnotatedPackages", "com.netflix.eureka")
             option("NullAway:SerializeFixMetadata", "true")
