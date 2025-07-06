@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.annotation.Nullable;
 
 /**
  * An auth filter for client requests. For now, it only logs supported client identification data
@@ -25,7 +26,7 @@ public class ServerRequestAuthFilter implements Filter {
 
   private static final String NAME_PREFIX = "DiscoveryServerRequestAuth_Name_";
 
-  private EurekaServerConfig serverConfig;
+  @Nullable private EurekaServerConfig serverConfig;
 
   @Inject
   public ServerRequestAuthFilter(EurekaServerContext server) {

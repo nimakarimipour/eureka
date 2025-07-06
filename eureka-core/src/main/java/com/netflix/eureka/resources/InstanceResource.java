@@ -41,6 +41,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A <em>jersey</em> resource that handles operations for a particular instance.
@@ -97,9 +98,9 @@ public class InstanceResource {
   @PUT
   public Response renewLease(
       @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-      @QueryParam("overriddenstatus") String overriddenStatus,
-      @QueryParam("status") String status,
-      @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
+      @Nullable @QueryParam("overriddenstatus") String overriddenStatus,
+      @Nullable @QueryParam("status") String status,
+      @Nullable @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
     boolean isFromReplicaNode = "true".equals(isReplication);
     boolean isSuccess = registry.renew(app.getName(), id, isFromReplicaNode);
 
@@ -145,9 +146,9 @@ public class InstanceResource {
   @PUT
   @Path("status")
   public Response statusUpdate(
-      @QueryParam("value") String newStatus,
+      @Nullable @QueryParam("value") String newStatus,
       @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-      @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
+      @Nullable @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
     try {
       if (registry.getInstanceByAppAndId(app.getName(), id) == null) {
         logger.warn("Instance not found: {}/{}", app.getName(), id);
@@ -187,7 +188,7 @@ public class InstanceResource {
   @Path("status")
   public Response deleteStatusUpdate(
       @HeaderParam(PeerEurekaNode.HEADER_REPLICATION) String isReplication,
-      @QueryParam("value") String newStatusValue,
+      @Nullable @QueryParam("value") String newStatusValue,
       @QueryParam("lastDirtyTimestamp") String lastDirtyTimestamp) {
     try {
       if (registry.getInstanceByAppAndId(app.getName(), id) == null) {

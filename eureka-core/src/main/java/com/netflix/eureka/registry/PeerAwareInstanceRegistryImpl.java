@@ -59,6 +59,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer <em>Eureka</em>
@@ -425,7 +426,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
       final String appName,
       final String id,
       final InstanceStatus newStatus,
-      String lastDirtyTimestamp,
+      @Nullable String lastDirtyTimestamp,
       final boolean isReplication) {
     if (super.statusUpdate(appName, id, newStatus, lastDirtyTimestamp, isReplication)) {
       replicateToPeers(Action.StatusUpdate, appName, id, null, newStatus, isReplication);
@@ -509,7 +510,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
     return isSelfPreservationModeEnabled() ? 1 : 0;
   }
 
-  @Override
+  @Nullable @Override
   public InstanceInfo getNextServerFromEureka(String virtualHostname, boolean secure) {
     // TODO Auto-generated method stub
     return null;
@@ -625,8 +626,8 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
       Action action,
       String appName,
       String id,
-      InstanceInfo info /* optional */,
-      InstanceStatus newStatus /* optional */,
+      @Nullable InstanceInfo info /* optional */,
+      @Nullable InstanceStatus newStatus /* optional */,
       boolean isReplication) {
     Stopwatch tracer = action.getTimer().start();
     try {
@@ -659,8 +660,8 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
       Action action,
       String appName,
       String id,
-      InstanceInfo info,
-      InstanceStatus newStatus,
+      @Nullable InstanceInfo info,
+      @Nullable InstanceStatus newStatus,
       PeerEurekaNode node) {
     try {
       InstanceInfo infoFromRegistry;

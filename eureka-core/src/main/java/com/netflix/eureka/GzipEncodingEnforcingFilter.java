@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.HttpHeaders;
+import javax.annotation.Nullable;
 
 /**
  * Originally Eureka supported non-compressed responses only. For large registries it was extremely
@@ -80,14 +81,14 @@ public class GzipEncodingEnforcingFilter implements Filter {
 
   private static class EnumWrapper<E> implements Enumeration<E> {
 
-    private final Enumeration<E> delegate;
+    @Nullable private final Enumeration<E> delegate;
     private final AtomicReference<E> extraElementRef;
 
     private EnumWrapper(E extraElement) {
       this(null, extraElement);
     }
 
-    private EnumWrapper(Enumeration<E> delegate, E extraElement) {
+    private EnumWrapper(@Nullable Enumeration<E> delegate, E extraElement) {
       this.delegate = delegate;
       this.extraElementRef = new AtomicReference<>(extraElement);
     }

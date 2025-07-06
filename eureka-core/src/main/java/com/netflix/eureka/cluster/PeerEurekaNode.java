@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * The <code>PeerEurekaNode</code> represents a peer node to which information should be shared from
@@ -170,7 +171,7 @@ public class PeerEurekaNode {
           }
 
           @Override
-          public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+          public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
             super.handleFailure(statusCode, responseEntity);
             if (statusCode == 404) {
               logger.warn("{}: missing entry.", getTaskName());
@@ -195,7 +196,7 @@ public class PeerEurekaNode {
       final String appName,
       final String id,
       final InstanceInfo info,
-      final InstanceStatus overriddenStatus,
+      @Nullable final InstanceStatus overriddenStatus,
       boolean primeConnection)
       throws Throwable {
     if (primeConnection) {
@@ -211,7 +212,7 @@ public class PeerEurekaNode {
           }
 
           @Override
-          public void handleFailure(int statusCode, Object responseEntity) throws Throwable {
+          public void handleFailure(int statusCode, @Nullable Object responseEntity) throws Throwable {
             super.handleFailure(statusCode, responseEntity);
             if (statusCode == 404) {
               logger.warn("{}: missing entry.", getTaskName());
@@ -268,7 +269,7 @@ public class PeerEurekaNode {
   public void statusUpdate(
       final String appName,
       final String id,
-      final InstanceStatus newStatus,
+      @Nullable final InstanceStatus newStatus,
       final InstanceInfo info) {
     long expiryTime = System.currentTimeMillis() + maxProcessingDelayMs;
     batchingDispatcher.process(

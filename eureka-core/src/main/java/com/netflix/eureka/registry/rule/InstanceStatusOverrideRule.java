@@ -3,6 +3,7 @@ package com.netflix.eureka.registry.rule;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
 import com.netflix.eureka.registry.AbstractInstanceRegistry;
+import javax.annotation.Nullable;
 
 /**
  * A single rule that if matched it returns an instance status. The idea is to use an ordered list
@@ -27,6 +28,6 @@ public interface InstanceStatusOverrideRule {
    */
   StatusOverrideResult apply(
       final InstanceInfo instanceInfo,
-      final Lease<InstanceInfo> existingLease,
+      @Nullable final Lease<InstanceInfo> existingLease,
       boolean isReplication);
 }

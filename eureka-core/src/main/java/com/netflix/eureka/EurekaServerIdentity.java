@@ -1,15 +1,16 @@
 package com.netflix.eureka;
 
 import com.netflix.appinfo.AbstractEurekaIdentity;
+import javax.annotation.Nullable;
 
 /** This class holds metadata information related to eureka server auth with peer eureka servers */
 public class EurekaServerIdentity extends AbstractEurekaIdentity {
   public static final String DEFAULT_SERVER_NAME = "DefaultServer";
 
   private final String serverVersion = "1.0";
-  private final String id;
+  @Nullable private final String id;
 
-  public EurekaServerIdentity(String id) {
+  public EurekaServerIdentity(@Nullable String id) {
     this.id = id;
   }
 
@@ -23,7 +24,7 @@ public class EurekaServerIdentity extends AbstractEurekaIdentity {
     return serverVersion;
   }
 
-  @Override
+  @Nullable @Override
   public String getId() {
     return id;
   }

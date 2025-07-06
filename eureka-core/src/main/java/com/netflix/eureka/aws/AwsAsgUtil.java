@@ -69,6 +69,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A utility class for querying and updating information about amazon autoscaling groups using the
@@ -213,7 +214,7 @@ public class AwsAsgUtil implements AsgClient {
    * @param asgName - The name of the ASG for which the status needs to be queried
    * @return - true if the ASG is disabled, false otherwise
    */
-  private boolean isAddToLoadBalancerSuspended(String asgAccountId, String asgName) {
+  private boolean isAddToLoadBalancerSuspended(@Nullable String asgAccountId, String asgName) {
     AutoScalingGroup asg;
     if (asgAccountId == null || asgAccountId.equals(accountId)) {
       asg = retrieveAutoScalingGroup(asgName);
@@ -249,7 +250,7 @@ public class AwsAsgUtil implements AsgClient {
    * @param asgName - The name of the ASG.
    * @return - The auto scaling group information.
    */
-  private AutoScalingGroup retrieveAutoScalingGroup(String asgName) {
+  @Nullable private AutoScalingGroup retrieveAutoScalingGroup(String asgName) {
     if (Strings.isNullOrEmpty(asgName)) {
       logger.warn("null asgName specified, not attempting to retrieve AutoScalingGroup from AWS");
       return null;
@@ -286,7 +287,7 @@ public class AwsAsgUtil implements AsgClient {
     return assumeRoleResult.getCredentials();
   }
 
-  private AutoScalingGroup retrieveAutoScalingGroupCrossAccount(String asgAccount, String asgName) {
+  @Nullable private AutoScalingGroup retrieveAutoScalingGroupCrossAccount(String asgAccount, String asgName) {
     logger.debug("Getting cross account ASG for asgName: {}, asgAccount: {}", asgName, asgAccount);
 
     Credentials credentials = stsCredentials.get(asgAccount);
@@ -332,7 +333,7 @@ public class AwsAsgUtil implements AsgClient {
    * @param asgName the name of the asg
    * @return true, if the load balancer flag is not suspended, false otherwise.
    */
-  private Boolean isASGEnabledinAWS(String asgAccountid, String asgName) {
+  private Boolean isASGEnabledinAWS(@Nullable String asgAccountid, String asgName) {
     try {
       Stopwatch t = this.loadASGInfoTimer.start();
       boolean returnValue = !isAddToLoadBalancerSuspended(asgAccountid, asgName);
@@ -473,7 +474,7 @@ public class AwsAsgUtil implements AsgClient {
     return accountId;
   }
 
-  private String getAccountId(InstanceInfo instanceInfo, String fallbackId) {
+  @Nullable private String getAccountId(InstanceInfo instanceInfo, @Nullable String fallbackId) {
     String localAccountId = null;
 
     DataCenterInfo dataCenterInfo = instanceInfo.getDataCenterInfo();
@@ -508,10 +509,10 @@ public class AwsAsgUtil implements AsgClient {
   }
 
   private static class CacheKey {
-    final String asgAccountId;
+    @Nullable final String asgAccountId;
     final String asgName;
 
-    CacheKey(String asgAccountId, String asgName) {
+    CacheKey(@Nullable String asgAccountId, String asgName) {
       this.asgAccountId = asgAccountId;
       this.asgName = asgName;
     }

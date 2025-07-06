@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * A <em>jersey</em> resource that handles requests for replication purposes.
@@ -151,9 +152,9 @@ public class PeerReplicationResource {
   private static Builder handleHeartbeat(
       EurekaServerConfig config,
       InstanceResource resource,
-      String lastDirtyTimestamp,
-      String overriddenStatus,
-      String instanceStatus) {
+      @Nullable String lastDirtyTimestamp,
+      @Nullable String overriddenStatus,
+      @Nullable String instanceStatus) {
     Response response =
         resource.renewLease(REPLICATION, overriddenStatus, instanceStatus, lastDirtyTimestamp);
     int responseStatus = response.getStatus();
@@ -189,7 +190,7 @@ public class PeerReplicationResource {
     return new Builder().setStatusCode(response.getStatus());
   }
 
-  private static <T> String toString(T value) {
+  @Nullable private static <T> String toString(@Nullable T value) {
     if (value == null) {
       return null;
     }

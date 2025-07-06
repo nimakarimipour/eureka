@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Helper class to manage lifecycle of a collection of {@link PeerEurekaNode}s.
@@ -43,7 +44,7 @@ public class PeerEurekaNodes {
   private volatile List<PeerEurekaNode> peerEurekaNodes = Collections.emptyList();
   private volatile Set<String> peerEurekaNodeUrls = Collections.emptySet();
 
-  private ScheduledExecutorService taskExecutor;
+  @Nullable private ScheduledExecutorService taskExecutor;
 
   @Inject
   public PeerEurekaNodes(
@@ -254,7 +255,7 @@ public class PeerEurekaNodes {
     return hostName != null && hostName.equals(myInfoComparator);
   }
 
-  public static String hostFromUrl(String url) {
+  @Nullable public static String hostFromUrl(String url) {
     URI uri;
     try {
       uri = new URI(url);

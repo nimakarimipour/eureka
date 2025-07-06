@@ -494,7 +494,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
       String appName,
       String id,
       InstanceStatus newStatus,
-      String lastDirtyTimestamp,
+      @Nullable String lastDirtyTimestamp,
       boolean isReplication) {
     read.lock();
     try {
@@ -682,7 +682,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return the application
    * @see com.netflix.discovery.shared.LookupService#getApplication(java.lang.String)
    */
-  @Override
+  @Nullable @Override
   public Application getApplication(String appName) {
     boolean disableTransparentFallback = serverConfig.disableTransparentFallbackToOtherRegion();
     return this.getApplication(appName, !disableTransparentFallback);
@@ -697,7 +697,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the application
    */
-  @Override
+  @Nullable @Override
   public Application getApplication(String appName, boolean includeRemoteRegion) {
     Application app = null;
 
@@ -774,7 +774,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     The instances from remote regions can be only for certain whitelisted apps as explained
    *     above.
    */
-  public Applications getApplicationsFromMultipleRegions(String[] remoteRegions) {
+  public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
 
     boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
 
@@ -985,7 +985,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     instances from remote regions can be further be restricted as explained above. <code>null
    *     </code> if the application does not exist locally or in remote regions.
    */
-  public Applications getApplicationDeltasFromMultipleRegions(String[] remoteRegions) {
+  public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
     if (null == remoteRegions) {
       remoteRegions = allKnownRemoteRegions; // null means all remote regions.
     }
@@ -1386,8 +1386,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    */
   protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-  protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
-      InstanceInfo r, Lease<InstanceInfo> existingLease, boolean isReplication) {
+  @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
+      InstanceInfo r, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
     InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
     logger.debug("Processing override status using rule: {}", rule);
     return rule.apply(r, existingLease, isReplication).status();
