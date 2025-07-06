@@ -19,7 +19,8 @@ def run_annotator():
     commands = []
     commands += ["java", "-jar", ANNOTATOR_JAR]
     commands += ["eureka"]
-    commands += ["disabled"]
+    commands += ["basic"]
+    commands += ["verbose"]
 
     # Uncomment to see build output
     # commands += ['-rboserr']
