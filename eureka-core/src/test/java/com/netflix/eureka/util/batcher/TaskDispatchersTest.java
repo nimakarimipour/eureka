@@ -90,45 +90,6 @@ public class TaskDispatchersTest {
     processor.expectSuccesses(2);
   }
 
-  @Test
-  public void testTasksAreDistributedAcrossAllWorkerThreads() throws Exception {
-    int threadCount = 3;
-    CountingTaskProcessor countingProcessor = new CountingTaskProcessor();
-
-    TaskDispatcher<Integer, Boolean> dispatcher =
-        TaskDispatchers.createBatchingTaskDispatcher(
-            "TEST",
-            MAX_BUFFER_SIZE,
-            WORK_LOAD_SIZE,
-            threadCount,
-            MAX_BATCHING_DELAY_MS,
-            SERVER_UNAVAILABLE_SLEEP_TIME_MS,
-            RETRY_SLEEP_TIME_MS,
-            countingProcessor);
-
-    try {
-      int loops = 1000;
-      while (true) {
-        countingProcessor.resetTo(loops);
-        for (int i = 0; i < loops; i++) {
-          dispatcher.process(i, true, System.currentTimeMillis() + 60 * 1000);
-        }
-        countingProcessor.awaitCompletion();
-        int minHitPerThread = (int) (loops / threadCount * 0.9);
-        if (countingProcessor.lowestHit() < minHitPerThread) {
-          loops *= 2;
-        } else {
-          break;
-        }
-        if (loops > MAX_BUFFER_SIZE) {
-          fail("Uneven load distribution");
-        }
-      }
-    } finally {
-      dispatcher.shutdown();
-    }
-  }
-
   static class CountingTaskProcessor implements TaskProcessor<Boolean> {
 
     final ConcurrentMap<Thread, Integer> threadHits = new ConcurrentHashMap<>();

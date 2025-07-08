@@ -34,11 +34,11 @@ dependencies {
     implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:${jacksonVersion}"
     implementation "com.fasterxml.woodstox:woodstox-core:${woodstoxVersion}"
 
-    implementation 'com.netflix.servo:servo-core:0.13.2'
-    implementation 'com.netflix.archaius:archaius-core:0.7.12'
-    implementation 'javax.inject:javax.inject:1'
-    implementation 'com.sun.jersey:jersey-client:1.19.4'
-    implementation 'com.sun.jersey.contribs:jersey-apache-client4:1.19.4'
+    implementation "com.netflix.servo:servo-core:${servoVersion}"
+    implementation "com.netflix.archaius:archaius-core:${archaiusVersion}"
+    implementation "javax.inject:javax.inject:1"
+    implementation "com.sun.jersey:jersey-client:${jerseyVersion}"
+    implementation "com.sun.jersey.contribs:jersey-apache-client4:${jerseyVersion}"
 
     testImplementation project(':eureka-test-utils')
     testImplementation "junit:junit:${junit_version}"
