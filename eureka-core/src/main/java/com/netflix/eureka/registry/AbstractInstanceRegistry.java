@@ -682,7 +682,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return the application
    * @see com.netflix.discovery.shared.LookupService#getApplication(java.lang.String)
    */
-  @Nullable @Override
+  @Nullable
+  @Override
   public Application getApplication(String appName) {
     boolean disableTransparentFallback = serverConfig.disableTransparentFallbackToOtherRegion();
     return this.getApplication(appName, !disableTransparentFallback);
@@ -697,7 +698,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the application
    */
-  @Nullable @Override
+  @Nullable
+  @Override
   public Application getApplication(String appName, boolean includeRemoteRegion) {
     Application app = null;
 
@@ -1077,6 +1079,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the information about the instance.
    */
+  @SuppressWarnings("NullAway")
   @Override
   public InstanceInfo getInstanceByAppAndId(
       String appName, String id, boolean includeRemoteRegions) {
@@ -1386,7 +1389,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    */
   protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-  @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
+  @Nullable
+  protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
       InstanceInfo r, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
     InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
     logger.debug("Processing override status using rule: {}", rule);
