@@ -10,6 +10,7 @@ import com.netflix.appinfo.ApplicationInfoManager;
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClientConfig;
 import com.netflix.eureka.EurekaServerConfig;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,13 +18,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nullable;
 
 /**
  * Route53 binder implementation. Will look for a free domain in the list of service url to bind
@@ -128,7 +129,6 @@ public class Route53Binder implements AwsBinder {
             rrs.getResourceRecordSet().getResourceRecords().get(0).getValue())) {
           freeDomains.add(rrs);
         }
-        // already registered
         if (hasValue(rrs, registrationHostname)) {
           return;
         }
@@ -137,7 +137,10 @@ public class Route53Binder implements AwsBinder {
 
     for (ResourceRecordSetWithHostedZone rrs : freeDomains) {
       if (createResourceRecordSet(rrs)) {
-        logger.info("Bind {} to {}", registrationHostname, rrs.getResourceRecordSet().getName());
+        logger.info(
+            "Bind {} to {}",
+            registrationHostname,
+            Nullability.castToNonnull(rrs.getResourceRecordSet(), "ensured not null").getName());
         return;
       }
     }
@@ -147,18 +150,20 @@ public class Route53Binder implements AwsBinder {
 
   private boolean createResourceRecordSet(ResourceRecordSetWithHostedZone rrs)
       throws InterruptedException {
-    rrs.getResourceRecordSet()
-        .setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
-    Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
-    if (executeChangeWithRetry(change, rrs.getHostedZone())) {
-      Thread.sleep(1000);
-      // check change not overwritten
-      ResourceRecordSet resourceRecordSet =
-          getResourceRecordSet(rrs.getResourceRecordSet().getName(), rrs.getHostedZone());
-      if (resourceRecordSet != null) {
-        return resourceRecordSet
-            .getResourceRecords()
-            .equals(rrs.getResourceRecordSet().getResourceRecords());
+    if (rrs != null && rrs.getResourceRecordSet() != null) {
+      rrs.getResourceRecordSet()
+          .setResourceRecords(Arrays.asList(new ResourceRecord(registrationHostname)));
+      Change change = new Change(ChangeAction.UPSERT, rrs.getResourceRecordSet());
+      if (executeChangeWithRetry(change, rrs.getHostedZone())) {
+        Thread.sleep(1000);
+        // check change not overwritten
+        ResourceRecordSet resourceRecordSet =
+            getResourceRecordSet(rrs.getResourceRecordSet().getName(), rrs.getHostedZone());
+        if (resourceRecordSet != null) {
+          return resourceRecordSet
+              .getResourceRecords()
+              .equals(rrs.getResourceRecordSet().getResourceRecords());
+        }
       }
     }
     return false;
@@ -228,7 +233,8 @@ public class Route53Binder implements AwsBinder {
     amazonRoute53Client.changeResourceRecordSets(changeResourceRecordSetsRequest);
   }
 
-  @Nullable private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
+  @Nullable
+  private ResourceRecordSetWithHostedZone getResourceRecordSetWithHostedZone(String domain) {
     HostedZone hostedZone = getHostedZone(domain);
     if (hostedZone != null) {
       return new ResourceRecordSetWithHostedZone(
@@ -237,7 +243,8 @@ public class Route53Binder implements AwsBinder {
     return null;
   }
 
-  @Nullable private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
+  @Nullable
+  private ResourceRecordSet getResourceRecordSet(String domain, HostedZone hostedZone) {
     ListResourceRecordSetsRequest request = new ListResourceRecordSetsRequest();
     request.setMaxItems(String.valueOf(Integer.MAX_VALUE));
     request.setHostedZoneId(hostedZone.getId());
@@ -254,7 +261,8 @@ public class Route53Binder implements AwsBinder {
     return null;
   }
 
-  @Nullable private HostedZone getHostedZone(String domain) {
+  @Nullable
+  private HostedZone getHostedZone(String domain) {
     ListHostedZonesRequest listHostedZoneRequest = new ListHostedZonesRequest();
     listHostedZoneRequest.setMaxItems(String.valueOf(Integer.MAX_VALUE));
     ListHostedZonesResult listHostedZonesResult =
@@ -270,7 +278,9 @@ public class Route53Binder implements AwsBinder {
   private void unbindFromDomain(String domain) throws InterruptedException {
     ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone =
         getResourceRecordSetWithHostedZone(domain);
-    if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
+    if (resourceRecordSetWithHostedZone != null
+        && resourceRecordSetWithHostedZone.getResourceRecordSet() != null
+        && hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
       resourceRecordSetWithHostedZone
           .getResourceRecordSet()
           .getResourceRecords()
@@ -347,6 +357,7 @@ public class Route53Binder implements AwsBinder {
       return hostedZone;
     }
 
+    @Nullable
     public ResourceRecordSet getResourceRecordSet() {
       return resourceRecordSet;
     }
