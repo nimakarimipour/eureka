@@ -41,6 +41,9 @@ public class EurekaServerContextHolder {
   }
 
   public static EurekaServerContextHolder getInstance() {
-    return holder;
-  }
+      if (holder == null) {
+        throw new IllegalStateException("EurekaServerContextHolder has not been initialized.");
+      }
+      return holder;
+    }
 }
