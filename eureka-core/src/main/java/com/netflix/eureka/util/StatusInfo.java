@@ -90,8 +90,7 @@ public class StatusInfo {
 
   private StatusInfo() {}
 
-  @Nullable
-  public InstanceInfo getInstanceInfo() {
+  @Nullable public InstanceInfo getInstanceInfo() {
     return instanceInfo;
   }
 
@@ -103,8 +102,7 @@ public class StatusInfo {
     return generalStats;
   }
 
-  @Nullable
-  public Map<String, String> getApplicationStats() {
+  @Nullable public Map<String, String> getApplicationStats() {
     return applicationStats;
   }
 
