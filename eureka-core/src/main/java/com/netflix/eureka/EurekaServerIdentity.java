@@ -24,8 +24,7 @@ public class EurekaServerIdentity extends AbstractEurekaIdentity {
     return serverVersion;
   }
 
-  @Nullable
-  @Override
+  @Nullable @Override
   public String getId() {
     return id;
   }
