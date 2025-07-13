@@ -42,7 +42,6 @@ import com.netflix.servo.monitor.Stopwatch;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.filter.GZIPContentEncodingFilter;
 import com.sun.jersey.client.apache4.ApacheHttpClient4;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -58,11 +57,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Handles all registry operations that needs to be done on a eureka service running in an other
@@ -417,8 +416,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @param delta - true, if the fetch needs to get deltas, false otherwise
    * @return - response which has information about the data.
    */
-  @Nullable
-  private Applications fetchRemoteRegistry(boolean delta) {
+  @Nullable private Applications fetchRemoteRegistry(boolean delta) {
     logger.info(
         "Getting instance registry info from the eureka server : {} , delta : {}",
         this.remoteRegionURL,
@@ -514,15 +512,14 @@ public class RemoteRegionRegistry implements LookupService<String> {
     return applications.get();
   }
 
-  @Nullable
-  @Override
+  @Nullable @Override
   public InstanceInfo getNextServerFromEureka(String arg0, boolean arg1) {
     return null;
   }
 
   @Override
   public Application getApplication(String appName) {
-    return Nullability.castToNonnull(this.applications.get()).getRegisteredApplications(appName);
+    return this.applications.get().getRegisteredApplications(appName);
   }
 
   @Override
@@ -539,8 +536,7 @@ public class RemoteRegionRegistry implements LookupService<String> {
     return Collections.emptyList();
   }
 
-  @Nullable
-  public Applications getApplicationDeltas() {
+  @Nullable public Applications getApplicationDeltas() {
     return this.applicationsDelta.get();
   }
 
