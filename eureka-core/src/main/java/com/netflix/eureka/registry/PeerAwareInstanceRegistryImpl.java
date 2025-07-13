@@ -61,6 +61,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 import edu.ucr.cs.riple.annotator.util.Nullability;
+import com.uber.nullaway.annotations.Initializer;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer <em>Eureka</em>
@@ -117,7 +118,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
   private final MeasuredRate numberOfReplicationsLastMin;
 
   protected final EurekaClient eurekaClient;
-  protected volatile PeerEurekaNodes peerEurekaNodes;
+  @SuppressWarnings("NullAway.Init") protected volatile PeerEurekaNodes peerEurekaNodes;
 
   private final InstanceStatusOverrideRule instanceStatusOverrideRule;
 
@@ -146,7 +147,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
     return this.instanceStatusOverrideRule;
   }
 
-  @Override
+  @Initializer @Override
   public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
     this.numberOfReplicationsLastMin.start();
     this.peerEurekaNodes = peerEurekaNodes;
