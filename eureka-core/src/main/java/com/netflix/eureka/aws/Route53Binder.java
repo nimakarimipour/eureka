@@ -268,19 +268,19 @@ public class Route53Binder implements AwsBinder {
   }
 
   private void unbindFromDomain(String domain) throws InterruptedException {
-    ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone =
-        getResourceRecordSetWithHostedZone(domain);
-    if (hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
-      resourceRecordSetWithHostedZone
-          .getResourceRecordSet()
-          .getResourceRecords()
-          .get(0)
-          .setValue(NULL_DOMAIN);
-      executeChangeWithRetry(
-          new Change(ChangeAction.UPSERT, resourceRecordSetWithHostedZone.getResourceRecordSet()),
-          resourceRecordSetWithHostedZone.getHostedZone());
+      ResourceRecordSetWithHostedZone resourceRecordSetWithHostedZone = 
+          getResourceRecordSetWithHostedZone(domain);
+      if (resourceRecordSetWithHostedZone != null && hasValue(resourceRecordSetWithHostedZone, registrationHostname)) {
+        resourceRecordSetWithHostedZone
+            .getResourceRecordSet()
+            .getResourceRecords()
+            .get(0)
+            .setValue(NULL_DOMAIN);
+        executeChangeWithRetry(
+            new Change(ChangeAction.UPSERT, resourceRecordSetWithHostedZone.getResourceRecordSet()),
+            resourceRecordSetWithHostedZone.getHostedZone());
+      }
     }
-  }
 
   private String extractDomain(String url) throws MalformedURLException {
     return new URL(url).getHost() + ".";
