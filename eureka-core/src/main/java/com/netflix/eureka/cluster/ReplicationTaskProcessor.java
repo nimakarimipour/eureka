@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 
 /**
  * @author Tomasz Bak
@@ -212,17 +213,18 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
    * @return true, if it may be a socket read time out exception.
    */
   private static boolean maybeReadTimeOut(Throwable e) {
-    do {
-      if (IOException.class.isInstance(e)) {
-        String message = e.getMessage().toLowerCase();
-        Matcher matcher = READ_TIME_OUT_PATTERN.matcher(message);
-        if (matcher.find()) {
-          return true;
+      do {
+        if (IOException.class.isInstance(e)) {
+          String message = Nullability.castToNonnull(e.getMessage(), "message is checked");
+          message = message.toLowerCase();
+          Matcher matcher = READ_TIME_OUT_PATTERN.matcher(message);
+          if (matcher.find()) {
+            return true;
+          }
         }
-      }
-      e = e.getCause();
-    } while (e != null);
-    return false;
+        e = e.getCause();
+      } while (e != null);
+      return false;
   }
 
   private static ReplicationInstance createReplicationInstanceOf(InstanceReplicationTask task) {
