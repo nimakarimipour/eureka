@@ -110,16 +110,18 @@ public class PeerEurekaNodes {
   }
 
   public void shutdown() {
-    taskExecutor.shutdown();
-    List<PeerEurekaNode> toRemove = this.peerEurekaNodes;
-
-    this.peerEurekaNodes = Collections.emptyList();
-    this.peerEurekaNodeUrls = Collections.emptySet();
-
-    for (PeerEurekaNode node : toRemove) {
-      node.shutDown();
+        if (taskExecutor != null) {
+            taskExecutor.shutdown();
+        }
+        List<PeerEurekaNode> toRemove = this.peerEurekaNodes;
+  
+        this.peerEurekaNodes = Collections.emptyList();
+        this.peerEurekaNodeUrls = Collections.emptySet();
+  
+        for (PeerEurekaNode node : toRemove) {
+            node.shutDown();
+        }
     }
-  }
 
   /**
    * Resolve peer URLs.
