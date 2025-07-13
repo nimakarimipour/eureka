@@ -33,6 +33,7 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.util.MeasuredRate;
 import com.netflix.servo.annotations.DataSourceType;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.AbstractQueue;
@@ -682,7 +683,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return the application
    * @see com.netflix.discovery.shared.LookupService#getApplication(java.lang.String)
    */
-  @Nullable @Override
+  @Nullable
+  @Override
   public Application getApplication(String appName) {
     boolean disableTransparentFallback = serverConfig.disableTransparentFallbackToOtherRegion();
     return this.getApplication(appName, !disableTransparentFallback);
@@ -697,7 +699,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the application
    */
-  @Nullable @Override
+  @Nullable
+  @Override
   public Application getApplication(String appName, boolean includeRemoteRegion) {
     Application app = null;
 
@@ -807,7 +810,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
       }
     }
     if (includeRemoteRegion) {
-      for (String remoteRegion : remoteRegions) {
+      for (String remoteRegion : Nullability.castToNonnull(remoteRegions, "checked for nullity")) {
         RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
         if (null != remoteRegistry) {
           Applications remoteApps = remoteRegistry.getApplications();
@@ -1386,7 +1389,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    */
   protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-  @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
+  @Nullable
+  protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
       InstanceInfo r, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
     InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
     logger.debug("Processing override status using rule: {}", rule);
