@@ -112,7 +112,9 @@ public class RateLimitingFilter implements Filter {
   }
 
   // for non-DI use
-  public RateLimitingFilter() {}
+  public RateLimitingFilter() {
+      serverConfig = new DefaultEurekaServerConfig(); // or any suitable default configuration
+    }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
