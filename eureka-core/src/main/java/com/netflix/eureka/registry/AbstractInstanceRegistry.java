@@ -112,20 +112,22 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
 
   /** Create a new, empty instance registry. */
   protected AbstractInstanceRegistry(
-      EurekaServerConfig serverConfig, EurekaClientConfig clientConfig, ServerCodecs serverCodecs) {
-    this.serverConfig = serverConfig;
-    this.clientConfig = clientConfig;
-    this.serverCodecs = serverCodecs;
-    this.recentCanceledQueue = new CircularQueue<Pair<Long, String>>(1000);
-    this.recentRegisteredQueue = new CircularQueue<Pair<Long, String>>(1000);
-
-    this.renewsLastMin = new MeasuredRate(1000 * 60 * 1);
-
-    this.deltaRetentionTimer.schedule(
-        getDeltaRetentionTask(),
-        serverConfig.getDeltaRetentionTimerIntervalInMs(),
-        serverConfig.getDeltaRetentionTimerIntervalInMs());
-  }
+        EurekaServerConfig serverConfig, EurekaClientConfig clientConfig, ServerCodecs serverCodecs) {
+      this.serverConfig = serverConfig;
+      this.clientConfig = clientConfig;
+      this.serverCodecs = serverCodecs;
+      this.recentCanceledQueue = new CircularQueue<Pair<Long, String>>(1000);
+      this.recentRegisteredQueue = new CircularQueue<Pair<Long, String>>(1000);
+  
+      this.renewsLastMin = new MeasuredRate(1000 * 60 * 1);
+  
+      this.deltaRetentionTimer.schedule(
+          getDeltaRetentionTask(),
+          serverConfig.getDeltaRetentionTimerIntervalInMs(),
+          serverConfig.getDeltaRetentionTimerIntervalInMs());
+  
+      this.responseCache = new ResponseCacheImpl(serverConfig, serverCodecs, this);
+    }
 
   @Override
   public synchronized void initializedResponseCache() {
