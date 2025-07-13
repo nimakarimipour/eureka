@@ -353,16 +353,19 @@ class AcceptorExecutor<ID, T> {
     }
 
     private boolean hasEnoughTasksForNextBatch() {
-      if (processingOrder.isEmpty()) {
-        return false;
-      }
-      if (pendingTasks.size() >= maxBufferSize) {
-        return true;
-      }
-
-      TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
-      long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
-      return delay >= maxBatchingDelay;
-    }
+          if (processingOrder.isEmpty()) {
+            return false;
+          }
+          if (pendingTasks.size() >= maxBufferSize) {
+            return true;
+          }
+    
+          TaskHolder<ID, T> nextHolder = pendingTasks.get(processingOrder.peek());
+          if (nextHolder == null) {
+            return false;
+          }
+          long delay = System.currentTimeMillis() - nextHolder.getSubmitTimestamp();
+          return delay >= maxBatchingDelay;
+        }
   }
 }
