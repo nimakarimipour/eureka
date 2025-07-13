@@ -48,7 +48,6 @@ import com.netflix.servo.DefaultMonitorRegistry;
 import com.netflix.servo.annotations.DataSourceType;
 import com.netflix.servo.monitor.Monitors;
 import com.netflix.servo.monitor.Stopwatch;
-import com.uber.nullaway.annotations.Initializer;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,11 +55,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import javax.annotation.Nullable;
 
 /**
  * Handles replication of all operations to {@link AbstractInstanceRegistry} to peer <em>Eureka</em>
@@ -117,8 +116,6 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
   private final MeasuredRate numberOfReplicationsLastMin;
 
   protected final EurekaClient eurekaClient;
-
-  @SuppressWarnings("NullAway.Init")
   protected volatile PeerEurekaNodes peerEurekaNodes;
 
   private final InstanceStatusOverrideRule instanceStatusOverrideRule;
@@ -148,7 +145,6 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
     return this.instanceStatusOverrideRule;
   }
 
-  @Initializer
   @Override
   public void init(PeerEurekaNodes peerEurekaNodes) throws Exception {
     this.numberOfReplicationsLastMin.start();
@@ -514,8 +510,7 @@ public class PeerAwareInstanceRegistryImpl extends AbstractInstanceRegistry
     return isSelfPreservationModeEnabled() ? 1 : 0;
   }
 
-  @Nullable
-  @Override
+  @Nullable @Override
   public InstanceInfo getNextServerFromEureka(String virtualHostname, boolean secure) {
     // TODO Auto-generated method stub
     return null;
