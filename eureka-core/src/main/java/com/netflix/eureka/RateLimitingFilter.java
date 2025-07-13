@@ -20,6 +20,7 @@ import com.netflix.appinfo.AbstractEurekaIdentity;
 import com.netflix.appinfo.EurekaClientIdentity;
 import com.netflix.discovery.util.RateLimiter;
 import com.netflix.eureka.util.EurekaMonitors;
+import com.uber.nullaway.annotations.Initializer;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,7 +40,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nullable;
 
 /**
  * Rate limiting filter, with configurable threshold above which non-privileged clients will be
@@ -104,6 +104,7 @@ public class RateLimitingFilter implements Filter {
   /** Only full registry fetches. */
   private static final RateLimiter registryFullFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
 
+  @SuppressWarnings("NullAway.Init")
   private EurekaServerConfig serverConfig;
 
   @Inject
@@ -114,6 +115,7 @@ public class RateLimitingFilter implements Filter {
   // for non-DI use
   public RateLimitingFilter() {}
 
+  @Initializer
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     if (serverConfig == null) {
