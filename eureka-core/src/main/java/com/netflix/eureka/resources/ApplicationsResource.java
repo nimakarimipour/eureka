@@ -44,6 +44,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 
 /**
  * A <em>jersey</em> resource that handles request related to all {@link
@@ -111,62 +112,58 @@ public class ApplicationsResource {
    *     com.netflix.discovery.shared.Applications} from the {@link AbstractInstanceRegistry}.
    */
   @GET
-  public Response getContainers(
-      @PathParam("version") String version,
-      @HeaderParam(HEADER_ACCEPT) String acceptHeader,
-      @HeaderParam(HEADER_ACCEPT_ENCODING) String acceptEncoding,
-      @HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
-      @Context UriInfo uriInfo,
-      @Nullable @QueryParam("regions") String regionsStr) {
-
-    boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
-    String[] regions = null;
-    if (!isRemoteRegionRequested) {
-      EurekaMonitors.GET_ALL.increment();
-    } else {
-      regions = regionsStr.toLowerCase().split(",");
-      Arrays.sort(
-          regions); // So we don't have different caches for same regions queried in different
-      // order.
-      EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
-    }
-
-    // Check if the server allows the access to the registry. The server can
-    // restrict access if it is not
-    // ready to serve traffic depending on various reasons.
-    if (!registry.shouldAllowAccess(isRemoteRegionRequested)) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    CurrentRequestVersion.set(Version.toEnum(version));
-    KeyType keyType = Key.KeyType.JSON;
-    String returnMediaType = MediaType.APPLICATION_JSON;
-    if (acceptHeader == null || !acceptHeader.contains(HEADER_JSON_VALUE)) {
-      keyType = Key.KeyType.XML;
-      returnMediaType = MediaType.APPLICATION_XML;
-    }
-
-    Key cacheKey =
-        new Key(
-            Key.EntityType.Application,
-            ResponseCacheImpl.ALL_APPS,
-            keyType,
-            CurrentRequestVersion.get(),
-            EurekaAccept.fromString(eurekaAccept),
+    public Response getContainers(
+        @PathParam("version") String version,
+        @HeaderParam(HEADER_ACCEPT) String acceptHeader,
+        @HeaderParam(HEADER_ACCEPT_ENCODING) String acceptEncoding,
+        @HeaderParam(EurekaAccept.HTTP_X_EUREKA_ACCEPT) String eurekaAccept,
+        @Context UriInfo uriInfo,
+         @Nullable @QueryParam("regions") String regionsStr) {
+  
+      boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
+      String[] regions = null;
+      if (!isRemoteRegionRequested) {
+        EurekaMonitors.GET_ALL.increment();
+      } else {
+        regions = Nullability.castToNonnull(regionsStr, "checked to be nonnull").toLowerCase().split(",");
+        Arrays.sort(
             regions);
-
-    Response response;
-    if (acceptEncoding != null && acceptEncoding.contains(HEADER_GZIP_VALUE)) {
-      response =
-          Response.ok(responseCache.getGZIP(cacheKey))
-              .header(HEADER_CONTENT_ENCODING, HEADER_GZIP_VALUE)
-              .header(HEADER_CONTENT_TYPE, returnMediaType)
-              .build();
-    } else {
-      response = Response.ok(responseCache.get(cacheKey)).build();
-    }
-    CurrentRequestVersion.remove();
-    logger.debug("Sent registry information to client.");
-    return response;
+        EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
+      }
+  
+      if (!registry.shouldAllowAccess(isRemoteRegionRequested)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+      CurrentRequestVersion.set(Version.toEnum(version));
+      KeyType keyType = Key.KeyType.JSON;
+      String returnMediaType = MediaType.APPLICATION_JSON;
+      if (acceptHeader == null || !acceptHeader.contains(HEADER_JSON_VALUE)) {
+        keyType = Key.KeyType.XML;
+        returnMediaType = MediaType.APPLICATION_XML;
+      }
+  
+      Key cacheKey =
+          new Key(
+              Key.EntityType.Application,
+              ResponseCacheImpl.ALL_APPS,
+              keyType,
+              CurrentRequestVersion.get(),
+              EurekaAccept.fromString(eurekaAccept),
+              regions);
+  
+      Response response;
+      if (acceptEncoding != null && acceptEncoding.contains(HEADER_GZIP_VALUE)) {
+        response =
+            Response.ok(responseCache.getGZIP(cacheKey))
+                .header(HEADER_CONTENT_ENCODING, HEADER_GZIP_VALUE)
+                .header(HEADER_CONTENT_TYPE, returnMediaType)
+                .build();
+      } else {
+        response = Response.ok(responseCache.get(cacheKey)).build();
+      }
+      CurrentRequestVersion.remove();
+      logger.debug("Sent registry information to client.");
+      return response;
   }
 
   /**
