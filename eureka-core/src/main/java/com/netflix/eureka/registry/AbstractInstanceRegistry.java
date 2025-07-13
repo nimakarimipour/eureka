@@ -1078,25 +1078,28 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return the information about the instance.
    */
   @Override
-  public InstanceInfo getInstanceByAppAndId(
-      String appName, String id, boolean includeRemoteRegions) {
-    Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
-    Lease<InstanceInfo> lease = null;
-    if (leaseMap != null) {
-      lease = leaseMap.get(id);
-    }
-    if (lease != null && (!isLeaseExpirationEnabled() || !lease.isExpired())) {
-      return decorateInstanceInfo(lease);
-    } else if (includeRemoteRegions) {
-      for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
-        Application application = remoteRegistry.getApplication(appName);
-        if (application != null) {
-          return application.getByInstanceId(id);
+    public InstanceInfo getInstanceByAppAndId(
+        String appName, String id, boolean includeRemoteRegions) {
+      Map<String, Lease<InstanceInfo>> leaseMap = registry.get(appName);
+      Lease<InstanceInfo> lease = null;
+      if (leaseMap != null) {
+        lease = leaseMap.get(id);
+      }
+      if (lease != null && (!isLeaseExpirationEnabled() || !lease.isExpired())) {
+        return decorateInstanceInfo(lease);
+      } else if (includeRemoteRegions) {
+        for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
+          Application application = remoteRegistry.getApplication(appName);
+          if (application != null) {
+            InstanceInfo instanceInfo = application.getByInstanceId(id);
+            if (instanceInfo != null) {
+              return instanceInfo;
+            }
+          }
         }
       }
+      throw new IllegalStateException("Instance not found for app: " + appName + ", id: " + id);
     }
-    return null;
-  }
 
   /**
    * @deprecated Try {@link #getInstanceByAppAndId(String, String)} instead.
