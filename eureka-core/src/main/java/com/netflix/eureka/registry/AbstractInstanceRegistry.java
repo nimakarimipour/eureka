@@ -59,6 +59,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import edu.ucr.cs.riple.annotator.util.Nullability;
 
 /**
  * Handles all registry requests from eureka clients.
@@ -773,77 +774,77 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     The instances from remote regions can be only for certain whitelisted apps as explained
    *     above.
    */
-  public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
-  
-      boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
-  
-      logger.debug(
-          "Fetching applications registry with remote regions: {}, Regions argument {}",
-          includeRemoteRegion,
-          remoteRegions);
-  
-      if (includeRemoteRegion) {
-        GET_ALL_WITH_REMOTE_REGIONS_CACHE_MISS.increment();
-      } else {
-        GET_ALL_CACHE_MISS.increment();
-      }
-      Applications apps = new Applications();
-      apps.setVersion(1L);
-      for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
-        Application app = null;
-  
-        if (entry.getValue() != null) {
-          for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
-            Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
-            if (app == null) {
-              app = new Application(lease.getHolder().getAppName());
+  public Applications getApplicationsFromMultipleRegions( @Nullable String[] remoteRegions) {
+    
+        boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
+    
+        logger.debug(
+            "Fetching applications registry with remote regions: {}, Regions argument {}",
+            includeRemoteRegion,
+            remoteRegions);
+    
+        if (includeRemoteRegion) {
+          GET_ALL_WITH_REMOTE_REGIONS_CACHE_MISS.increment();
+        } else {
+          GET_ALL_CACHE_MISS.increment();
+        }
+        Applications apps = new Applications();
+        apps.setVersion(1L);
+        for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
+          Application app = null;
+    
+          if (entry.getValue() != null) {
+            for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
+              Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
+              if (app == null) {
+                app = new Application(lease.getHolder().getAppName());
+              }
+              app.addInstance(decorateInstanceInfo(lease));
             }
-            app.addInstance(decorateInstanceInfo(lease));
+          }
+          if (app != null) {
+            apps.addApplication(app);
           }
         }
-        if (app != null) {
-          apps.addApplication(app);
-        }
-      }
-      if (includeRemoteRegion) {
-        for (String remoteRegion : remoteRegions) {
-          RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
-          if (null != remoteRegistry) {
-            Applications remoteApps = remoteRegistry.getApplications();
-            if (remoteApps != null) { // Ensure remoteApps is not null
-              for (Application application : remoteApps.getRegisteredApplications()) {
-                if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
-                  logger.info(
-                      "Application {}  fetched from the remote region {}",
-                      application.getName(),
-                      remoteRegion);
-  
-                  Application appInstanceTillNow =
-                      apps.getRegisteredApplications(application.getName());
-                  if (appInstanceTillNow == null) {
-                    appInstanceTillNow = new Application(application.getName());
-                    apps.addApplication(appInstanceTillNow);
+        if (includeRemoteRegion) {
+          for (String remoteRegion : Nullability.castToNonnull(remoteRegions, "checked for nullity")) {
+            RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
+            if (null != remoteRegistry) {
+              Applications remoteApps = remoteRegistry.getApplications();
+              if (remoteApps != null) { // Ensure remoteApps is not null
+                for (Application application : remoteApps.getRegisteredApplications()) {
+                  if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
+                    logger.info(
+                        "Application {}  fetched from the remote region {}",
+                        application.getName(),
+                        remoteRegion);
+    
+                    Application appInstanceTillNow =
+                        apps.getRegisteredApplications(application.getName());
+                    if (appInstanceTillNow == null) {
+                      appInstanceTillNow = new Application(application.getName());
+                      apps.addApplication(appInstanceTillNow);
+                    }
+                    for (InstanceInfo instanceInfo : application.getInstances()) {
+                      appInstanceTillNow.addInstance(instanceInfo);
+                    }
+                  } else {
+                    logger.debug(
+                        "Application {} not fetched from the remote region {} as there exists a "
+                            + "whitelist and this app is not in the whitelist.",
+                        application.getName(),
+                        remoteRegion);
                   }
-                  for (InstanceInfo instanceInfo : application.getInstances()) {
-                    appInstanceTillNow.addInstance(instanceInfo);
-                  }
-                } else {
-                  logger.debug(
-                      "Application {} not fetched from the remote region {} as there exists a "
-                          + "whitelist and this app is not in the whitelist.",
-                      application.getName(),
-                      remoteRegion);
                 }
               }
+            } else {
+              logger.warn("No remote registry available for the remote region {}", remoteRegion);
             }
-          } else {
-            logger.warn("No remote registry available for the remote region {}", remoteRegion);
           }
         }
-      }
-      apps.setAppsHashCode(apps.getReconcileHashCode());
-      return apps;
-    }
+        apps.setAppsHashCode(apps.getReconcileHashCode());
+        return apps;
+  }
 
   private boolean shouldFetchFromRemoteRegistry(String appName, String remoteRegion) {
     Set<String> whiteList = serverConfig.getRemoteRegionAppWhitelist(remoteRegion);
