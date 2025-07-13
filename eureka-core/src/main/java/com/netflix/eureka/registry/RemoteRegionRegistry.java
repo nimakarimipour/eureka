@@ -249,87 +249,87 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @return true, if the fetch was successful, false otherwise.
    */
   private boolean fetchRegistry() {
-    boolean success;
-    Stopwatch tracer = fetchRegistryTimer.start();
-
-    try {
-      // If the delta is disabled or if it is the first time, get all applications
-      if (serverConfig.shouldDisableDeltaForRemoteRegions()
-          || (getApplications() == null)
-          || (getApplications().getRegisteredApplications().size() == 0)) {
-        logger.info(
-            "Disable delta property : {}", serverConfig.shouldDisableDeltaForRemoteRegions());
-        logger.info("Application is null : {}", getApplications() == null);
-        logger.info(
-            "Registered Applications size is zero : {}",
-            getApplications().getRegisteredApplications().isEmpty());
-        success = storeFullRegistry();
-      } else {
-        success = fetchAndStoreDelta();
-      }
-      logTotalInstances();
-    } catch (Throwable e) {
-      logger.error(
-          "Unable to fetch registry information from the remote registry {}",
-          this.remoteRegionURL,
-          e);
-      return false;
-    } finally {
-      if (tracer != null) {
-        tracer.stop();
-      }
+        boolean success;
+        Stopwatch tracer = fetchRegistryTimer.start();
+  
+        try {
+          if (serverConfig.shouldDisableDeltaForRemoteRegions()
+              || (getApplications() == null)
+              || (getApplications().getRegisteredApplications().size() == 0)) {
+            logger.info(
+                "Disable delta property : {}", serverConfig.shouldDisableDeltaForRemoteRegions());
+            logger.info("Application is null : {}", getApplications() == null);
+            logger.info(
+                "Registered Applications size is zero : {}",
+                Nullability.castToNonnull(getApplications(), "already checked").getRegisteredApplications().isEmpty());
+            success = storeFullRegistry();
+          } else {
+            success = fetchAndStoreDelta();
+          }
+          logTotalInstances();
+        } catch (Throwable e) {
+          logger.error(
+              "Unable to fetch registry information from the remote registry {}",
+              this.remoteRegionURL,
+              e);
+          return false;
+        } finally {
+          if (tracer != null) {
+            tracer.stop();
+          }
+        }
+  
+        if (success) {
+          timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
+        }
+  
+        return success;
     }
-
-    if (success) {
-      timeOfLastSuccessfulRemoteFetch = System.currentTimeMillis();
-    }
-
-    return success;
-  }
 
   private boolean fetchAndStoreDelta() throws Throwable {
-    long currGeneration = fetchRegistryGeneration.get();
-    Applications delta = fetchRemoteRegistry(true);
-
-    if (delta == null) {
-      logger.error("The delta is null for some reason. Not storing this information");
-    } else if (fetchRegistryGeneration.compareAndSet(currGeneration, currGeneration + 1)) {
-      this.applicationsDelta.set(delta);
-    } else {
-      delta = null; // set the delta to null so we don't use it
-      logger.warn("Not updating delta as another thread is updating it already");
-    }
-
-    if (delta == null) {
-      logger.warn(
-          "The server does not allow the delta revision to be applied because it is not "
-              + "safe. Hence got the full registry.");
-      return storeFullRegistry();
-    } else {
-      String reconcileHashCode = "";
-      if (fetchRegistryUpdateLock.tryLock()) {
-        try {
-          updateDelta(delta);
-          reconcileHashCode = getApplications().getReconcileHashCode();
-        } finally {
-          fetchRegistryUpdateLock.unlock();
+        long currGeneration = fetchRegistryGeneration.get();
+        Applications delta = fetchRemoteRegistry(true);
+  
+        if (delta == null) {
+          logger.error("The delta is null for some reason. Not storing this information");
+        } else if (fetchRegistryGeneration.compareAndSet(currGeneration, currGeneration + 1)) {
+          this.applicationsDelta.set(delta);
+        } else {
+          delta = null; // set the delta to null so we don't use it
+          logger.warn("Not updating delta as another thread is updating it already");
         }
-      } else {
-        logger.warn(
-            "Cannot acquire update lock, aborting updateDelta operation of fetchAndStoreDelta");
-      }
-
-      // There is a diff in number of instances for some reason
-      if (!reconcileHashCode.equals(delta.getAppsHashCode())) {
-        deltaMismatches++;
-        return reconcileAndLogDifference(delta, reconcileHashCode);
-      } else {
-        deltaSuccesses++;
-      }
+  
+        if (delta == null) {
+          logger.warn(
+              "The server does not allow the delta revision to be applied because it is not "
+                  + "safe. Hence got the full registry.");
+          return storeFullRegistry();
+        } else {
+          String reconcileHashCode = "";
+          Applications apps = getApplications();
+          if (apps != null && fetchRegistryUpdateLock.tryLock()) {
+            try {
+              updateDelta(delta);
+              reconcileHashCode = apps.getReconcileHashCode();
+            } finally {
+              fetchRegistryUpdateLock.unlock();
+            }
+          } else {
+            logger.warn(
+                "Cannot acquire update lock, aborting updateDelta operation of fetchAndStoreDelta");
+          }
+  
+          // There is a diff in number of instances for some reason
+          if (!reconcileHashCode.equals(delta.getAppsHashCode())) {
+            deltaMismatches++;
+            return reconcileAndLogDifference(delta, reconcileHashCode);
+          } else {
+            deltaSuccesses++;
+          }
+        }
+  
+        return delta != null;
     }
-
-    return delta != null;
-  }
 
   /**
    * Updates the delta information fetches from the eureka server into the local cache.
@@ -337,43 +337,42 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @param delta the delta information received from eureka server in the last poll cycle.
    */
   private void updateDelta(Applications delta) {
-    int deltaCount = 0;
-    for (Application app : delta.getRegisteredApplications()) {
-      for (InstanceInfo instance : app.getInstances()) {
-        ++deltaCount;
-        if (ActionType.ADDED.equals(instance.getActionType())) {
-          Application existingApp =
-              getApplications().getRegisteredApplications(instance.getAppName());
-          if (existingApp == null) {
-            getApplications().addApplication(app);
+          int deltaCount = 0;
+          Applications currentApplications = getApplications();
+          if (currentApplications == null) {
+            logger.error("Applications object is null, cannot process delta.");
+            return;
           }
-          logger.debug("Added instance {} to the existing apps ", instance.getId());
-          getApplications().getRegisteredApplications(instance.getAppName()).addInstance(instance);
-        } else if (ActionType.MODIFIED.equals(instance.getActionType())) {
-          Application existingApp =
-              getApplications().getRegisteredApplications(instance.getAppName());
-          if (existingApp == null) {
-            getApplications().addApplication(app);
+          for (Application app : delta.getRegisteredApplications()) {
+            for (InstanceInfo instance : app.getInstances()) {
+              ++deltaCount;
+              if (ActionType.ADDED.equals(instance.getActionType())) {
+                Application existingApp = currentApplications.getRegisteredApplications(instance.getAppName());
+                if (existingApp == null) {
+                  currentApplications.addApplication(app);
+                }
+                logger.debug("Added instance {} to the existing apps ", instance.getId());
+                Nullability.castToNonnull(getApplications(), "ensure not null").getRegisteredApplications(instance.getAppName()).addInstance(instance);
+              } else if (ActionType.MODIFIED.equals(instance.getActionType())) {
+                Application existingApp = currentApplications.getRegisteredApplications(instance.getAppName());
+                if (existingApp == null) {
+                  currentApplications.addApplication(app);
+                }
+                logger.debug("Modified instance {} to the existing apps ", instance.getId());
+                Nullability.castToNonnull(getApplications(), "ensure not null").getRegisteredApplications(instance.getAppName()).addInstance(instance);
+    
+              } else if (ActionType.DELETED.equals(instance.getActionType())) {
+                Application existingApp = currentApplications.getRegisteredApplications(instance.getAppName());
+                if (existingApp == null) {
+                  currentApplications.addApplication(app);
+                }
+                logger.debug("Deleted instance {} to the existing apps ", instance.getId());
+                Nullability.castToNonnull(getApplications(), "ensure not null").getRegisteredApplications(instance.getAppName()).removeInstance(instance);
+              }
+            }
           }
-          logger.debug("Modified instance {} to the existing apps ", instance.getId());
-
-          getApplications().getRegisteredApplications(instance.getAppName()).addInstance(instance);
-
-        } else if (ActionType.DELETED.equals(instance.getActionType())) {
-          Application existingApp =
-              getApplications().getRegisteredApplications(instance.getAppName());
-          if (existingApp == null) {
-            getApplications().addApplication(app);
-          }
-          logger.debug("Deleted instance {} to the existing apps ", instance.getId());
-          getApplications()
-              .getRegisteredApplications(instance.getAppName())
-              .removeInstance(instance);
-        }
-      }
+          logger.debug("The total number of instances fetched by the delta processor : {}", deltaCount);
     }
-    logger.debug("The total number of instances fetched by the delta processor : {}", deltaCount);
-  }
 
   /**
    * Close HTTP response object and its respective resources.
@@ -475,45 +474,50 @@ public class RemoteRegionRegistry implements LookupService<String> {
    * @throws Throwable
    */
   private boolean reconcileAndLogDifference(Applications delta, String reconcileHashCode)
-      throws Throwable {
-    logger.warn(
-        "The Reconcile hashcodes do not match, client : {}, server : {}. Getting the full registry",
-        reconcileHashCode,
-        delta.getAppsHashCode());
-
-    long currentGeneration = fetchRegistryGeneration.get();
-
-    Applications apps = this.fetchRemoteRegistry(false);
-    if (apps == null) {
-      logger.error("The application is null for some reason. Not storing this information");
-      return false;
+          throws Throwable {
+        logger.warn(
+            "The Reconcile hashcodes do not match, client : {}, server : {}. Getting the full registry",
+            reconcileHashCode,
+            delta.getAppsHashCode());
+  
+        long currentGeneration = fetchRegistryGeneration.get();
+  
+        Applications apps = this.fetchRemoteRegistry(false);
+        if (apps == null) {
+          logger.error("The application is null for some reason. Not storing this information");
+          return false;
+        }
+  
+        if (fetchRegistryGeneration.compareAndSet(currentGeneration, currentGeneration + 1)) {
+          applications.set(apps);
+          applicationsDelta.set(apps);
+          logger.warn(
+              "The Reconcile hashcodes after complete sync up, client : {}, server : {}.",
+              Nullability.castToNonnull(getApplications(), "ensured nonnull before invocation").getReconcileHashCode(),
+              delta.getAppsHashCode());
+          return true;
+        } else {
+          logger.warn(
+              "Not setting the applications map as another thread has advanced the update generation");
+          return true; // still return true
+        }
     }
-
-    if (fetchRegistryGeneration.compareAndSet(currentGeneration, currentGeneration + 1)) {
-      applications.set(apps);
-      applicationsDelta.set(apps);
-      logger.warn(
-          "The Reconcile hashcodes after complete sync up, client : {}, server : {}.",
-          getApplications().getReconcileHashCode(),
-          delta.getAppsHashCode());
-      return true;
-    } else {
-      logger.warn(
-          "Not setting the applications map as another thread has advanced the update generation");
-      return true; // still return true
-    }
-  }
 
   /** Logs the total number of non-filtered instances stored locally. */
   private void logTotalInstances() {
-    int totInstances = 0;
-    for (Application application : getApplications().getRegisteredApplications()) {
-      totInstances += application.getInstancesAsIsFromEureka().size();
+        Applications apps = getApplications();
+        if (apps != null) {
+            int totInstances = 0;
+            for (Application application : apps.getRegisteredApplications()) {
+                totInstances += application.getInstancesAsIsFromEureka().size();
+            }
+            logger.debug("The total number of all instances in the client now is {}", totInstances);
+        } else {
+            logger.warn("Applications object is null.");
+        }
     }
-    logger.debug("The total number of all instances in the client now is {}", totInstances);
-  }
 
-  @Override
+  @Nullable @Override
   public Applications getApplications() {
     return applications.get();
   }

@@ -774,74 +774,76 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     above.
    */
   public Applications getApplicationsFromMultipleRegions(@Nullable String[] remoteRegions) {
-
-    boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
-
-    logger.debug(
-        "Fetching applications registry with remote regions: {}, Regions argument {}",
-        includeRemoteRegion,
-        remoteRegions);
-
-    if (includeRemoteRegion) {
-      GET_ALL_WITH_REMOTE_REGIONS_CACHE_MISS.increment();
-    } else {
-      GET_ALL_CACHE_MISS.increment();
-    }
-    Applications apps = new Applications();
-    apps.setVersion(1L);
-    for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
-      Application app = null;
-
-      if (entry.getValue() != null) {
-        for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
-          Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
-          if (app == null) {
-            app = new Application(lease.getHolder().getAppName());
-          }
-          app.addInstance(decorateInstanceInfo(lease));
-        }
+  
+      boolean includeRemoteRegion = null != remoteRegions && remoteRegions.length != 0;
+  
+      logger.debug(
+          "Fetching applications registry with remote regions: {}, Regions argument {}",
+          includeRemoteRegion,
+          remoteRegions);
+  
+      if (includeRemoteRegion) {
+        GET_ALL_WITH_REMOTE_REGIONS_CACHE_MISS.increment();
+      } else {
+        GET_ALL_CACHE_MISS.increment();
       }
-      if (app != null) {
-        apps.addApplication(app);
-      }
-    }
-    if (includeRemoteRegion) {
-      for (String remoteRegion : remoteRegions) {
-        RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
-        if (null != remoteRegistry) {
-          Applications remoteApps = remoteRegistry.getApplications();
-          for (Application application : remoteApps.getRegisteredApplications()) {
-            if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
-              logger.info(
-                  "Application {}  fetched from the remote region {}",
-                  application.getName(),
-                  remoteRegion);
-
-              Application appInstanceTillNow =
-                  apps.getRegisteredApplications(application.getName());
-              if (appInstanceTillNow == null) {
-                appInstanceTillNow = new Application(application.getName());
-                apps.addApplication(appInstanceTillNow);
-              }
-              for (InstanceInfo instanceInfo : application.getInstances()) {
-                appInstanceTillNow.addInstance(instanceInfo);
-              }
-            } else {
-              logger.debug(
-                  "Application {} not fetched from the remote region {} as there exists a "
-                      + "whitelist and this app is not in the whitelist.",
-                  application.getName(),
-                  remoteRegion);
+      Applications apps = new Applications();
+      apps.setVersion(1L);
+      for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
+        Application app = null;
+  
+        if (entry.getValue() != null) {
+          for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
+            Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
+            if (app == null) {
+              app = new Application(lease.getHolder().getAppName());
             }
+            app.addInstance(decorateInstanceInfo(lease));
           }
-        } else {
-          logger.warn("No remote registry available for the remote region {}", remoteRegion);
+        }
+        if (app != null) {
+          apps.addApplication(app);
         }
       }
+      if (includeRemoteRegion) {
+        for (String remoteRegion : remoteRegions) {
+          RemoteRegionRegistry remoteRegistry = regionNameVSRemoteRegistry.get(remoteRegion);
+          if (null != remoteRegistry) {
+            Applications remoteApps = remoteRegistry.getApplications();
+            if (remoteApps != null) { // Ensure remoteApps is not null
+              for (Application application : remoteApps.getRegisteredApplications()) {
+                if (shouldFetchFromRemoteRegistry(application.getName(), remoteRegion)) {
+                  logger.info(
+                      "Application {}  fetched from the remote region {}",
+                      application.getName(),
+                      remoteRegion);
+  
+                  Application appInstanceTillNow =
+                      apps.getRegisteredApplications(application.getName());
+                  if (appInstanceTillNow == null) {
+                    appInstanceTillNow = new Application(application.getName());
+                    apps.addApplication(appInstanceTillNow);
+                  }
+                  for (InstanceInfo instanceInfo : application.getInstances()) {
+                    appInstanceTillNow.addInstance(instanceInfo);
+                  }
+                } else {
+                  logger.debug(
+                      "Application {} not fetched from the remote region {} as there exists a "
+                          + "whitelist and this app is not in the whitelist.",
+                      application.getName(),
+                      remoteRegion);
+                }
+              }
+            }
+          } else {
+            logger.warn("No remote registry available for the remote region {}", remoteRegion);
+          }
+        }
+      }
+      apps.setAppsHashCode(apps.getReconcileHashCode());
+      return apps;
     }
-    apps.setAppsHashCode(apps.getReconcileHashCode());
-    return apps;
-  }
 
   private boolean shouldFetchFromRemoteRegistry(String appName, String remoteRegion) {
     Set<String> whiteList = serverConfig.getRemoteRegionAppWhitelist(remoteRegion);
@@ -864,43 +866,45 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     region.
    */
   @Deprecated
-  public Applications getApplications(boolean includeRemoteRegion) {
-    GET_ALL_CACHE_MISS.increment();
-    Applications apps = new Applications();
-    apps.setVersion(1L);
-    for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
-      Application app = null;
-
-      if (entry.getValue() != null) {
-        for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
-
-          Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
-
-          if (app == null) {
-            app = new Application(lease.getHolder().getAppName());
+      public Applications getApplications(boolean includeRemoteRegion) {
+        GET_ALL_CACHE_MISS.increment();
+        Applications apps = new Applications();
+        apps.setVersion(1L);
+        for (Entry<String, Map<String, Lease<InstanceInfo>>> entry : registry.entrySet()) {
+          Application app = null;
+  
+          if (entry.getValue() != null) {
+            for (Entry<String, Lease<InstanceInfo>> stringLeaseEntry : entry.getValue().entrySet()) {
+  
+              Lease<InstanceInfo> lease = stringLeaseEntry.getValue();
+  
+              if (app == null) {
+                app = new Application(lease.getHolder().getAppName());
+              }
+  
+              app.addInstance(decorateInstanceInfo(lease));
+            }
           }
-
-          app.addInstance(decorateInstanceInfo(lease));
-        }
-      }
-      if (app != null) {
-        apps.addApplication(app);
-      }
-    }
-    if (includeRemoteRegion) {
-      for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
-        Applications applications = remoteRegistry.getApplications();
-        for (Application application : applications.getRegisteredApplications()) {
-          Application appInLocalRegistry = apps.getRegisteredApplications(application.getName());
-          if (appInLocalRegistry == null) {
-            apps.addApplication(application);
+          if (app != null) {
+            apps.addApplication(app);
           }
         }
+        if (includeRemoteRegion) {
+          for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
+            Applications applications = remoteRegistry.getApplications();
+            if (applications != null) { // Ensure applications is not null
+              for (Application application : applications.getRegisteredApplications()) {
+                Application appInLocalRegistry = apps.getRegisteredApplications(application.getName());
+                if (appInLocalRegistry == null) {
+                  apps.addApplication(application);
+                }
+              }
+            }
+          }
+        }
+        apps.setAppsHashCode(apps.getReconcileHashCode());
+        return apps;
       }
-    }
-    apps.setAppsHashCode(apps.getReconcileHashCode());
-    return apps;
-  }
 
   /**
    * Get the registry information about the delta changes. The deltas are cached for a window
@@ -1118,41 +1122,43 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return list of InstanceInfo objects.
    */
   @Deprecated
-  public List<InstanceInfo> getInstancesById(String id, boolean includeRemoteRegions) {
-    List<InstanceInfo> list = new ArrayList<>();
-
-    for (Iterator<Entry<String, Map<String, Lease<InstanceInfo>>>> iter =
-            registry.entrySet().iterator();
-        iter.hasNext(); ) {
-
-      Map<String, Lease<InstanceInfo>> leaseMap = iter.next().getValue();
-      if (leaseMap != null) {
-        Lease<InstanceInfo> lease = leaseMap.get(id);
-
-        if (lease == null || (isLeaseExpirationEnabled() && lease.isExpired())) {
-          continue;
+    public List<InstanceInfo> getInstancesById(String id, boolean includeRemoteRegions) {
+      List<InstanceInfo> list = new ArrayList<>();
+  
+      for (Iterator<Entry<String, Map<String, Lease<InstanceInfo>>>> iter =
+              registry.entrySet().iterator();
+          iter.hasNext(); ) {
+  
+        Map<String, Lease<InstanceInfo>> leaseMap = iter.next().getValue();
+        if (leaseMap != null) {
+          Lease<InstanceInfo> lease = leaseMap.get(id);
+  
+          if (lease == null || (isLeaseExpirationEnabled() && lease.isExpired())) {
+            continue;
+          }
+  
+          if (list == Collections.EMPTY_LIST) {
+            list = new ArrayList<>();
+          }
+          list.add(decorateInstanceInfo(lease));
         }
-
-        if (list == Collections.EMPTY_LIST) {
-          list = new ArrayList<>();
-        }
-        list.add(decorateInstanceInfo(lease));
       }
-    }
-    if (list.isEmpty() && includeRemoteRegions) {
-      for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
-        for (Application application :
-            remoteRegistry.getApplications().getRegisteredApplications()) {
-          InstanceInfo instanceInfo = application.getByInstanceId(id);
-          if (instanceInfo != null) {
-            list.add(instanceInfo);
-            return list;
+      if (list.isEmpty() && includeRemoteRegions) {
+        for (RemoteRegionRegistry remoteRegistry : this.regionNameVSRemoteRegistry.values()) {
+          Applications remoteApplications = remoteRegistry.getApplications();
+          if (remoteApplications != null) {
+            for (Application application : remoteApplications.getRegisteredApplications()) {
+              InstanceInfo instanceInfo = application.getByInstanceId(id);
+              if (instanceInfo != null) {
+                list.add(instanceInfo);
+                return list;
+              }
+            }
           }
         }
       }
+      return list;
     }
-    return list;
-  }
 
   private InstanceInfo decorateInstanceInfo(Lease<InstanceInfo> lease) {
     InstanceInfo info = lease.getHolder();
