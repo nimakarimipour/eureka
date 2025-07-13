@@ -28,7 +28,6 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.registry.ResponseCache;
 import com.netflix.eureka.registry.ResponseCacheImpl;
 import com.netflix.eureka.util.EurekaMonitors;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.util.Arrays;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -65,7 +64,7 @@ public class ApplicationsResource {
 
   private final EurekaServerConfig serverConfig;
   private final PeerAwareInstanceRegistry registry;
-  @Nullable private final ResponseCache responseCache;
+  private final ResponseCache responseCache;
 
   @Inject
   ApplicationsResource(EurekaServerContext eurekaServer) {
@@ -120,25 +119,27 @@ public class ApplicationsResource {
       @Context UriInfo uriInfo,
       @Nullable @QueryParam("regions") String regionsStr) {
 
-    boolean isRemoteRegionRequested = regionsStr != null && !regionsStr.isEmpty();
+    boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
     String[] regions = null;
-
     if (!isRemoteRegionRequested) {
       EurekaMonitors.GET_ALL.increment();
     } else {
-      regions = Nullability.castToNonnull(regionsStr, "is not null").toLowerCase().split(",");
-      Arrays.sort(regions);
+      regions = regionsStr.toLowerCase().split(",");
+      Arrays.sort(
+          regions); // So we don't have different caches for same regions queried in different
+      // order.
       EurekaMonitors.GET_ALL_WITH_REMOTE_REGIONS.increment();
     }
 
+    // Check if the server allows the access to the registry. The server can
+    // restrict access if it is not
+    // ready to serve traffic depending on various reasons.
     if (!registry.shouldAllowAccess(isRemoteRegionRequested)) {
       return Response.status(Status.FORBIDDEN).build();
     }
-
     CurrentRequestVersion.set(Version.toEnum(version));
     KeyType keyType = Key.KeyType.JSON;
     String returnMediaType = MediaType.APPLICATION_JSON;
-
     if (acceptHeader == null || !acceptHeader.contains(HEADER_JSON_VALUE)) {
       keyType = Key.KeyType.XML;
       returnMediaType = MediaType.APPLICATION_XML;
@@ -153,10 +154,6 @@ public class ApplicationsResource {
             EurekaAccept.fromString(eurekaAccept),
             regions);
 
-    if (responseCache == null) {
-      throw new IllegalStateException("Response cache should not be null");
-    }
-
     Response response;
     if (acceptEncoding != null && acceptEncoding.contains(HEADER_GZIP_VALUE)) {
       response =
@@ -165,12 +162,8 @@ public class ApplicationsResource {
               .header(HEADER_CONTENT_TYPE, returnMediaType)
               .build();
     } else {
-      response =
-          Response.ok(Nullability.castToNonnull(responseCache, "checked for null").get(cacheKey))
-              .header(HEADER_CONTENT_TYPE, returnMediaType)
-              .build();
+      response = Response.ok(responseCache.get(cacheKey)).build();
     }
-
     CurrentRequestVersion.remove();
     logger.debug("Sent registry information to client.");
     return response;
@@ -210,8 +203,10 @@ public class ApplicationsResource {
       @Context UriInfo uriInfo,
       @Nullable @QueryParam("regions") String regionsStr) {
 
-    boolean isRemoteRegionRequested = regionsStr != null && !regionsStr.isEmpty();
+    boolean isRemoteRegionRequested = null != regionsStr && !regionsStr.isEmpty();
 
+    // If the delta flag is disabled in discovery or if the lease expiration
+    // has been disabled, redirect clients to get all instances
     if ((serverConfig.shouldDisableDelta())
         || (!registry.shouldAllowAccess(isRemoteRegionRequested))) {
       return Response.status(Status.FORBIDDEN).build();
@@ -221,8 +216,10 @@ public class ApplicationsResource {
     if (!isRemoteRegionRequested) {
       EurekaMonitors.GET_ALL_DELTA.increment();
     } else {
-      regions = Nullability.castToNonnull(regionsStr).toLowerCase().split(",");
-      Arrays.sort(regions);
+      regions = regionsStr.toLowerCase().split(",");
+      Arrays.sort(
+          regions); // So we don't have different caches for same regions queried in different
+      // order.
       EurekaMonitors.GET_ALL_DELTA_WITH_REMOTE_REGIONS.increment();
     }
 
@@ -245,24 +242,14 @@ public class ApplicationsResource {
 
     final Response response;
 
-    if (responseCache == null) {
-      this.responseCache = registry.getResponseCache();
-    }
-
     if (acceptEncoding != null && acceptEncoding.contains(HEADER_GZIP_VALUE)) {
       response =
-          Response.ok(
-                  Nullability.castToNonnull(
-                      Nullability.castToNonnull(responseCache, "handled null case")
-                          .getGZIP(cacheKey),
-                      "explicitly checked"))
+          Response.ok(responseCache.getGZIP(cacheKey))
               .header(HEADER_CONTENT_ENCODING, HEADER_GZIP_VALUE)
               .header(HEADER_CONTENT_TYPE, returnMediaType)
               .build();
     } else {
-      response =
-          Response.ok(Nullability.castToNonnull(responseCache.get(cacheKey), "explicitly checked"))
-              .build();
+      response = Response.ok(responseCache.get(cacheKey)).build();
     }
 
     CurrentRequestVersion.remove();

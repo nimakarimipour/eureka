@@ -33,7 +33,6 @@ import com.netflix.eureka.registry.rule.InstanceStatusOverrideRule;
 import com.netflix.eureka.resources.ServerCodecs;
 import com.netflix.eureka.util.MeasuredRate;
 import com.netflix.servo.annotations.DataSourceType;
-import edu.ucr.cs.riple.annotator.util.Nullability;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.AbstractQueue;
@@ -109,7 +108,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
   protected final EurekaServerConfig serverConfig;
   protected final EurekaClientConfig clientConfig;
   protected final ServerCodecs serverCodecs;
-  @Nullable protected volatile ResponseCache responseCache;
+  protected volatile ResponseCache responseCache;
 
   /** Create a new, empty instance registry. */
   protected AbstractInstanceRegistry(
@@ -158,7 +157,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
         (Object) allKnownRemoteRegions);
   }
 
-  @Nullable
   @Override
   public ResponseCache getResponseCache() {
     return responseCache;
@@ -684,8 +682,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    * @return the application
    * @see com.netflix.discovery.shared.LookupService#getApplication(java.lang.String)
    */
-  @Nullable
-  @Override
+  @Nullable @Override
   public Application getApplication(String appName) {
     boolean disableTransparentFallback = serverConfig.disableTransparentFallbackToOtherRegion();
     return this.getApplication(appName, !disableTransparentFallback);
@@ -700,8 +697,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    *     EurekaServerConfig#getRemoteRegionUrls()}, false otherwise
    * @return the application
    */
-  @Nullable
-  @Override
+  @Nullable @Override
   public Application getApplication(String appName, boolean includeRemoteRegion) {
     Application app = null;
 
@@ -923,9 +919,6 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
   public Applications getApplicationDeltas() {
     GET_ALL_CACHE_MISS_DELTA.increment();
     Applications apps = new Applications();
-    if (responseCache == null) {
-      initializedResponseCache();
-    }
     apps.setVersion(responseCache.getVersionDelta().get());
     Map<String, Application> applicationInstancesMap = new HashMap<String, Application>();
     write.lock();
@@ -994,7 +987,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    */
   public Applications getApplicationDeltasFromMultipleRegions(@Nullable String[] remoteRegions) {
     if (null == remoteRegions) {
-      remoteRegions = allKnownRemoteRegions;
+      remoteRegions = allKnownRemoteRegions; // null means all remote regions.
     }
 
     boolean includeRemoteRegion = remoteRegions.length != 0;
@@ -1006,15 +999,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     }
 
     Applications apps = new Applications();
-    synchronized (this) {
-      if (responseCache == null) {
-        responseCache = new ResponseCacheImpl(serverConfig, serverCodecs, this);
-      }
-    }
-    apps.setVersion(
-        Nullability.castToNonnull(responseCache, "initialized if null")
-            .getVersionDeltaWithRegions()
-            .get());
+    apps.setVersion(responseCache.getVersionDeltaWithRegions().get());
     Map<String, Application> applicationInstancesMap = new HashMap<String, Application>();
     write.lock();
     try {
@@ -1250,10 +1235,8 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
 
   private void invalidateCache(
       String appName, @Nullable String vipAddress, @Nullable String secureVipAddress) {
-    if (responseCache != null) {
-      Nullability.castToNonnull(responseCache, "checked before usage")
-          .invalidate(appName, vipAddress, secureVipAddress);
-    }
+    // invalidate cache
+    responseCache.invalidate(appName, vipAddress, secureVipAddress);
   }
 
   protected void updateRenewsPerMinThreshold() {
@@ -1300,9 +1283,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
     deltaRetentionTimer.cancel();
     evictionTimer.cancel();
     renewsLastMin.stop();
-    if (responseCache != null) {
-      responseCache.stop();
-    }
+    responseCache.stop();
   }
 
   @com.netflix.servo.annotations.Monitor(
@@ -1405,8 +1386,7 @@ public abstract class AbstractInstanceRegistry implements InstanceRegistry {
    */
   protected abstract InstanceStatusOverrideRule getInstanceInfoOverrideRule();
 
-  @Nullable
-  protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
+  @Nullable protected InstanceInfo.InstanceStatus getOverriddenInstanceStatus(
       InstanceInfo r, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
     InstanceStatusOverrideRule rule = getInstanceInfoOverrideRule();
     logger.debug("Processing override status using rule: {}", rule);
