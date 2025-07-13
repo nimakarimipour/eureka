@@ -40,6 +40,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
+import com.uber.nullaway.annotations.Initializer;
 
 /**
  * Rate limiting filter, with configurable threshold above which non-privileged clients will be
@@ -104,7 +105,7 @@ public class RateLimitingFilter implements Filter {
   /** Only full registry fetches. */
   private static final RateLimiter registryFullFetchRateLimiter = new RateLimiter(TimeUnit.SECONDS);
 
-  private EurekaServerConfig serverConfig;
+  @SuppressWarnings("NullAway.Init") private EurekaServerConfig serverConfig;
 
   @Inject
   public RateLimitingFilter(EurekaServerContext server) {
@@ -114,7 +115,7 @@ public class RateLimitingFilter implements Filter {
   // for non-DI use
   public RateLimitingFilter() {}
 
-  @Override
+  @Initializer @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     if (serverConfig == null) {
       EurekaServerContext serverContext =
