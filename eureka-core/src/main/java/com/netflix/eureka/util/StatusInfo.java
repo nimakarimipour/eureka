@@ -90,19 +90,21 @@ public class StatusInfo {
 
   private StatusInfo() {}
 
-  @Nullable public InstanceInfo getInstanceInfo() {
+  @Nullable
+  public InstanceInfo getInstanceInfo() {
     return instanceInfo;
   }
 
   public boolean isHealthy() {
-    return isHeathly.booleanValue();
+    return isHeathly != null ? isHeathly.booleanValue() : false;
   }
 
   public Map<String, String> getGeneralStats() {
     return generalStats;
   }
 
-  @Nullable public Map<String, String> getApplicationStats() {
+  @Nullable
+  public Map<String, String> getApplicationStats() {
     return applicationStats;
   }
 
