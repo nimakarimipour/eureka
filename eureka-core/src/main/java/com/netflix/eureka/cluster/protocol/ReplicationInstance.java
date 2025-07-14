@@ -46,11 +46,13 @@ public class ReplicationInstance {
     return lastDirtyTimestamp;
   }
 
-  @Nullable public String getOverriddenStatus() {
+  @Nullable
+  public String getOverriddenStatus() {
     return overriddenStatus;
   }
 
-  @Nullable public String getStatus() {
+  @Nullable
+  public String getStatus() {
     return status;
   }
 
@@ -108,7 +110,13 @@ public class ReplicationInstance {
     private InstanceInfo instanceInfo;
     private Action action;
 
-    private ReplicationInstanceBuilder() {}
+    private ReplicationInstanceBuilder() {
+      this.appName = "";
+      this.id = "";
+      this.lastDirtyTimestamp = 0L;
+      this.instanceInfo = new InstanceInfo(); // Assuming InstanceInfo has a default constructor
+      this.action = new Action(); // Assuming Action has a default constructor
+    }
 
     public static ReplicationInstanceBuilder aReplicationInstance() {
       return new ReplicationInstanceBuilder();
