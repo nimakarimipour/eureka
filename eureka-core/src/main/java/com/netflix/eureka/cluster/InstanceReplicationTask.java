@@ -60,13 +60,11 @@ public abstract class InstanceReplicationTask extends ReplicationTask {
     return id;
   }
 
-  @Nullable
-  public InstanceInfo getInstanceInfo() {
+  @Nullable public InstanceInfo getInstanceInfo() {
     return instanceInfo;
   }
 
-  @Nullable
-  public InstanceStatus getOverriddenStatus() {
+  @Nullable public InstanceStatus getOverriddenStatus() {
     return overriddenStatus;
   }
 
