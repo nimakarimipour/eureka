@@ -2,9 +2,9 @@ package com.netflix.eureka.registry.rule;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.eureka.lease.Lease;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nullable;
 
 /**
  * This rule matches if we have an existing lease for the instance that is UP or OUT_OF_SERVICE.
@@ -17,16 +17,14 @@ public class LeaseExistsRule implements InstanceStatusOverrideRule {
 
   @Override
   public StatusOverrideResult apply(
-      InstanceInfo instanceInfo, @Nullable Lease<InstanceInfo> existingLease, boolean isReplication) {
-    // This is for backward compatibility until all applications have ASG
-    // names, otherwise while starting up
-    // the client status may override status replicated from other servers
+      InstanceInfo instanceInfo,
+      @Nullable Lease<InstanceInfo> existingLease,
+      boolean isReplication) {
     if (!isReplication) {
       InstanceInfo.InstanceStatus existingStatus = null;
-      if (existingLease != null) {
+      if (existingLease != null && existingLease.getHolder() != null) {
         existingStatus = existingLease.getHolder().getStatus();
       }
-      // Allow server to have its way when the status is UP or OUT_OF_SERVICE
       if ((existingStatus != null)
           && (InstanceInfo.InstanceStatus.OUT_OF_SERVICE.equals(existingStatus)
               || InstanceInfo.InstanceStatus.UP.equals(existingStatus))) {
