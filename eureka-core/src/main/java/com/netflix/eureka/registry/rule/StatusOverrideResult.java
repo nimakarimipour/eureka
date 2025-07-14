@@ -31,8 +31,7 @@ public class StatusOverrideResult {
     return matches;
   }
 
-  @Nullable
-  public InstanceInfo.InstanceStatus status() {
+  @Nullable public InstanceInfo.InstanceStatus status() {
     return status;
   }
 }
