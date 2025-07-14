@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nullable;
 
 /**
  * @author Tomasz Bak
@@ -214,10 +214,12 @@ class ReplicationTaskProcessor implements TaskProcessor<ReplicationTask> {
   private static boolean maybeReadTimeOut(Throwable e) {
     do {
       if (IOException.class.isInstance(e)) {
-        String message = e.getMessage().toLowerCase();
-        Matcher matcher = READ_TIME_OUT_PATTERN.matcher(message);
-        if (matcher.find()) {
-          return true;
+        String message = e.getMessage();
+        if (message != null && message.toLowerCase().contains("read timed out")) {
+          Matcher matcher = READ_TIME_OUT_PATTERN.matcher(message.toLowerCase());
+          if (matcher.find()) {
+            return true;
+          }
         }
       }
       e = e.getCause();
