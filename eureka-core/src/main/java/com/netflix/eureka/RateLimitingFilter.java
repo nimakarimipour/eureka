@@ -39,7 +39,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.annotation.Nullable;
 
 /**
  * Rate limiting filter, with configurable threshold above which non-privileged clients will be
@@ -112,7 +111,9 @@ public class RateLimitingFilter implements Filter {
   }
 
   // for non-DI use
-  public RateLimitingFilter() {}
+  public RateLimitingFilter() {
+    serverConfig = new DefaultEurekaServerConfig(); // or any suitable default configuration
+  }
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
